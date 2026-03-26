@@ -12,6 +12,35 @@ import string
 import math
 import time
 import threading
+import re
+import gzip
+import pickle
+import os
+
+# ─── Wordlist Loader ─────────────────────────────────────────────────────────
+
+def _load_wordlists():
+    """
+    Load combined wordlist from compressed pkl.gz if present.
+    Falls back to empty set (hardcoded lists still apply).
+    Returns (common_passwords_set, common_words_set).
+    """
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    pkl_path = os.path.join(script_dir, "wordlists", "combined.pkl.gz")
+    if os.path.exists(pkl_path):
+        try:
+            with gzip.open(pkl_path, "rb") as f:
+                all_words = pickle.load(f)
+            # Words ≤ 3 chars are rarely passwords on their own — keep in common_words only
+            # Split: shorter/common patterns go to common_passwords, rest to common_words
+            common_pw = {w for w in all_words if len(w) <= 20}
+            common_words = all_words  # full set for dictionary detection
+            return common_pw, common_words
+        except Exception:
+            pass
+    return set(), set()
+
+_LOADED_COMMON_PASSWORDS, _LOADED_COMMON_WORDS = _load_wordlists()
 
 # ─── Palette ─────────────────────────────────────────────────────────────────
 
@@ -81,6 +110,8 @@ COMMON_PASSWORDS = {
     "131313", "abcabc", "abcdef", "qazwsx", "qwerty123", "password123",
     "iloveu", "fuckyou", "asshole", "pussy", "money",
 }
+# Merge in loaded wordlists (65k+ entries from rockyou + SecLists + google-10k)
+COMMON_PASSWORDS |= _LOADED_COMMON_PASSWORDS
 
 # ─── Keyboard walk patterns ─────────────────────────────────────────────
 
@@ -173,6 +204,11 @@ COMMON_WORDS = {
     "hacker", "coder", "gaming", "player", "winner", "loser", "champion",
     "correct", "horse", "battery", "staple", "troubador", "electric",
 }
+# Merge loaded wordlists into COMMON_WORDS for richer dictionary detection
+COMMON_WORDS |= _LOADED_COMMON_WORDS
+
+# Update DICTIONARY_SIZE to reflect actual loaded set
+DICTIONARY_SIZE = max(200_000, len(COMMON_WORDS))
 
 
 def _deleet(password):
