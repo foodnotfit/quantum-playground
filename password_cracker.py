@@ -16,6 +16,7 @@ import os
 import re
 import gzip
 import pickle
+import hashlib
 
 # ─── Profanity Filter ────────────────────────────────────────────────────────
 _LEET_NORMALIZE = str.maketrans({
@@ -91,6 +92,23 @@ GUESSES_PER_SEC_BRUTE = 10_000_000_000   # 10B/sec - GPU cluster on fast hashes
 GUESSES_PER_SEC_DICT  = 100_000_000_000  # 100B/sec - dictionary/rule-based (smaller keyspace)
 DICTIONARY_SIZE       = 200_000          # ~200k common English words
 RULE_MULTIPLIER       = 1_000           # leet speak + appends + case variants
+
+# ─── Hash Algorithm Table ────────────────────────────────────────────────
+HASH_ALGORITHMS = {
+    "MD5":     {"speed": 100_000_000_000, "color": "#f85149", "desc": "Ancient — ~100B/sec"},
+    "SHA-1":   {"speed":  10_000_000_000, "color": "#f0883e", "desc": "Old — ~10B/sec"},
+    "SHA-256": {"speed":   3_000_000_000, "color": "#e3b341", "desc": "Common — ~3B/sec"},
+    "bcrypt":  {"speed":         100_000, "color": "#39d353", "desc": "Slow by design — ~100K/sec"},
+    "Argon2":  {"speed":           1_000, "color": "#bc8cff", "desc": "Modern standard — ~1K/sec"},
+}
+
+def _compute_hash(password, algo):
+    """Compute hash of password for the given algorithm name."""
+    algo_map = {"MD5": "md5", "SHA-1": "sha1", "SHA-256": "sha256",
+                "bcrypt": "sha256", "Argon2": "sha256"}
+    h = hashlib.new(algo_map[algo])
+    h.update(password.encode("utf-8"))
+    return h.hexdigest()
 
 # ─── Common weak passwords (top ~200 from breach databases) ──────────────
 
@@ -374,7 +392,7 @@ def _compute_charset_size(password):
     return charset_size
 
 
-def estimate_crack_time(password):
+def estimate_crack_time(password, hash_speed=None):
     """
     Estimate realistic password crack time using multiple attack models.
     Returns (seconds, charset_size, method_description).
@@ -385,10 +403,17 @@ def estimate_crack_time(password):
       3. Brute-force (raw character-by-character guessing)
 
     Returns the FASTEST time across all models (worst case for defender).
+
+    If hash_speed is provided (guesses/sec), it overrides the default speed
+    constants for ALL attack phases.
     """
     pw_len = len(password)
     pw_lower = password.lower()
     charset_size = _compute_charset_size(password)
+
+    # Determine effective speeds
+    eff_brute = hash_speed if hash_speed is not None else GUESSES_PER_SEC_BRUTE
+    eff_dict  = hash_speed if hash_speed is not None else GUESSES_PER_SEC_DICT
 
     # ── Phase 1: Instant / near-instant catches ──────────────────────────
 
@@ -429,7 +454,7 @@ def estimate_crack_time(password):
         # Keyspace = common_list × suffix_combos
         suffix_combos = max(1, 10 ** max(len(suffix), 1)) if suffix else 1
         combos = len(COMMON_PASSWORDS) * suffix_combos * 100  # case variants
-        t = combos / GUESSES_PER_SEC_DICT
+        t = combos / eff_dict
         if t < best_time:
             best_time = t
             best_method = "common_variant"
@@ -440,7 +465,7 @@ def estimate_crack_time(password):
             suffix_combos = max(1, 10 ** max(len(suffix), 1)) if suffix else 1
             # Dictionary + rules attack
             combos = DICTIONARY_SIZE * RULE_MULTIPLIER * suffix_combos
-            t = combos / GUESSES_PER_SEC_DICT
+            t = combos / eff_dict
             if t < best_time:
                 best_time = t
                 best_method = "dictionary_variant"
@@ -448,7 +473,7 @@ def estimate_crack_time(password):
     # (d) Check if the de-leeted password is a dictionary word
     if len(deleeted) >= 3 and deleeted in COMMON_WORDS:
         combos = DICTIONARY_SIZE * RULE_MULTIPLIER
-        t = combos / GUESSES_PER_SEC_DICT
+        t = combos / eff_dict
         if t < best_time:
             best_time = t
             best_method = "leet_dictionary"
@@ -460,7 +485,7 @@ def estimate_crack_time(password):
     if len(words_found) >= 2 and leftover <= 4:
         # Combination attack: dictionary^N × small brute-force for leftovers
         combos = (DICTIONARY_SIZE ** len(words_found)) * (94 ** leftover if leftover > 0 else 1)
-        t = combos / GUESSES_PER_SEC_DICT
+        t = combos / eff_dict
         if t < best_time:
             best_time = t
             best_method = "multi_word"
@@ -468,7 +493,7 @@ def estimate_crack_time(password):
     # (f) Pure numeric (PIN-style)
     if password.isdigit():
         combos = 10 ** pw_len
-        t = combos / GUESSES_PER_SEC_BRUTE
+        t = combos / eff_brute
         if t < best_time:
             best_time = t
             best_method = "pin"
@@ -476,7 +501,7 @@ def estimate_crack_time(password):
     # ── Phase 3: Brute-force ─────────────────────────────────────────────
 
     combos = charset_size ** pw_len
-    brute_time = combos / GUESSES_PER_SEC_BRUTE
+    brute_time = combos / eff_brute
 
     if brute_time < best_time:
         best_time = brute_time
@@ -554,8 +579,8 @@ class PasswordCrackerApp:
         self.root = root
         self.root.title("PASSWORD CRACKER")
         self.root.configure(bg=C["bg"])
-        self.root.geometry("960x780")
-        self.root.minsize(800, 650)
+        self.root.geometry("960x920")
+        self.root.minsize(800, 780)
 
         # State
         self.cracking = False
@@ -656,9 +681,67 @@ class PasswordCrackerApp:
 
         self.password_var.trace_add("write", self.on_password_change)
 
+        # ── HASH ALGORITHM SELECTOR ──
+        hash_row = tk.Frame(input_section, bg=C["bg"], pady=4)
+        hash_row.pack(fill="x")
+
+        tk.Label(hash_row, text="HASH ALGORITHM (how your password is stored):",
+                 font=("Courier", 11, "bold"), fg=C["cyan"], bg=C["bg"]).pack(side="left", padx=(0, 8))
+
+        self.hash_algo_var = tk.StringVar(value="MD5")
+        algo_menu = tk.OptionMenu(hash_row, self.hash_algo_var, *HASH_ALGORITHMS.keys())
+        algo_menu.config(font=("Courier", 11), bg=C["bg3"], fg=C["white"],
+                         activebackground=C["bg2"], activeforeground=C["cyan"],
+                         highlightthickness=1, highlightbackground=C["border"],
+                         relief="flat", bd=0)
+        algo_menu["menu"].config(bg=C["bg3"], fg=C["white"], font=("Courier", 11),
+                                  activebackground=C["blue"], activeforeground=C["white"])
+        algo_menu.pack(side="left", padx=(0, 10))
+
+        self.hash_desc_label = tk.Label(hash_row,
+                                         text=HASH_ALGORITHMS["MD5"]["desc"],
+                                         font=("Courier", 10), fg=C["dim"], bg=C["bg"])
+        self.hash_desc_label.pack(side="left")
+
+        self.hash_algo_var.trace_add("write", self.on_hash_algo_change)
+
         # ── CRACKING ANIMATION AREA ──
         self.anim_frame = tk.Frame(self.root, bg=C["bg"])
         self.anim_frame.pack(fill="both", expand=True, padx=40, pady=(0, 5))
+
+        # ── LIVE HASH DISPLAY PANEL ──
+        live_hash_frame = tk.Frame(self.anim_frame, bg=C["bg2"],
+                                    highlightthickness=1,
+                                    highlightbackground=C["border"])
+        live_hash_frame.pack(fill="x", pady=(0, 6))
+
+        lh_top = tk.Frame(live_hash_frame, bg=C["bg2"])
+        lh_top.pack(fill="x", padx=8, pady=(4, 0))
+
+        tk.Label(lh_top, text="LIVE HASH", font=("Courier", 10, "bold"),
+                 fg=C["dim"], bg=C["bg2"]).pack(side="left")
+        self.live_hash_algo_label = tk.Label(lh_top, text="MD5",
+                                              font=("Courier", 10, "bold"),
+                                              fg=C["cyan"], bg=C["bg2"])
+        self.live_hash_algo_label.pack(side="left", padx=(6, 0))
+
+        self.live_hash_value = tk.Label(live_hash_frame,
+                                         text="—" * 24,
+                                         font=("Courier", 11),
+                                         fg=C["cyan"], bg=C["bg2"])
+        self.live_hash_value.pack(anchor="w", padx=8, pady=(2, 0))
+
+        tk.Label(live_hash_frame,
+                 text="This is what gets stored in a database — not your actual password",
+                 font=("Helvetica", 9, "italic"), fg=C["dim"], bg=C["bg2"]).pack(
+                     anchor="w", padx=8, pady=(0, 4))
+
+        # ── HASH ANIMATION CANVAS ──
+        self.hash_anim_canvas = tk.Canvas(self.anim_frame, bg=C["bg"],
+                                           highlightthickness=1,
+                                           highlightbackground=C["border"],
+                                           height=70)
+        self.hash_anim_canvas.pack(fill="x", pady=(0, 6))
 
         # ── RAINBOW TABLE CRAWL SECTION ──
         rt_header = tk.Frame(self.anim_frame, bg=C["bg"])
@@ -746,6 +829,16 @@ class PasswordCrackerApp:
                  font=("Helvetica", 11), fg=C["dim"],
                  bg=C["bg2"]).pack()
 
+    # ─── Hash algorithm change handler ──────────────────────────────────
+
+    def on_hash_algo_change(self, *args):
+        algo = self.hash_algo_var.get()
+        info = HASH_ALGORITHMS[algo]
+        self.hash_desc_label.config(text=info["desc"], fg=info["color"])
+        self.live_hash_algo_label.config(text=algo, fg=info["color"])
+        # Refresh live hash display and strength label
+        self.on_password_change()
+
     # ─── Toggle password visibility ──────────────────────────────────────
 
     def toggle_show(self):
@@ -771,12 +864,26 @@ class PasswordCrackerApp:
         if any(c in string.punctuation for c in pw): types.append("!@#")
         self.charset_label.config(text=f"Types: {', '.join(types) if types else '—'}")
 
+        # Update live hash display
+        algo = self.hash_algo_var.get()
+        algo_info = HASH_ALGORITHMS[algo]
+        if length == 0:
+            self.live_hash_value.config(text="—" * 24)
+        else:
+            is_standin = algo in ("bcrypt", "Argon2")
+            h = _compute_hash(pw, algo)
+            truncated = h[:48] + "..."
+            label_prefix = f"[SHA-256 stand-in] " if is_standin else ""
+            self.live_hash_value.config(text=f"{label_prefix}{truncated}")
+        self.live_hash_algo_label.config(text=algo, fg=algo_info["color"])
+
         if length == 0:
             self.live_strength.config(text="", fg=C["dim"])
         elif _contains_profanity(pw):
             self.live_strength.config(text="⚠ INAPPROPRIATE", fg=C["red"])
         else:
-            secs, _, _ = estimate_crack_time(pw)
+            hash_speed = HASH_ALGORITHMS[algo]["speed"]
+            secs, _, _ = estimate_crack_time(pw, hash_speed=hash_speed)
             label, color, _, _ = get_strength_tier(secs)
             self.live_strength.config(text=label, fg=color)
 
@@ -816,8 +923,10 @@ class PasswordCrackerApp:
         self.tip_label.config(text="")
         self.clear_meter()
 
-        # Calculate crack time
-        crack_seconds, charset_size, method = estimate_crack_time(pw)
+        # Calculate crack time using selected hash algorithm speed
+        algo = self.hash_algo_var.get()
+        hash_speed = HASH_ALGORITHMS[algo]["speed"]
+        crack_seconds, charset_size, method = estimate_crack_time(pw, hash_speed=hash_speed)
         strength_label, strength_color, message, tip = get_strength_tier(crack_seconds)
 
         # Map method to human-readable attack label
@@ -907,10 +1016,99 @@ class PasswordCrackerApp:
 
         time.sleep(0.3)
 
-        # ── Phase 2: Standard crack animation ──
+        # ── Phase 2: Hash animation (~1.2s) ──
+        algo = self.hash_algo_var.get()
+        hash_done = threading.Event()
+        self.root.after(0, lambda: self.run_hash_phase(
+            password, algo, hash_done.set))
+        hash_done.wait(timeout=3.0)
+        time.sleep(0.15)
+
+        # ── Phase 3: Standard crack animation ──
         self.run_crack_animation(password, anim_duration, crack_seconds,
                                   charset_size, is_timeout, strength_label,
                                   strength_color, message, tip, attack_label)
+
+    def run_hash_phase(self, password, algo, on_complete_callback):
+        """Phase 2: Hash animation — runs ~1.2s, then calls on_complete_callback."""
+        anim_duration = 1.2
+        start_time = time.time()
+        hash_hex = _compute_hash(password, algo)
+        scramble_chars = string.ascii_letters + string.digits + "!@#$%^&*"
+
+        def _tick():
+            elapsed = time.time() - start_time
+            progress = min(elapsed / anim_duration, 1.0)
+            cw = self.hash_anim_canvas.winfo_width()
+            if cw < 10:
+                cw = 880
+
+            self.hash_anim_canvas.delete("all")
+
+            # Layout zones
+            left_w = int(cw * 0.30)
+            mid_w  = int(cw * 0.22)
+            right_x = left_w + mid_w + 10
+
+            # ── Left: password chars appearing one by one ──
+            pw_reveal = max(1, int(len(password) * min(progress * 2.5, 1.0)))
+            pw_display = password[:pw_reveal]
+            self.hash_anim_canvas.create_text(
+                8, 22, text="INPUT:", fill=C["dim"],
+                font=("Courier", 9), anchor="w")
+            self.hash_anim_canvas.create_text(
+                8, 42, text=pw_display[:28],
+                fill=C["green"], font=("Courier", 13, "bold"), anchor="w")
+
+            # ── Middle: animated HASH FN box ──
+            box_x1 = left_w + 4
+            box_x2 = left_w + mid_w - 4
+            self.hash_anim_canvas.create_rectangle(
+                box_x1, 10, box_x2, 60,
+                outline=C["yellow"], fill=C["bg3"], width=2)
+            scramble = "".join(random.choice(scramble_chars) for _ in range(6))
+            self.hash_anim_canvas.create_text(
+                (box_x1 + box_x2) // 2, 28,
+                text="HASH FN", fill=C["yellow"],
+                font=("Courier", 10, "bold"))
+            self.hash_anim_canvas.create_text(
+                (box_x1 + box_x2) // 2, 46,
+                text=scramble, fill=C["yellow"],
+                font=("Courier", 10))
+
+            # Arrow
+            arrow_x = box_x2 + 4
+            self.hash_anim_canvas.create_text(
+                arrow_x, 35, text="→", fill=C["dim"],
+                font=("Courier", 12))
+
+            # ── Right: hash output building up ──
+            hash_reveal = max(4, int(len(hash_hex) * min(progress * 3, 1.0)))
+            hash_display = hash_hex[:hash_reveal]
+            self.hash_anim_canvas.create_text(
+                right_x, 22, text=f"{algo} OUTPUT:", fill=C["dim"],
+                font=("Courier", 9), anchor="w")
+            self.hash_anim_canvas.create_text(
+                right_x, 44, text=(hash_display[:36] + "...")[:40],
+                fill=C["cyan"], font=("Courier", 11, "bold"), anchor="w")
+
+            if progress < 1.0:
+                delay = int((anim_duration - elapsed) * 1000 / 20)
+                delay = max(30, min(delay, 80))
+                self.root.after(delay, _tick)
+            else:
+                # Final frame with label
+                self.hash_anim_canvas.delete("all")
+                truncated = hash_hex[:48] + "..."
+                self.hash_anim_canvas.create_text(
+                    8, 20, text=f"{algo}: {truncated}",
+                    fill=C["cyan"], font=("Courier", 10, "bold"), anchor="w")
+                self.hash_anim_canvas.create_text(
+                    8, 50, text="↑ This hash is what a hacker sees after a data breach",
+                    fill=C["yellow"], font=("Courier", 9, "italic"), anchor="w")
+                on_complete_callback()
+
+        _tick()
 
     def update_rt_display(self, entries, highlight_idx, progress, status, found):
         """Animate the rainbow table scrolling lookup panel."""
