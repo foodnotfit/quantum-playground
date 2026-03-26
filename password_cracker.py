@@ -1030,8 +1030,8 @@ class PasswordCrackerApp:
                                   strength_color, message, tip, attack_label)
 
     def run_hash_phase(self, password, algo, on_complete_callback):
-        """Phase 2: Hash animation — runs ~1.2s, then calls on_complete_callback."""
-        anim_duration = 1.2
+        """Phase 2: Hash animation — runs ~2.4s, then holds result, then calls on_complete_callback."""
+        anim_duration = 2.4
         start_time = time.time()
         hash_hex = _compute_hash(password, algo)
         scramble_chars = string.ascii_letters + string.digits + "!@#$%^&*"
@@ -1106,7 +1106,8 @@ class PasswordCrackerApp:
                 self.hash_anim_canvas.create_text(
                     8, 50, text="↑ This hash is what a hacker sees after a data breach",
                     fill=C["yellow"], font=("Courier", 9, "italic"), anchor="w")
-                on_complete_callback()
+                # Hold the final frame for 1.5s so it's readable before proceeding
+                self.root.after(1500, on_complete_callback)
 
         _tick()
 
