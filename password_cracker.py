@@ -579,8 +579,8 @@ class PasswordCrackerApp:
         self.root = root
         self.root.title("PASSWORD CRACKER")
         self.root.configure(bg=C["bg"])
-        self.root.geometry("960x920")
-        self.root.minsize(800, 780)
+        self.root.geometry("960x1020")
+        self.root.minsize(800, 860)
 
         # State
         self.cracking = False
@@ -704,6 +704,19 @@ class PasswordCrackerApp:
         self.hash_desc_label.pack(side="left")
 
         self.hash_algo_var.trace_add("write", self.on_hash_algo_change)
+
+        # ── ALGORITHM COMPARISON BARS ──
+        cmp_frame = tk.Frame(input_section, bg=C["bg"], pady=4)
+        cmp_frame.pack(fill="x")
+
+        tk.Label(cmp_frame, text="HOW YOUR PASSWORD HOLDS UP BY STORAGE METHOD:",
+                 font=("Courier", 10, "bold"), fg=C["dim"], bg=C["bg"]).pack(anchor="w", pady=(0, 4))
+
+        self.algo_cmp_canvas = tk.Canvas(cmp_frame, bg=C["bg"],
+                                          highlightthickness=1,
+                                          highlightbackground=C["border"],
+                                          height=len(HASH_ALGORITHMS) * 22 + 6)
+        self.algo_cmp_canvas.pack(fill="x")
 
         # ── CRACKING ANIMATION AREA ──
         self.anim_frame = tk.Frame(self.root, bg=C["bg"])
@@ -879,13 +892,89 @@ class PasswordCrackerApp:
 
         if length == 0:
             self.live_strength.config(text="", fg=C["dim"])
+            self.update_algo_comparison("")
         elif _contains_profanity(pw):
             self.live_strength.config(text="⚠ INAPPROPRIATE", fg=C["red"])
+            self.update_algo_comparison("")
         else:
             hash_speed = HASH_ALGORITHMS[algo]["speed"]
             secs, _, _ = estimate_crack_time(pw, hash_speed=hash_speed)
             label, color, _, _ = get_strength_tier(secs)
             self.live_strength.config(text=label, fg=color)
+            self.update_algo_comparison(pw)
+
+    def update_algo_comparison(self, pw):
+        """Draw side-by-side algorithm comparison bars — updates on every keystroke."""
+        c = self.algo_cmp_canvas
+        c.delete("all")
+        cw = c.winfo_width()
+        if cw < 10:
+            cw = 860
+
+        selected_algo = self.hash_algo_var.get()
+        row_h = 22
+        label_w = 80    # algorithm name column
+        time_w  = 150   # crack time text column
+        bar_x   = label_w + 8
+        bar_max = cw - bar_x - time_w - 12
+
+        # Log scale: map seconds to 0.0–1.0
+        # Range: 0.001s (INSTANTLY) → 3.15e19s (trillion years)
+        LOG_MIN = math.log10(0.001)
+        LOG_MAX = math.log10(3.15e19)
+
+        def secs_to_fill(secs):
+            if secs <= 0: return 0.0
+            return max(0.02, min(1.0, (math.log10(max(secs, 0.001)) - LOG_MIN) / (LOG_MAX - LOG_MIN)))
+
+        algos = list(HASH_ALGORITHMS.items())
+
+        for i, (algo, info) in enumerate(algos):
+            y = 3 + i * row_h
+            is_selected = (algo == selected_algo)
+
+            if pw:
+                secs, _, _ = estimate_crack_time(pw, hash_speed=info["speed"])
+                fill = secs_to_fill(secs)
+                time_str = format_time(secs)
+                tier_label, tier_color, _, _ = get_strength_tier(secs)
+            else:
+                fill = 0.0
+                time_str = "—"
+                tier_label = ""
+                tier_color = C["dim"]
+
+            bar_color = info["color"]
+
+            # Highlight selected row
+            if is_selected:
+                c.create_rectangle(0, y - 1, cw, y + row_h - 3,
+                                   fill=C["bg3"], outline="", stipple="")
+
+            # Algorithm name
+            font_weight = "bold" if is_selected else "normal"
+            c.create_text(4, y + 8, text=algo, fill=bar_color,
+                          font=("Courier", 10, font_weight), anchor="w")
+
+            # Bar background
+            c.create_rectangle(bar_x, y + 2, bar_x + bar_max, y + row_h - 4,
+                               fill=C["bg3"], outline=C["border"])
+
+            # Bar fill
+            if fill > 0:
+                fill_w = max(4, int(fill * bar_max))
+                c.create_rectangle(bar_x, y + 2, bar_x + fill_w, y + row_h - 4,
+                                   fill=bar_color, outline="")
+
+            # Crack time text
+            txt_x = bar_x + bar_max + 8
+            c.create_text(txt_x, y + 8, text=time_str, fill=bar_color,
+                          font=("Courier", 10, font_weight), anchor="w")
+
+            # Selected marker
+            if is_selected:
+                c.create_text(cw - 4, y + 8, text="◀ selected",
+                              fill=C["dim"], font=("Courier", 8), anchor="e")
 
     # ─── Start the cracking process ──────────────────────────────────────
 
