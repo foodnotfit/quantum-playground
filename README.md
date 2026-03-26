@@ -60,8 +60,7 @@ The `.pkl.gz` is a pre-compiled compressed binary (~309KB) for fast startup load
 ### 🚫 Profanity Filter
 - Blocks inappropriate passwords — shows `⚠ INAPPROPRIATE` live as you type
 - Full message on submit: *"Inappropriate language is not allowed."*
-- Catches **leet-speak variants**: `f4ck`, `sh1t`, `b1tch2024`, `F4CK`, `a55hole`
-- Catches **word + digits**: `fuck123`, `bitch2024`
+- Catches leet-speak variants and word+digit combinations
 - Uses [`better-profanity`](https://pypi.org/project/better-profanity/) library with hardcoded fallback if not installed
 
 ---
