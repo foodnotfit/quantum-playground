@@ -43,6 +43,33 @@ Uses a **layered attack model** — always picks the fastest (worst-case for the
 | VERY STRONG | < 1 million years |
 | UNBREAKABLE | 1 million+ years |
 
+### 🔑 Hash Algorithm Layer
+
+Real-world password cracking depends entirely on *how* the password was stored. The app now includes a full hash education layer:
+
+**Algorithm Selector** — choose how the password is "stored" and watch crack time change dramatically:
+
+| Algorithm | GPU Speed | Notes |
+|-----------|-----------|-------|
+| MD5 | ~100 billion/sec | Ancient — effectively broken |
+| SHA-1 | ~10 billion/sec | Old standard — fast to crack |
+| SHA-256 | ~3 billion/sec | Common but still too fast |
+| bcrypt | ~100,000/sec | Designed to be slow — game changer |
+| Argon2 | ~1,000/sec | Modern gold standard |
+
+**Same password, radically different outcomes** — `Summer2024!` as an example:
+| Algorithm | Time to Crack |
+|-----------|--------------|
+| MD5 | 8 seconds |
+| SHA-1 | 1.3 minutes |
+| SHA-256 | 4.5 minutes |
+| bcrypt | 93 days |
+| Argon2 | 25 years |
+
+**Live Hash Display** — as you type, the app computes and shows the real hex hash of your password using `hashlib`. This demonstrates that databases never store your actual password — only this unreadable fingerprint. bcrypt/Argon2 show a SHA-256 stand-in since those require external libraries, clearly labeled.
+
+**Hash Phase Animation** — Phase 2 of the crack pipeline: password characters feed into an animated "HASH FN" box, and the hash output builds up character by character on the right. Final frame shows the full hash with the label *"↑ This is what a hacker sees after a data breach."*
+
 ### 📚 Offline Wordlist Augmentation (80k+ entries)
 Three sources merged at startup — no internet required:
 
