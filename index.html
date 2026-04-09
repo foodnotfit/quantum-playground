@@ -2000,7 +2000,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
 
   <!-- TAB 6 — QUANTUM QUIZ -->
   <div id="tab6" class="tab-panel">
-    <h2 class="quiz-header">🧠 Quantum Quiz</h2>
+    <h2 class="quiz-header" id="quiz-title">🧠 Quantum Quiz</h2>
     <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(6)">🔄 Reset</button></div>
     <div id="quiz-container">
       <div class="quiz-progress-wrap">
@@ -2010,6 +2010,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
       <div class="quiz-question-box">
         <div class="quiz-question-text" id="quiz-question-text">Loading question...</div>
         <div class="quiz-options" id="quiz-options"></div>
+        <div id="quiz-fact-box"></div>
       </div>
     </div>
     <div class="quiz-score-reveal" id="quiz-score-reveal">
@@ -2132,7 +2133,9 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
           <button class="future-card-toggle">Learn More ▼</button>
         </div>
         <div class="future-card-detail">
-          Quantum computers can simulate protein folding and molecular interactions at the quantum level — something impossible on classical hardware. IBM and Google are already running early VQE (Variational Quantum Eigensolver) experiments on drug molecules. This could compress a 10-year drug discovery cycle to under 2 years, revolutionizing treatment of cancer, Alzheimer's, and antibiotic resistance.
+          <div class="level-text active" data-level="explorer">Scientists can use quantum computers like a SUPER microscope to look at tiny medicine molecules and design new cures for diseases! Diseases that take decades to cure today could be solved in just a few years with quantum computers! 💊✨</div>
+          <div class="level-text" data-level="scientist">Quantum computers can simulate molecular interactions at the quantum level using algorithms like VQE (Variational Quantum Eigensolver). This enables precise drug design, protein folding prediction, and understanding of enzyme reactions — all computationally intractable classically for large molecules.</div>
+          <div class="level-text" data-level="engineer">Target applications: FeMoco nitrogenase simulation (~54 qubits), cytochrome P450 drug metabolism modeling (~150 qubits). VQE circuit depth O(n^4) for n molecular orbitals. Error-corrected fault-tolerant QC needed for pharmaceutical-grade accuracy. Timeline: early demonstrations 2025-2028, clinically useful simulations ~2035.</div>
         </div>
       </div>
 
@@ -2146,7 +2149,9 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
           <button class="future-card-toggle">Learn More ▼</button>
         </div>
         <div class="future-card-detail">
-          Accurate climate modeling requires simulating millions of atmospheric variables simultaneously. Quantum algorithms can optimize energy grids, model carbon capture chemistry, and run weather simulations orders of magnitude faster. NOAA and research labs are already exploring quantum-enhanced weather prediction that could save thousands of lives through earlier storm warnings.
+          <div class="level-text active" data-level="explorer">Quantum computers can create SUPER DETAILED weather simulations — like having a billion tiny weather sensors all working at once! Better weather predictions means we can prepare for hurricanes, floods, and protect our planet! 🌍</div>
+          <div class="level-text" data-level="scientist">Quantum simulation of atmospheric chemistry and fluid dynamics can model interactions that are exponentially hard classically. HHL algorithm provides exponential speedup for linear systems arising in climate models. Quantum optimization can also design more efficient renewable energy grids and battery materials.</div>
+          <div class="level-text" data-level="engineer">HHL algorithm: O(log N · κ² · ε⁻¹) vs classical O(N · κ · ε⁻¹). Applied to Navier-Stokes discretizations over N grid points. Near-term: quantum-classical hybrid for sub-grid physics parameterization. NCAR and ECMWF exploring quantum co-processors for ensemble weather modeling.</div>
         </div>
       </div>
 
@@ -2160,7 +2165,9 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
           <button class="future-card-toggle">Learn More ▼</button>
         </div>
         <div class="future-card-detail">
-          Quantum Key Distribution (QKD) uses the laws of physics — not math — to guarantee security. Any eavesdropper disturbs the quantum state, instantly alerting the receiver. China has deployed a 2,000 km QKD satellite network. DARPA is funding quantum networking research to build a quantum-secure internet backbone for government and military communications.
+          <div class="level-text active" data-level="explorer">Quantum security is like a magical lock that TELLS YOU if someone tried to pick it! If a spy tries to listen to a quantum message, the message automatically changes — and you KNOW someone was snooping! 🔐🕵️</div>
+          <div class="level-text" data-level="scientist">Quantum Key Distribution (QKD) uses quantum mechanics — not mathematics — to guarantee security. Any eavesdropper must measure quantum states, disturbing them (Heisenberg uncertainty principle). The BB84 protocol detects eavesdroppers via Quantum Bit Error Rate (QBER) measurements. China operates a 2,000km QKD network.</div>
+          <div class="level-text" data-level="engineer">BB84 security based on no-cloning theorem and Heisenberg uncertainty. Information-theoretic security (not computational). QBER threshold: &gt;11% indicates eavesdropping. Key rate: O(μ · η · QBER) where μ=mean photon number, η=channel efficiency. NIST PQC (FIPS 203/204/205) for near-term, QKD for long-term quantum-native security.</div>
         </div>
       </div>
 
@@ -2174,7 +2181,9 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
           <button class="future-card-toggle">Learn More ▼</button>
         </div>
         <div class="future-card-detail">
-          The HHL algorithm solves linear systems exponentially faster on a quantum computer — a core operation in machine learning. Quantum Neural Networks (QNNs) and Quantum Machine Learning (QML) frameworks are being developed by Google, IBM, and Xanadu. Quantum-enhanced AI could train models in seconds that currently require weeks of GPU time.
+          <div class="level-text active" data-level="explorer">Imagine AI that can learn from a MILLION examples at the same time instead of one at a time! Quantum AI could make robots smarter, help doctors diagnose diseases instantly, and solve problems we haven't even thought of yet! 🤖⚡</div>
+          <div class="level-text" data-level="scientist">Quantum Machine Learning (QML) algorithms like HHL for linear systems, quantum PCA, and quantum SVMs offer potential exponential speedup for certain ML tasks. Quantum neural networks use parameterized quantum circuits as trainable models. VQC (Variational Quantum Classifiers) run on today's NISQ hardware.</div>
+          <div class="level-text" data-level="engineer">HHL linear system solver: O(log N · κ²) — exponential speedup when κ=O(polylog N). Quantum kernel methods: feature map φ(x) into Hilbert space via quantum circuit, kernel K(x,y)=|⟨φ(x)|φ(y)⟩|². Barren plateau problem limits deep VQC training. Current SOTA: quantum advantage demonstrated for specific sampling problems (Google Sycamore, 2019).</div>
         </div>
       </div>
 
@@ -2188,7 +2197,9 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
           <button class="future-card-toggle">Learn More ▼</button>
         </div>
         <div class="future-card-detail">
-          Quantum inertial navigation uses atomic interferometry — measuring how atoms behave in gravity — to navigate with 1000× better precision than GPS. DARPA's Quantum Sensing program is developing quantum accelerometers and gravimeters that work underground, underwater, and in space where GPS signals don't reach. Submarines and spacecraft will navigate with quantum precision.
+          <div class="level-text active" data-level="explorer">Quantum sensors are SO precise they can feel tiny changes in gravity — like a super-powered compass that works even when GPS is broken or jammed! Perfect for submarines, spacecraft, and soldiers in the field! 🛸🧭</div>
+          <div class="level-text" data-level="scientist">Quantum sensors use atomic interferometry — matter-wave interference of laser-cooled atoms — to measure gravity, rotation, and acceleration with precision 1000× better than classical sensors. This enables GPS-denied navigation, gravitational anomaly mapping for geology, and improved geodesy for Earth observation.</div>
+          <div class="level-text" data-level="engineer">Atom interferometer sensitivity: Δg/g ~ 10⁻⁹ (state of art). Phase shift: Δφ = k_eff · g · T² where T = free-fall time, k_eff = effective wavevector. DARPA SIGMA+ and MESO programs funding quantum inertial navigation. Cold-atom gyroscope: rotation sensitivity 6×10⁻¹⁰ rad/s/√Hz. Applications: submarine navigation, space-based geodesy, underground structure detection.</div>
         </div>
       </div>
 
@@ -2202,7 +2213,9 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
           <button class="future-card-toggle">Learn More ▼</button>
         </div>
         <div class="future-card-detail">
-          The quantum internet will distribute entangled particles across the globe using quantum repeaters. Unlike classical networks, quantum data cannot be intercepted — measuring it destroys it. The EU Quantum Flagship and US DOE have roadmaps targeting a continental quantum network by 2035. Early demonstrations already link universities across cities via entanglement distribution.
+          <div class="level-text active" data-level="explorer">The quantum internet is like a MAGICAL postal service where letters are made of quantum particles — and if ANYONE tries to open your letter, it SELF-DESTRUCTS and you know someone tried! Scientists are building this right now! 📬⚛️</div>
+          <div class="level-text" data-level="scientist">The quantum internet uses entanglement distribution, quantum repeaters, and quantum memory to connect quantum computers globally. Unlike classical internet, transmitted quantum states cannot be passively copied or intercepted (no-cloning theorem). Early testbeds exist at Delft, Harvard, and Chicago. First quantum internet nodes may be operational by 2030-2035.</div>
+          <div class="level-text" data-level="engineer">Quantum repeater architecture: Bell state measurement + entanglement swapping extends range beyond photon loss limit (L_att ~20km in fiber). Memory-assisted quantum repeaters need coherence time &gt; L/c. Quantum network stack: physical (photon), link (entanglement generation), network (routing). IETF quantum networking RG drafting protocols. Chicago quantum network: 124km deployed fiber, 4 nodes operational.</div>
         </div>
       </div>
 
@@ -3131,30 +3144,73 @@ function generateKyberKey() {
 /* =====================================================
    QUANTUM QUIZ
    ===================================================== */
+const QUIZ_EXPLORER = [
+  { q: "What is a qubit like?", opts: ["A magic coin that is BOTH heads AND tails at once! 🪙","A really fast computer chip","A tiny battery","A spinning top"], ans: 0,
+    fact: "Real quantum computers at IBM and Google use qubits made from superconducting metal cooled to -459°F — colder than outer space! 🥶" },
+  { q: "What happens when you LOOK at a quantum coin?", opts: ["It picks ONE side — heads OR tails!","It disappears","It becomes two coins","Nothing happens"], ans: 0,
+    fact: "When scientists 'look' at a quantum particle, the act of measuring it forces it to choose a definite state! 🔭" },
+  { q: "What is quantum entanglement?", opts: ["Two particles that are best friends — what happens to one instantly affects the other!","Two magnets sticking together","A really long wire","Two computers sharing a screen"], ans: 0,
+    fact: "Einstein called entanglement 'spooky action at a distance' — he thought it was impossible, but experiments proved it's REAL! 👻" },
+  { q: "How far apart can entangled particles still affect each other?", opts: ["All the way across the UNIVERSE! 🚀","Only in the same room","Up to 1 mile","Only if touching"], ans: 0,
+    fact: "Scientists have entangled particles and tested them from Earth to satellites over 1,200 km apart! 🛰️" },
+  { q: "What can a quantum computer solve that normal computers cannot?", opts: ["Super hard problems that would take millions of years!","Video games faster","Math homework","Sending emails"], ans: 0,
+    fact: "Today's best supercomputers would take longer than the universe has existed to solve problems a quantum computer could crack in minutes! ⚡" },
+  { q: "What is quantum teleportation?", opts: ["Moving quantum information without moving the actual particle!","Moving people like Star Trek","Sending a text message really fast","A type of spaceship"], ans: 0,
+    fact: "Real quantum teleportation has been demonstrated in labs — scientists have teleported quantum information over 100 km of fiber optic cable! 🌐" },
+  { q: "What does DARPA do?", opts: ["Invents amazing future technology for the US military!","Makes video games","Builds cars","Runs the post office"], ans: 0,
+    fact: "DARPA invented the internet in 1969 — now they're building the quantum internet! 🌐" },
+  { q: "Why do we need quantum-safe locks?", opts: ["Because quantum computers can crack old locks super fast!","Because keys get lost","Because locks get rusty","Just for fun"], ans: 0,
+    fact: "Most banks and governments need to start switching to quantum-safe encryption NOW before quantum computers arrive! 🔐" },
+  { q: "What company presented this Quantum Playground?", opts: ["Tetrabolt LLC! 🌐","Apple","NASA","Disney"], ans: 0,
+    fact: "Tetrabolt LLC is a veteran-owned cybersecurity company that protects government systems using quantum-safe encryption!" },
+  { q: "What is superposition?", opts: ["Being in TWO places or states at the SAME TIME!","A yoga pose","Moving super fast","A type of telescope"], ans: 0,
+    fact: "Quantum superposition was first described by Erwin Schrödinger in 1935 — the same scientist who invented the famous 'Schrödinger's Cat' thought experiment! 🐱" },
+];
+
 const QUIZ_SCIENTIST = [
-  { q: "What is quantum superposition?", opts: ["Both states at once","One state only","Two particles colliding","A type of computer"], ans: 0 },
-  { q: "What does quantum entanglement mean?", opts: ["Particles stay correlated instantly","Particles physically merge","Makes internet faster","A math problem"], ans: 0 },
-  { q: "What event collapses a quantum superposition?", opts: ["Measurement / observation","Temperature change","Gravity","Waiting long enough"], ans: 0 },
-  { q: "What is a qubit?", opts: ["A quantum bit — the basic unit of quantum info","A quantum byte","A type of laser","A subatomic particle"], ans: 0 },
-  { q: "Who experimentally proved entanglement is real?", opts: ["Bell test experiments (Aspect, Zeilinger, Clauser)","Einstein in 1935","Newton's laws","Alan Turing"], ans: 0 },
-  { q: "Why are quantum computers faster for some tasks?", opts: ["Superposition lets them try all answers at once","They have better CPUs","More RAM","Faster clock speeds"], ans: 0 },
-  { q: "What does NIST stand for?", opts: ["National Institute of Standards & Technology","Nuclear Information Systems Tech","New Internet Security Tools","None of these"], ans: 0 },
-  { q: "Which algorithm can break RSA encryption?", opts: ["Shor's algorithm","Grover's algorithm","Bell's theorem","Hadamard transform"], ans: 0 },
-  { q: "What is Quantum Key Distribution (QKD) used for?", opts: ["Provably secure communication","Faster internet speeds","Breaking passwords","Storing quantum data"], ans: 0 },
-  { q: "When did NIST approve post-quantum cryptography standards?", opts: ["2024","2020","2016","2022"], ans: 0 },
+  { q: "What is quantum superposition?", opts: ["Both states at once","One state only","Two particles colliding","A type of computer"], ans: 0,
+    fact: "The first qubit was demonstrated experimentally in 1995 by the NIST group using a trapped beryllium ion." },
+  { q: "What does quantum entanglement mean?", opts: ["Particles stay correlated instantly","Particles physically merge","Makes internet faster","A math problem"], ans: 0,
+    fact: "Wavefunction collapse is described by Born's rule: P(outcome) = |⟨outcome|ψ⟩|² — the probability equals the square of the amplitude." },
+  { q: "What event collapses a quantum superposition?", opts: ["Measurement / observation","Temperature change","Gravity","Waiting long enough"], ans: 0,
+    fact: "The 2022 Nobel Prize in Physics went to Aspect, Clauser, and Zeilinger for experiments demonstrating violations of Bell inequalities." },
+  { q: "What is a qubit?", opts: ["A quantum bit — the basic unit of quantum info","A quantum byte","A type of laser","A subatomic particle"], ans: 0,
+    fact: "Bell's theorem (1964) proved that no local hidden variable theory can reproduce all quantum predictions — entanglement is fundamentally non-local." },
+  { q: "Who experimentally proved entanglement is real?", opts: ["Bell test experiments (Aspect, Zeilinger, Clauser)","Einstein in 1935","Newton's laws","Alan Turing"], ans: 0,
+    fact: "Quantum computers gain advantage through quantum parallelism — but only specific algorithms can harness it; most classical algorithms see no speedup." },
+  { q: "Why are quantum computers faster for some tasks?", opts: ["Superposition lets them try all answers at once","They have better CPUs","More RAM","Faster clock speeds"], ans: 0,
+    fact: "Quantum teleportation requires a classical communication channel for the 2-bit correction message — it cannot transmit information faster than light." },
+  { q: "What does NIST stand for?", opts: ["National Institute of Standards & Technology","Nuclear Information Systems Tech","New Internet Security Tools","None of these"], ans: 0,
+    fact: "DARPA's Quantum Benchmarking Initiative aims to establish metrics for useful quantum advantage beyond classical simulation." },
+  { q: "Which algorithm can break RSA encryption?", opts: ["Shor's algorithm","Grover's algorithm","Bell's theorem","Hadamard transform"], ans: 0,
+    fact: "NIST selected CRYSTALS-Kyber, Dilithium, FALCON, and SPHINCS+ as post-quantum standards after a 7-year public evaluation process." },
+  { q: "What is Quantum Key Distribution (QKD) used for?", opts: ["Provably secure communication","Faster internet speeds","Breaking passwords","Storing quantum data"], ans: 0,
+    fact: "Tetrabolt uses wolfSSL 5.9.0 with FIPS 140-3 certificates #4718 and #5041, integrating liboqs for post-quantum cryptography migration." },
+  { q: "When did NIST approve post-quantum cryptography standards?", opts: ["2024","2020","2016","2022"], ans: 0,
+    fact: "Superposition is mathematically represented in Hilbert space — a qubit state |ψ⟩ = α|0⟩ + β|1⟩ where |α|² + |β|² = 1." },
 ];
 
 const QUIZ_ENGINEER = [
-  { q: "Which quantum gate creates equal superposition from |0⟩?", opts: ["Hadamard (H) gate","CNOT gate","Pauli-X gate","Toffoli gate"], ans: 0 },
-  { q: "What does |ψ⟩ = α|0⟩ + β|1⟩ represent?", opts: ["A general qubit state vector","A Bell state","A density matrix","A unitary operator"], ans: 0 },
-  { q: "What is the classical upper bound of the CHSH inequality?", opts: ["S ≤ 2","S ≤ 2√2","S ≤ 4","S ≤ 1"], ans: 0 },
-  { q: "What is the time complexity of Shor's factoring algorithm?", opts: ["O((log N)³)","O(N²)","O(2^N)","O(N log N)"], ans: 0 },
-  { q: "NIST FIPS 203 standardizes which algorithm?", opts: ["ML-KEM (CRYSTALS-Kyber)","ML-DSA (Dilithium)","SLH-DSA (SPHINCS+)","RSA-4096"], ans: 0 },
-  { q: "What does the quantum no-cloning theorem state?", opts: ["An unknown quantum state cannot be copied","Qubits cannot be measured","Entanglement has distance limits","Superposition is always lossy"], ans: 0 },
-  { q: "What is Grover's algorithm's speedup for unstructured search?", opts: ["O(√N) — quadratic speedup","O(log N) — logarithmic","O(N/2) — linear","O(N²) — quadratic slowdown"], ans: 0 },
-  { q: "Approximately how many logical qubits are needed to break RSA-2048?", opts: ["~4,000 logical qubits","~100 qubits","~1,000,000 qubits","~50 qubits"], ans: 0 },
-  { q: "Which protocol uses entanglement for provably secure communication?", opts: ["BB84 (Bennett-Brassard 1984)","RSA","AES-256","TLS 1.3"], ans: 0 },
-  { q: "Which wolfSSL FIPS 140-3 certificate covers TLS 1.3 with ECC?", opts: ["#4718","#1234","#9001","#5041"], ans: 0 },
+  { q: "Which quantum gate creates equal superposition from |0⟩?", opts: ["Hadamard (H) gate","CNOT gate","Pauli-X gate","Toffoli gate"], ans: 0,
+    fact: "The Hadamard gate H = (1/√2)[[1,1],[1,-1]] creates |+⟩ = (|0⟩+|1⟩)/√2 from |0⟩ — the canonical superposition state." },
+  { q: "What does |ψ⟩ = α|0⟩ + β|1⟩ represent?", opts: ["A general qubit state vector","A Bell state","A density matrix","A unitary operator"], ans: 0,
+    fact: "The Bloch sphere represents a qubit's state space as a unit sphere in R³ — pure states lie on the surface, mixed states inside." },
+  { q: "What is the classical upper bound of the CHSH inequality?", opts: ["S ≤ 2","S ≤ 2√2","S ≤ 4","S ≤ 1"], ans: 0,
+    fact: "CHSH inequality: S = |E(a,b) - E(a,b') + E(a',b) + E(a',b')| ≤ 2 classically; quantum mechanics achieves S = 2√2 (Tsirelson bound)." },
+  { q: "What is the time complexity of Shor's factoring algorithm?", opts: ["O((log N)³)","O(N²)","O(2^N)","O(N log N)"], ans: 0,
+    fact: "Shor's algorithm uses the Quantum Fourier Transform over Z_N to find the period r of f(x)=a^x mod N in O((log N)³) steps." },
+  { q: "NIST FIPS 203 standardizes which algorithm?", opts: ["ML-KEM (CRYSTALS-Kyber)","ML-DSA (Dilithium)","SLH-DSA (SPHINCS+)","RSA-4096"], ans: 0,
+    fact: "ML-KEM (FIPS 203) uses Module-LWE with parameters (k=2,3,4) for security levels 128/192/256-bit — resistant to both classical and quantum attacks." },
+  { q: "What does the quantum no-cloning theorem state?", opts: ["An unknown quantum state cannot be copied","Qubits cannot be measured","Entanglement has distance limits","Superposition is always lossy"], ans: 0,
+    fact: "No-cloning theorem proof: assume cloner U|ψ⟩|0⟩ = |ψ⟩|ψ⟩; linearity requires U(α|0⟩+β|1⟩)|0⟩ ≠ (α|0⟩+β|1⟩)² — contradiction." },
+  { q: "What is Grover's algorithm's speedup for unstructured search?", opts: ["O(√N) — quadratic speedup","O(log N) — logarithmic","O(N/2) — linear","O(N²) — quadratic slowdown"], ans: 0,
+    fact: "Grover's algorithm provides optimal quadratic speedup for unstructured search — provably no quantum algorithm can do better." },
+  { q: "Approximately how many logical qubits are needed to break RSA-2048?", opts: ["~4,000 logical qubits","~100 qubits","~1,000,000 qubits","~50 qubits"], ans: 0,
+    fact: "RSA-2048 requires ~4096 logical qubits and ~10^10 Toffoli gates for Shor's algorithm — current hardware has <1000 noisy physical qubits." },
+  { q: "Which protocol uses entanglement for provably secure communication?", opts: ["BB84 (Bennett-Brassard 1984)","RSA","AES-256","TLS 1.3"], ans: 0,
+    fact: "BB84 security proof relies on the quantum bit error rate (QBER): if QBER > 11%, assume eavesdropping and abort key generation." },
+  { q: "Which wolfSSL FIPS 140-3 certificate covers TLS 1.3 with ECC?", opts: ["#4718","#1234","#9001","#5041"], ans: 0,
+    fact: "wolfSSL FIPS 140-3 cert #4718 covers TLS 1.3 with ECC; cert #5041 covers additional cipher suites including AES-GCM and ChaCha20-Poly1305." },
 ];
 
 let quizQuestions = [];
@@ -3163,7 +3219,16 @@ let quizScore = 0;
 let quizAnswered = false;
 
 function initQuiz() {
-  quizQuestions = (currentLevel === 'engineer') ? [...QUIZ_ENGINEER] : [...QUIZ_SCIENTIST];
+  if (currentLevel === 'explorer') {
+    quizQuestions = [...QUIZ_EXPLORER];
+    document.getElementById('quiz-title').textContent = '🧠 Quantum Quiz — Explorer Edition';
+  } else if (currentLevel === 'engineer') {
+    quizQuestions = [...QUIZ_ENGINEER];
+    document.getElementById('quiz-title').textContent = '⚛️ Quantum Quiz — Engineer Edition';
+  } else {
+    quizQuestions = [...QUIZ_SCIENTIST];
+    document.getElementById('quiz-title').textContent = '🔬 Quantum Quiz — Scientist Edition';
+  }
   quizIndex = 0;
   quizScore = 0;
   document.getElementById('quiz-container').style.display = 'block';
@@ -3177,11 +3242,11 @@ function showQuizQuestion() {
   document.getElementById('quiz-progress-label').textContent = `Question ${quizIndex+1} of ${quizQuestions.length}`;
   document.getElementById('quiz-progress-fill').style.width = ((quizIndex / quizQuestions.length) * 100) + '%';
   document.getElementById('quiz-question-text').textContent = q.q;
+  const factBox = document.getElementById('quiz-fact-box');
+  factBox.textContent = '';
+  factBox.classList.remove('visible');
   const opts = document.getElementById('quiz-options');
   opts.innerHTML = '';
-  // Shuffle options keeping track of correct
-  const indices = [0,1,2,3];
-  // Don't shuffle — keep order consistent, just render
   q.opts.forEach((opt, i) => {
     const btn = document.createElement('button');
     btn.className = 'quiz-opt-btn';
@@ -3203,6 +3268,12 @@ function answerQuiz(selected, correct, btn) {
     btn.classList.add('wrong');
     allBtns[correct].classList.add('correct');
   }
+  const factBox = document.getElementById('quiz-fact-box');
+  const fact = quizQuestions[quizIndex] && quizQuestions[quizIndex].fact;
+  if (fact) {
+    factBox.textContent = '💡 ' + fact;
+    factBox.classList.add('visible');
+  }
   setTimeout(() => {
     quizIndex++;
     if (quizIndex >= quizQuestions.length) {
@@ -3210,7 +3281,7 @@ function answerQuiz(selected, correct, btn) {
     } else {
       showQuizQuestion();
     }
-  }, 900);
+  }, 1800);
 }
 
 function showQuizResult() {
@@ -3219,9 +3290,15 @@ function showQuizResult() {
   reveal.classList.add('visible');
   const pct = quizScore / quizQuestions.length;
   let badge, title;
-  if (pct >= 0.8) { badge = '🏆'; title = 'Quantum Master!'; }
-  else if (pct >= 0.5) { badge = '🎓'; title = 'Quantum Graduate!'; }
-  else { badge = '🔬'; title = 'Keep Experimenting!'; }
+  if (currentLevel === 'explorer') {
+    if (pct >= 0.8) { badge = '🏆'; title = 'Quantum Superstar! You're a natural!'; }
+    else if (pct >= 0.5) { badge = '🌟'; title = 'Quantum Explorer! Keep learning!'; }
+    else { badge = '🔬'; title = 'Quantum Beginner — You're just getting started!'; }
+  } else {
+    if (pct >= 0.8) { badge = '🏆'; title = 'Quantum Master!'; }
+    else if (pct >= 0.5) { badge = '🎓'; title = 'Quantum Graduate!'; }
+    else { badge = '🔬'; title = 'Keep Experimenting!'; }
+  }
   document.getElementById('quiz-badge').textContent = badge;
   document.getElementById('quiz-badge-title').textContent = title;
   document.getElementById('quiz-score-num').textContent = `${quizScore} / ${quizQuestions.length} correct`;
@@ -3710,6 +3787,11 @@ function toggleFutureCard(header) {
   const isOpen = detail.classList.contains('open');
   detail.classList.toggle('open', !isOpen);
   btn.textContent = isOpen ? 'Learn More ▼' : 'Close ▲';
+  if (!isOpen) {
+    detail.querySelectorAll('.level-text').forEach(el => {
+      el.classList.toggle('active', el.dataset.level === currentLevel);
+    });
+  }
 }
 
 /* =====================================================
