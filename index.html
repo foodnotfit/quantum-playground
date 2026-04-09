@@ -526,16 +526,18 @@ footer {
 .coin-wrapper { position: relative; display: inline-block; }
 .coin-barrier {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  background: linear-gradient(135deg, #2a0a4a, #1a0a3a);
-  border: 4px solid #8b5cf6;
+  background: transparent;
+  border: 6px solid #8b5cf6;
   border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 2.5rem; font-weight: 900; color: #c4b5fd;
+  display: flex; align-items: flex-start; justify-content: center;
+  padding-top: 6px;
+  font-size: 1.2rem; font-weight: 900; color: #c4b5fd;
   z-index: 5;
   transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s;
   transform-origin: top center;
-  box-shadow: 0 0 20px rgba(139,92,246,0.6);
-  cursor: pointer;
+  box-shadow: 0 0 24px rgba(139,92,246,0.7), inset 0 0 30px rgba(139,92,246,0.08);
+  pointer-events: none;
+  letter-spacing: 1px;
 }
 .coin-barrier.revealed { transform: translateY(-110%) rotateX(80deg); opacity: 0; pointer-events: none; }
 .coin-barrier-label {
@@ -2568,7 +2570,7 @@ function renderCoins() {
     const barrier = document.createElement('div');
     barrier.className = 'coin-barrier';
     barrier.id = 'barrier-' + i;
-    barrier.textContent = '?';
+    barrier.textContent = '⟨ SUPERPOSITION ⟩';
 
     const label = document.createElement('div');
     label.className = 'coin-barrier-label';
