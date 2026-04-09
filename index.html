@@ -228,10 +228,10 @@ body {
 .sci-eng-only { display: none; }
 body.scientist .sci-eng-only,
 body.engineer .sci-eng-only { display: flex; }
-body.explorer #tab6-btn { display: none !important; }
-
 /* ===== QUIZ TAB ===== */
 #tab6 .quiz-header { text-align:center; font-size:2rem; margin-bottom:20px; color:#fbbf24; }
+#quiz-fact-box { display:none; background:linear-gradient(135deg,#0d1a2a,#0a0a1a); border:1px solid #1a3a5a; border-radius:12px; padding:12px 16px; margin-top:12px; font-size:0.9rem; line-height:1.6; color:#b0d0e0; }
+#quiz-fact-box.visible { display:block; animation:slideIn 0.3s ease; }
 .quiz-progress-wrap { margin-bottom:18px; }
 .quiz-progress-label { font-size:1rem; color:#a0a0cc; margin-bottom:6px; text-align:center; }
 .quiz-progress-bar { height:10px; background:#1a1a3a; border-radius:8px; overflow:hidden; }
@@ -260,6 +260,10 @@ body.explorer #tab6-btn { display: none !important; }
 /* ===== MEASURE COUNTER ===== */
 .measure-counter { text-align:center; font-size:1rem; color:#a0a0cc; margin-bottom:14px; font-weight:600; }
 .measure-counter span { color:#fbbf24; }
+
+/* ===== TAB RESET BAR ===== */
+.tab-reset-bar { display: flex; justify-content: flex-end; margin-bottom: 12px; }
+.btn-sm { min-height: 40px !important; padding: 6px 16px !important; font-size: 0.9rem !important; }
 
 /* ===== EAVESDROPPER BOX ===== */
 .eavesdrop-box { background:#2a0a0a; border:2px solid #ef4444; border-radius:14px; padding:16px 20px; margin-top:14px; color:#ffaaaa; font-size:0.95rem; line-height:1.6; display:none; }
@@ -1726,6 +1730,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
   <!-- TAB 1 — HOW TO PLAY -->
   <div id="tab1" class="tab-panel active">
     <h2 class="welcome-title">Welcome to Quantum Playground! ⚛️</h2>
+    <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(1)">🔄 Reset</button></div>
     <p class="welcome-subtitle">Learn real quantum science through games!</p>
 
     <div class="game-cards">
@@ -1770,6 +1775,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
   <!-- TAB 2 — COIN FLIP -->
   <div id="tab2" class="tab-panel">
     <h2>🪙 Quantum Coin Flip</h2>
+    <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(2)">🔄 Reset</button></div>
     <div class="coin-controls">
       <button class="btn btn-gray" onclick="removeCoin()">－ Remove</button>
       <button class="btn btn-purple" onclick="prepareQubits()">🔮 Prepare Qubit</button>
@@ -1802,6 +1808,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
   <!-- TAB 3 — ENTANGLEMENT -->
   <div id="tab3" class="tab-panel">
     <h2>⚛️ Entanglement Lab</h2>
+    <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(3)">🔄 Reset</button></div>
 
     <div id="pairs-container"></div>
 
@@ -1816,7 +1823,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
       <button class="btn btn-gold explorer-only" onclick="toggleEavesdropExplorer()">🕵️ Let a spy in!</button>
     </div>
 
-    <div class="measure-counter" id="measure-counter">Alice measured: <span id="alice-count">0</span> times &nbsp;|&nbsp; Bob responded: <span id="bob-count">0</span> times</div>
+    <div class="measure-counter" id="measure-counter">Alice measured: <span id="alice-count">0</span> times &nbsp;|&nbsp; Bob measured: <span id="bob-count">0</span> times</div>
 
     <div class="distance-wrap">
       <label>📡 Distance between Alice and Bob:</label>
@@ -1846,6 +1853,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
   <!-- TAB 4 — QUANTUM RACE -->
   <div id="tab4" class="tab-panel">
     <h2>🏁 Quantum Race</h2>
+    <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(4)">🔄 Reset</button></div>
 
     <div class="race-controls">
       <button class="btn btn-blue" onclick="runClassical()">🐢 Classical</button>
@@ -1897,6 +1905,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
   <!-- TAB 5 — CODE BREAKER -->
   <div id="tab5" class="tab-panel">
     <h2>🔐 Code Breaker</h2>
+    <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(5)">🔄 Reset</button></div>
 
     <div class="top-controls">
       <button class="btn btn-gray" onclick="generateNewPin()">🎲 New PIN</button>
@@ -1992,6 +2001,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
   <!-- TAB 6 — QUANTUM QUIZ -->
   <div id="tab6" class="tab-panel">
     <h2 class="quiz-header">🧠 Quantum Quiz</h2>
+    <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(6)">🔄 Reset</button></div>
     <div id="quiz-container">
       <div class="quiz-progress-wrap">
         <div class="quiz-progress-label" id="quiz-progress-label">Question 1 of 10</div>
@@ -2013,6 +2023,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
   <!-- TAB 7 — TELEPORTER -->
   <div id="tab7" class="tab-panel">
     <h2 style="text-align:center;font-size:2rem;margin-bottom:8px;color:#8b5cf6;">🎮 Quantum Teleporter</h2>
+    <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(7)">🔄 Reset</button></div>
     <p style="text-align:center;color:#8080aa;margin-bottom:24px;">Transfer quantum information without moving the particle itself!</p>
 
     <div style="text-align:center;font-size:1.2rem;font-weight:700;color:#e0e0ff;margin-bottom:20px;">
@@ -2062,6 +2073,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
   <!-- TAB 8 — SPEED TEST -->
   <div id="tab8" class="tab-panel">
     <h2 style="text-align:center;font-size:2rem;margin-bottom:8px;color:#00d4ff;">🏎️ Quantum Speed Test</h2>
+    <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(8)">🔄 Reset</button></div>
     <p style="text-align:center;color:#8080aa;margin-bottom:20px;">See how quantum computers crush classical computers at hard problems!</p>
 
     <div class="speed-challenges">
@@ -2105,6 +2117,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
   <!-- TAB 9 — QUANTUM FUTURE -->
   <div id="tab9" class="tab-panel">
     <h2 style="text-align:center;font-size:2rem;margin-bottom:8px;color:#10b981;">🌍 Our Quantum Future</h2>
+    <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(9)">🔄 Reset</button></div>
     <p style="text-align:center;color:#8080aa;margin-bottom:24px;">Quantum technology will transform every field — from medicine to space exploration.</p>
 
     <div class="future-grid">
@@ -2353,7 +2366,8 @@ const COLORS = [
 
 let pairs = [{ aliceColor: 0, bobColor: 4, entangled: false, eavesdropped: false, errorCount: 0 }];
 let globalEntangleAll = false;
-let measureCount = 0;
+let aliceMeasureCount = 0;
+let bobMeasureCount = 0;
 
 function applyColorToEl(el, colorIdx) {
   const c = COLORS[colorIdx];
@@ -2444,18 +2458,25 @@ function renderPairs() {
 function particleClick(side, idx) {
   const pair = pairs[idx];
 
-  // Increment measure counter
-  measureCount++;
-  const ac = document.getElementById('alice-count');
-  const bc = document.getElementById('bob-count');
-  if (ac) ac.textContent = measureCount;
-  if (bc) bc.textContent = measureCount;
-
   if (pair.eavesdropped) {
     pair.errorCount++;
     renderPairs();
     return;
   }
+
+  // Increment only the relevant measure counter(s)
+  const ac = document.getElementById('alice-count');
+  const bc = document.getElementById('bob-count');
+  if (pair.entangled) {
+    aliceMeasureCount++;
+    bobMeasureCount++;
+  } else if (side === 'alice') {
+    aliceMeasureCount++;
+  } else {
+    bobMeasureCount++;
+  }
+  if (ac) ac.textContent = aliceMeasureCount;
+  if (bc) bc.textContent = bobMeasureCount;
 
   const nextColor = (pair.aliceColor + 1) % COLORS.length;
 
@@ -2499,8 +2520,14 @@ function entangleAll() {
 
 function unentangleAll() {
   globalEntangleAll = false;
-  pairs.forEach(p => { p.entangled = false; });
+  pairs = [{ aliceColor: 0, bobColor: 4, entangled: false, eavesdropped: false, errorCount: 0 }];
   renderPairs();
+  aliceMeasureCount = 0;
+  bobMeasureCount = 0;
+  const ac = document.getElementById('alice-count');
+  const bc = document.getElementById('bob-count');
+  if (ac) ac.textContent = '0';
+  if (bc) bc.textContent = '0';
 }
 
 function entanglePairAction() {
@@ -3683,6 +3710,59 @@ function toggleFutureCard(header) {
   const isOpen = detail.classList.contains('open');
   detail.classList.toggle('open', !isOpen);
   btn.textContent = isOpen ? 'Learn More ▼' : 'Close ▲';
+}
+
+/* =====================================================
+   GLOBAL RESET TAB
+   ===================================================== */
+function resetTab(n) {
+  switch (n) {
+    case 1:
+      window.scrollTo(0, 0);
+      break;
+    case 2:
+      prepareQubits();
+      const tally = document.getElementById('coin-tally');
+      if (tally) { tally.querySelector('.heads').textContent = '0'; tally.querySelector('.tails').textContent = '0'; }
+      const probFill = document.getElementById('prob-fill');
+      if (probFill) probFill.style.width = '50%';
+      const probLabel = document.getElementById('prob-label');
+      if (probLabel) probLabel.textContent = 'P(Heads) = 50%';
+      break;
+    case 3:
+      unentangleAll();
+      break;
+    case 4:
+      classicalRunning = false;
+      quantumRunning = false;
+      document.getElementById('classical-timer').textContent = 'Ready';
+      document.getElementById('quantum-timer').textContent = 'Ready';
+      document.getElementById('race-banner').style.display = 'none';
+      document.getElementById('classical-dots-svg').innerHTML = '';
+      document.getElementById('quantum-dots-svg').innerHTML = '';
+      break;
+    case 5:
+      resetCodeBreaker();
+      generateNewPin();
+      break;
+    case 6:
+      restartQuiz();
+      break;
+    case 7:
+      teleportReset();
+      break;
+    case 8:
+      document.getElementById('speed-classical-bar').style.width = '0%';
+      document.getElementById('speed-quantum-bar').style.width = '0%';
+      document.getElementById('speed-winner').style.display = 'none';
+      document.getElementById('speed-viz').innerHTML = '';
+      document.querySelectorAll('.speed-challenge-btn').forEach(b => b.classList.remove('active'));
+      break;
+    case 9:
+      document.querySelectorAll('.future-card-detail').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('.future-card-toggle').forEach(b => b.textContent = 'Learn More ▼');
+      break;
+  }
 }
 </script>
 </body>
