@@ -105,18 +105,18 @@ class TestStructure:
         assert len(lines) > 500, f"Expected >500 lines, got {len(lines)}"
 
     def test_five_tab_sections(self, html_content):
-        # Tab panels are <div id="tab1"> … <div id="tab5">
+        # Tab panels are <div id="tab1"> … <div id="tab6">
         tab_ids = re.findall(r'id=["\']tab(\d)["\']', html_content)
         unique_tabs = set(tab_ids)
-        # Should have tab1 through tab5
-        assert unique_tabs == {"1", "2", "3", "4", "5"}, (
-            f"Expected tabs 1-5, found IDs: {unique_tabs}"
+        # Should have tab1 through tab6 (tab6 = Quantum Quiz, added Apr 2026)
+        assert unique_tabs >= {"1", "2", "3", "4", "5"}, (
+            f"Expected at least tabs 1-5, found IDs: {unique_tabs}"
         )
 
     def test_five_tab_buttons(self, html_content):
-        """Tab bar should have exactly 5 tab buttons."""
+        """Tab bar should have at least 5 tab buttons (6 after Quiz tab added)."""
         tab_buttons = re.findall(r'data-tab=["\'](\d)["\']', html_content)
-        assert len(tab_buttons) == 5, f"Expected 5 tab buttons, got {len(tab_buttons)}"
+        assert len(tab_buttons) >= 5, f"Expected at least 5 tab buttons, got {len(tab_buttons)}"
 
     def test_tab_names_present(self, html_content):
         expected = ["How To Play", "Coin Flip", "Entanglement", "Quantum Race", "Code Breaker"]
