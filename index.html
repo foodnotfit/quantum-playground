@@ -1660,6 +1660,26 @@ footer {
 .future-card-detail { display:none; margin-top:12px; color:#b0b0d0; line-height:1.7; font-size:0.95rem; }
 .future-card-detail.open { display:block; animation:slideIn 0.3s ease; }
 .future-tagline { text-align:center; color:#6060aa; font-size:1rem; margin-top:16px; font-weight:600; }
+
+/* ===== TAB 3 — MULTI-PAIR ENTANGLEMENT ===== */
+#pairs-container { display: flex; flex-direction: column; gap: 20px; margin-bottom: 20px; }
+.pair-row { display: flex; align-items: center; justify-content: center; gap: 0; position: relative; min-height: 160px; }
+.pair-label { font-size: 0.85rem; color: #6060aa; font-weight: 700; text-align: center; margin-bottom: 6px; }
+.pair-particle-wrap { display: flex; flex-direction: column; align-items: center; gap: 8px; z-index: 2; }
+.pair-svg-wrap { width: 140px; height: 160px; position: relative; flex-shrink: 0; }
+.pair-svg { width: 100%; height: 100%; overflow: visible; }
+.eavesdrop-spy { font-size: 1.8rem; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.3s; cursor: pointer; user-select: none; z-index: 10; }
+.eavesdrop-spy.active { opacity: 1; animation: spyPulse 0.8s ease-in-out infinite; }
+@keyframes spyPulse { 0%,100% { transform: translate(-50%,-50%) scale(1); filter: drop-shadow(0 0 6px #ef4444); } 50% { transform: translate(-50%,-50%) scale(1.3); filter: drop-shadow(0 0 16px #ef4444); } }
+.eavesdrop-warning { background: #2a0a0a; border: 2px solid #ef4444; border-radius: 12px; padding: 12px 16px; color: #ffaaaa; font-weight: 700; font-size: 0.95rem; margin: 8px 0; display: none; animation: slideIn 0.3s ease; }
+.eavesdrop-warning.visible { display: block; }
+.error-counter { color: #ef4444; font-weight: 900; }
+.pair-particle { width: 110px; height: 110px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; cursor: pointer; transition: box-shadow 0.3s, transform 0.2s; position: relative; user-select: none; border: 5px solid; }
+.pair-particle:hover { transform: scale(1.07); }
+.pair-particle.entangled { animation: entanglePulse 1.2s ease-in-out infinite; }
+.pair-particle.compromised { animation: none; filter: grayscale(0.5); }
+.explorer-only { display: flex; }
+body.scientist .explorer-only, body.engineer .explorer-only { display: none !important; }
 </style>
 </head>
 <body>
@@ -1776,39 +1796,20 @@ footer {
   <div id="tab3" class="tab-panel">
     <h2>⚛️ Entanglement Lab</h2>
 
-    <div class="entangle-stage">
-      <div class="particle-wrap">
-        <div class="particle-label">Alice</div>
-        <div class="particle" id="alice" onclick="aliceClick()">🔵</div>
-      </div>
+    <div id="pairs-container"></div>
 
-      <div class="entangle-svg-wrap" style="position:relative;">
-        <svg id="entangle-svg" viewBox="0 0 160 220">
-          <line id="entangle-line" x1="0" y1="110" x2="160" y2="110"
-            stroke="#8b5cf6" stroke-width="0" stroke-dasharray="8 6" opacity="0.8">
-            <animate attributeName="stroke-dashoffset" from="0" to="28" dur="1s" repeatCount="indefinite"/>
-          </line>
-        </svg>
-        <div class="instant-flash" id="instant-flash">⚡ STILL INSTANT!</div>
-      </div>
-
-      <div class="particle-wrap">
-        <div class="particle-label">Bob</div>
-        <div class="particle" id="bob">🔴</div>
-      </div>
-    </div>
-
-    <div class="entangle-controls">
-      <button class="btn btn-purple" onclick="entangle()">🔗 Entangle!</button>
-      <button class="btn btn-red" onclick="unentangle()">🔓 Un-entangle</button>
-      <button class="btn btn-gold sci-eng-only" style="display:none" onclick="toggleEavesdrop()">🕵️ Eavesdropper Alert</button>
+    <div class="entangle-controls" id="entangle-controls">
+      <select id="pair-select" style="background:#12122a;color:#e0e0ff;border:2px solid #2a2a4a;border-radius:12px;padding:8px 14px;font-size:0.95rem;font-weight:700;cursor:pointer;">
+        <option value="0">Pair 1</option>
+      </select>
+      <button class="btn btn-purple" onclick="entanglePairAction()">🔗 Entangle Pair</button>
+      <button class="btn btn-red" onclick="unentanglePairAction()">🔓 Un-entangle</button>
+      <button class="btn btn-green sci-eng-only" onclick="addPair()">➕ Add Pair</button>
+      <button class="btn btn-red sci-eng-only" id="remove-pair-btn" onclick="removePair()">➖ Remove Pair</button>
+      <button class="btn btn-gold explorer-only" onclick="toggleEavesdropExplorer()">🕵️ Let a spy in!</button>
     </div>
 
     <div class="measure-counter" id="measure-counter">Alice measured: <span id="alice-count">0</span> times &nbsp;|&nbsp; Bob responded: <span id="bob-count">0</span> times</div>
-
-    <div class="eavesdrop-box" id="eavesdrop-box">
-      🕵️ <strong>Eavesdropper Detected!</strong> If a spy tries to intercept an entangled quantum message, they must <em>measure</em> the particles — which instantly destroys the quantum state and leaves a detectable fingerprint. The receiver sees errors in the data and <strong>knows they've been spied on</strong>. This is the basis of <strong>Quantum Key Distribution (QKD)</strong> — the first provably unbreakable communication system in history.
-    </div>
 
     <div class="distance-wrap">
       <label>📡 Distance between Alice and Bob:</label>
@@ -1827,10 +1828,10 @@ footer {
         <p>When two particles become best friends forever, touching one INSTANTLY tells its friend — even from across the UNIVERSE! Einstein was amazed! 🌌</p>
       </div>
       <div class="level-text" data-level="scientist">
-        <p>Entangled particles share correlated quantum states. Measuring one instantly collapses its partner regardless of distance — confirmed by Bell test experiments (Aspect 1982, Delft 2015).</p>
+        <p>Multiple entangled pairs demonstrate quantum correlation at scale. Each pair shares a Bell state. When entangled, measuring (clicking) either particle instantly determines its partner. An eavesdropper performing a measurement disturbs the state — introducing detectable errors. Bell inequality violations prove the correlations are quantum, not classical.</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p>CHSH inequality: S = |E(a,b)-E(a,b')+E(a',b)+E(a',b')| ≤ 2 classically, quantum allows S ≤ 2√2 ≈ 2.83. Enables BB84 QKD protocol.</p>
+        <p>N entangled Bell pairs form the resource for quantum networking. CHSH S = |E(a,b)-E(a,b')+E(a',b)+E(a',b')| &lt;= 2 classically, quantum allows S &lt;= 2*sqrt(2). Eavesdropping via intercept-resend introduces ~25% QBER (Quantum Bit Error Rate) — detectable above noise threshold. Basis of BB84 and E91 QKD protocols. Multi-pair entanglement enables quantum key distribution at scale.</p>
       </div>
     </div>
   </div>
@@ -2321,78 +2322,209 @@ renderCoins();
 /* =====================================================
    TAB 3 — ENTANGLEMENT LAB
    ===================================================== */
-let isEntangled = false;
-const aliceColors = [
-  { alice: { bg: 'radial-gradient(circle at 35% 35%, #00d4ff, #0066aa)', border: '#00d4ff', emoji: '🔵', glow: 'rgba(0,212,255,0.7)' },
-    bob:   { bg: 'radial-gradient(circle at 35% 35%, #ef4444, #991b1b)', border: '#ef4444', emoji: '🔴', glow: 'rgba(239,68,68,0.7)' } },
-  { alice: { bg: 'radial-gradient(circle at 35% 35%, #8b5cf6, #4c1d95)', border: '#8b5cf6', emoji: '🟣', glow: 'rgba(139,92,246,0.7)' },
-    bob:   { bg: 'radial-gradient(circle at 35% 35%, #fbbf24, #92400e)', border: '#fbbf24', emoji: '🟡', glow: 'rgba(251,191,36,0.7)' } },
-  { alice: { bg: 'radial-gradient(circle at 35% 35%, #10b981, #065f46)', border: '#10b981', emoji: '🟢', glow: 'rgba(16,185,129,0.7)' },
-    bob:   { bg: 'radial-gradient(circle at 35% 35%, #00d4ff, #0066aa)', border: '#00d4ff', emoji: '🔵', glow: 'rgba(0,212,255,0.7)' } },
-  { alice: { bg: 'radial-gradient(circle at 35% 35%, #fbbf24, #92400e)', border: '#fbbf24', emoji: '🟡', glow: 'rgba(251,191,36,0.7)' },
-    bob:   { bg: 'radial-gradient(circle at 35% 35%, #8b5cf6, #4c1d95)', border: '#8b5cf6', emoji: '🟣', glow: 'rgba(139,92,246,0.7)' } },
-  { alice: { bg: 'radial-gradient(circle at 35% 35%, #ef4444, #991b1b)', border: '#ef4444', emoji: '🔴', glow: 'rgba(239,68,68,0.7)' },
-    bob:   { bg: 'radial-gradient(circle at 35% 35%, #10b981, #065f46)', border: '#10b981', emoji: '🟢', glow: 'rgba(16,185,129,0.7)' } }
+const COLORS = [
+  { emoji:'🔵', bg:'radial-gradient(circle at 35% 35%, #00d4ff, #0066aa)', border:'#00d4ff', glow:'rgba(0,212,255,0.7)' },
+  { emoji:'🟣', bg:'radial-gradient(circle at 35% 35%, #8b5cf6, #4c1d95)', border:'#8b5cf6', glow:'rgba(139,92,246,0.7)' },
+  { emoji:'🟢', bg:'radial-gradient(circle at 35% 35%, #10b981, #065f46)', border:'#10b981', glow:'rgba(16,185,129,0.7)' },
+  { emoji:'🟡', bg:'radial-gradient(circle at 35% 35%, #fbbf24, #92400e)', border:'#fbbf24', glow:'rgba(251,191,36,0.7)' },
+  { emoji:'🔴', bg:'radial-gradient(circle at 35% 35%, #ef4444, #991b1b)', border:'#ef4444', glow:'rgba(239,68,68,0.7)' }
 ];
-let aliceColorIdx = 0;
 
-function entangle() {
-  isEntangled = true;
-  aliceColorIdx = 0;
-  applyParticleColor(aliceColorIdx);
-  const alice = document.getElementById('alice');
-  const bob   = document.getElementById('bob');
-  alice.classList.add('entangled');
-  bob.classList.add('entangled');
-  // Draw line
-  const line = document.getElementById('entangle-line');
-  line.setAttribute('stroke-width', '4');
+let pairs = [{ aliceColor: 0, bobColor: 4, entangled: false, eavesdropped: false, errorCount: 0 }];
+let globalEntangleAll = false;
+let measureCount = 0;
+
+function applyColorToEl(el, colorIdx) {
+  const c = COLORS[colorIdx];
+  el.style.background = c.bg;
+  el.style.borderColor = c.border;
+  el.style.setProperty('--glow-color', c.glow);
+  el.textContent = c.emoji;
 }
 
-function unentangle() {
-  isEntangled = false;
-  aliceColorIdx = 0;
-  const alice = document.getElementById('alice');
-  const bob   = document.getElementById('bob');
-  alice.classList.remove('entangled');
-  bob.classList.remove('entangled');
-  // Restore default colors
-  alice.style.background = 'radial-gradient(circle at 35% 35%, #00d4ff, #0066aa)';
-  alice.style.borderColor = '#00d4ff';
-  alice.style.setProperty('--glow-color', 'rgba(0,212,255,0.7)');
-  alice.textContent = '🔵';
-  bob.style.background = 'radial-gradient(circle at 35% 35%, #ef4444, #991b1b)';
-  bob.style.borderColor = '#ef4444';
-  bob.style.setProperty('--glow-color', 'rgba(239,68,68,0.7)');
-  bob.textContent = '🔴';
-  document.getElementById('entangle-line').setAttribute('stroke-width', '0');
+function renderPairs() {
+  const container = document.getElementById('pairs-container');
+  if (!container) return;
+
+  // Update pair select dropdown
+  const sel = document.getElementById('pair-select');
+  if (sel) {
+    const prevVal = sel.value;
+    sel.innerHTML = '';
+    pairs.forEach((_, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = 'Pair ' + (i + 1);
+      sel.appendChild(opt);
+    });
+    const allOpt = document.createElement('option');
+    allOpt.value = 'all';
+    allOpt.textContent = 'ALL';
+    sel.appendChild(allOpt);
+    sel.value = prevVal && sel.querySelector('[value="' + prevVal + '"]') ? prevVal : '0';
+  }
+
+  // Update remove btn
+  const removeBtn = document.getElementById('remove-pair-btn');
+  if (removeBtn) removeBtn.disabled = pairs.length <= 1;
+
+  container.innerHTML = '';
+  pairs.forEach((pair, i) => {
+    const row = document.createElement('div');
+    row.className = 'pair-row';
+    row.id = 'pair-row-' + i;
+
+    const lineColor = pair.eavesdropped ? '#ef4444' : '#8b5cf6';
+    const lineDash  = pair.eavesdropped ? '4 4' : '8 6';
+    const lineWidth = pair.entangled ? 4 : 0;
+
+    row.innerHTML = `
+      <div class="pair-particle-wrap">
+        <div class="pair-label">Alice-${i+1}</div>
+        <div class="pair-particle${pair.entangled ? ' entangled' : ''}${pair.eavesdropped ? ' compromised' : ''}"
+          id="alice-${i}" onclick="particleClick('alice',${i})"
+          style="background:${COLORS[pair.aliceColor].bg};border-color:${COLORS[pair.aliceColor].border};--glow-color:${COLORS[pair.aliceColor].glow}">
+          ${COLORS[pair.aliceColor].emoji}
+        </div>
+      </div>
+      <div class="pair-svg-wrap">
+        <svg class="pair-svg" viewBox="0 0 140 160">
+          <line id="pair-line-${i}" x1="0" y1="80" x2="140" y2="80"
+            stroke="${lineColor}" stroke-width="${lineWidth}"
+            stroke-dasharray="${lineDash}" opacity="0.85">
+            <animate attributeName="stroke-dashoffset" from="0" to="28" dur="1s" repeatCount="indefinite"/>
+          </line>
+        </svg>
+        <div class="eavesdrop-spy${pair.eavesdropped ? ' active' : ''}" id="spy-${i}" onclick="toggleEavesdrop(${i})">🕵️</div>
+        ${pair.eavesdropped ? `<div class="eavesdrop-warning visible" id="warn-${i}">⚠️ EAVESDROPPER DETECTED — The spy disturbed the quantum state! <span class="error-counter">Errors detected: ${pair.errorCount}</span></div>` : `<div class="eavesdrop-warning" id="warn-${i}"></div>`}
+      </div>
+      <div class="pair-particle-wrap">
+        <div class="pair-label">Bob-${i+1}</div>
+        <div class="pair-particle${pair.entangled ? ' entangled' : ''}${pair.eavesdropped ? ' compromised' : ''}"
+          id="bob-${i}" onclick="particleClick('bob',${i})"
+          style="background:${COLORS[pair.bobColor].bg};border-color:${COLORS[pair.bobColor].border};--glow-color:${COLORS[pair.bobColor].glow}">
+          ${COLORS[pair.bobColor].emoji}
+        </div>
+      </div>
+      ${pairs.length > 1 ? `<div class="pair-particle-wrap" style="margin-left:12px;">
+        <button class="btn btn-gold sci-eng-only" onclick="toggleEavesdrop(${i})" style="font-size:0.85rem;padding:6px 10px;">${pair.eavesdropped ? '🔓 Catch Spy' : '🕵️ Eavesdrop'}</button>
+      </div>` : ''}
+    `;
+    container.appendChild(row);
+  });
+
+  // Explorer: show the global eavesdrop button label
+  const explorerBtn = document.querySelector('.explorer-only');
+  if (explorerBtn && pairs.length > 0) {
+    explorerBtn.textContent = pairs[0].eavesdropped ? '🔒 Catch the spy!' : '🕵️ Let a spy in!';
+  }
 }
 
-function applyParticleColor(idx) {
-  const pair  = aliceColors[idx];
-  const alice = document.getElementById('alice');
-  const bob   = document.getElementById('bob');
-  alice.style.background  = pair.alice.bg;
-  alice.style.borderColor = pair.alice.border;
-  alice.style.setProperty('--glow-color', pair.alice.glow);
-  alice.textContent = pair.alice.emoji;
-  bob.style.background  = pair.bob.bg;
-  bob.style.borderColor = pair.bob.border;
-  bob.style.setProperty('--glow-color', pair.bob.glow);
-  bob.textContent = pair.bob.emoji;
+function particleClick(side, idx) {
+  const pair = pairs[idx];
+
+  // Increment measure counter
+  measureCount++;
+  const ac = document.getElementById('alice-count');
+  const bc = document.getElementById('bob-count');
+  if (ac) ac.textContent = measureCount;
+  if (bc) bc.textContent = measureCount;
+
+  if (pair.eavesdropped) {
+    pair.errorCount++;
+    renderPairs();
+    return;
+  }
+
+  const nextColor = (pair.aliceColor + 1) % COLORS.length;
+
+  if (globalEntangleAll) {
+    // Change ALL entangled pairs
+    pairs.forEach(p => {
+      if (p.entangled && !p.eavesdropped) {
+        p.aliceColor = nextColor;
+        p.bobColor   = nextColor;
+      }
+    });
+  } else if (pair.entangled) {
+    // Change both in this pair
+    pair.aliceColor = nextColor;
+    pair.bobColor   = nextColor;
+  } else {
+    // Change only clicked particle
+    if (side === 'alice') pair.aliceColor = (pair.aliceColor + 1) % COLORS.length;
+    else                  pair.bobColor   = (pair.bobColor   + 1) % COLORS.length;
+  }
+
+  renderPairs();
 }
 
-function aliceClick() {
-  if (!isEntangled) return;
-  aliceColorIdx = (aliceColorIdx + 1) % aliceColors.length;
-  applyParticleColor(aliceColorIdx);
-  // Flash STILL INSTANT
-  const flash = document.getElementById('instant-flash');
-  flash.classList.remove('show');
-  void flash.offsetWidth;
-  flash.classList.add('show');
-  setTimeout(() => flash.classList.remove('show'), 1100);
+function entanglePair(idx) {
+  pairs[idx].entangled = true;
+  pairs[idx].eavesdropped = false;
+  renderPairs();
 }
+
+function unentanglePair(idx) {
+  pairs[idx].entangled = false;
+  renderPairs();
+}
+
+function entangleAll() {
+  globalEntangleAll = true;
+  pairs.forEach(p => { p.entangled = true; });
+  renderPairs();
+}
+
+function unentangleAll() {
+  globalEntangleAll = false;
+  pairs.forEach(p => { p.entangled = false; });
+  renderPairs();
+}
+
+function entanglePairAction() {
+  const sel = document.getElementById('pair-select');
+  if (!sel) return;
+  const val = sel.value;
+  if (val === 'all') entangleAll();
+  else entanglePair(parseInt(val, 10));
+}
+
+function unentanglePairAction() {
+  const sel = document.getElementById('pair-select');
+  if (!sel) return;
+  const val = sel.value;
+  if (val === 'all') unentangleAll();
+  else unentanglePair(parseInt(val, 10));
+}
+
+function addPair() {
+  if (pairs.length >= 4) return;
+  pairs.push({ aliceColor: 1, bobColor: 3, entangled: false, eavesdropped: false, errorCount: 0 });
+  renderPairs();
+}
+
+function removePair() {
+  if (pairs.length <= 1) return;
+  pairs.pop();
+  renderPairs();
+}
+
+function toggleEavesdrop(idx) {
+  pairs[idx].eavesdropped = !pairs[idx].eavesdropped;
+  if (!pairs[idx].eavesdropped) pairs[idx].errorCount = 0;
+  renderPairs();
+}
+
+function toggleEavesdropExplorer() {
+  // Toggle eavesdrop on pair 0 for explorer level
+  toggleEavesdrop(0);
+}
+
+// Initialize pairs on load
+document.addEventListener('DOMContentLoaded', function() {
+  renderPairs();
+});
 
 const distanceLabels = [
   '🌍 Earth — same room',
@@ -2923,16 +3055,8 @@ function run100Flips() {
 }
 
 /* =====================================================
-   ENTANGLEMENT — MEASURE COUNTER + EAVESDROP
+   ENTANGLEMENT — LEGACY STUBS (replaced by multi-pair system above)
    ===================================================== */
-let aliceMeasureCount = 0;
-
-let eavesdropVisible = false;
-function toggleEavesdrop() {
-  eavesdropVisible = !eavesdropVisible;
-  const box = document.getElementById('eavesdrop-box');
-  if (box) box.classList.toggle('visible', eavesdropVisible);
-}
 
 /* =====================================================
    CODE BREAKER — PQC / KYBER KEY GENERATOR
