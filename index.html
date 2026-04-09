@@ -523,6 +523,27 @@ footer {
   animation: coinBounce 0.5s ease;
 }
 
+.coin-wrapper { position: relative; display: inline-block; }
+.coin-barrier {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(135deg, #2a0a4a, #1a0a3a);
+  border: 4px solid #8b5cf6;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem; font-weight: 900; color: #c4b5fd;
+  z-index: 5;
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s;
+  transform-origin: top center;
+  box-shadow: 0 0 20px rgba(139,92,246,0.6);
+  cursor: pointer;
+}
+.coin-barrier.revealed { transform: translateY(-110%) rotateX(80deg); opacity: 0; pointer-events: none; }
+.coin-barrier-label {
+  text-align: center; font-size: 0.85rem; font-weight: 700; color: #8b5cf6;
+  margin-top: 6px; min-height: 20px; transition: color 0.3s;
+}
+.coin-barrier-label.measured { color: #fbbf24; }
+
 .coin-tally {
   text-align: center;
   font-size: 1.4rem;
@@ -2533,11 +2554,31 @@ function renderCoins() {
   const row = document.getElementById('coins-row');
   row.innerHTML = '';
   for (let i = 0; i < coinCount; i++) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'coin-wrapper';
+    wrapper.style.display = 'flex';
+    wrapper.style.flexDirection = 'column';
+    wrapper.style.alignItems = 'center';
+
     const coin = document.createElement('div');
-    coin.className = 'coin';
+    coin.className = 'coin spinning';
     coin.id = 'coin-' + i;
-    coin.textContent = coinsState[i];
-    row.appendChild(coin);
+    coin.textContent = '?';
+
+    const barrier = document.createElement('div');
+    barrier.className = 'coin-barrier';
+    barrier.id = 'barrier-' + i;
+    barrier.textContent = '?';
+
+    const label = document.createElement('div');
+    label.className = 'coin-barrier-label';
+    label.id = 'barrier-label-' + i;
+    label.textContent = 'UNKNOWN — both H and T at the same time!';
+
+    wrapper.appendChild(coin);
+    wrapper.appendChild(barrier);
+    wrapper.appendChild(label);
+    row.appendChild(wrapper);
   }
   updateTally();
 }
@@ -2563,6 +2604,10 @@ function prepareQubits() {
     c.classList.add('spinning');
     c.classList.remove('bouncing');
     c.textContent = '?';
+    const barrier = document.getElementById('barrier-' + i);
+    if (barrier) barrier.classList.remove('revealed');
+    const label = document.getElementById('barrier-label-' + i);
+    if (label) { label.textContent = 'UNKNOWN — both H and T at the same time!'; label.classList.remove('measured'); }
   }
   updateTally();
 }
@@ -2579,6 +2624,10 @@ function measureCoins() {
     void c.offsetWidth; // trigger reflow
     c.classList.add('bouncing');
     c.addEventListener('animationend', () => c.classList.remove('bouncing'), {once: true});
+    const barrier = document.getElementById('barrier-' + i);
+    if (barrier) barrier.classList.add('revealed');
+    const label = document.getElementById('barrier-label-' + i);
+    if (label) { label.textContent = result === 'H' ? 'HEADS! ✅' : 'TAILS! ✅'; label.classList.add('measured'); }
   }
   updateTally(heads, tails);
 }
@@ -3085,12 +3134,19 @@ function runRace() {
   document.getElementById('classical-timer').textContent = 'Ready';
   document.getElementById('quantum-timer').textContent   = 'Ready';
   document.getElementById('race-banner').style.display   = 'none';
-  // Clear SVGs
   document.getElementById('classical-dots-svg').innerHTML = '';
   document.getElementById('quantum-dots-svg').innerHTML   = '';
-  // Run both
-  runClassical();
-  runQuantum();
+  const cc = document.getElementById('classical-path-counter');
+  const qc = document.getElementById('quantum-path-counter');
+  if (cc) cc.textContent = 'Paths tried: 0';
+  if (qc) qc.textContent = 'Paths tried: 0';
+  // Use double rAF so both start on the exact same frame
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      runClassical();
+      runQuantum();
+    });
+  });
 }
 
 let classicalDone = false;
@@ -4064,11 +4120,16 @@ function resetTab(n) {
       teleportReset();
       break;
     case 8:
-      document.getElementById('speed-classical-bar').style.width = '0%';
-      document.getElementById('speed-quantum-bar').style.width = '0%';
+      speedRaceActive = false;
+      if (_vizAnim) { cancelAnimationFrame(_vizAnim); _vizAnim = null; }
+      const cBar8 = document.getElementById('speed-classical-bar');
+      const qBar8 = document.getElementById('speed-quantum-bar');
+      if (cBar8) { cBar8.style.transition = 'none'; cBar8.style.width = '0%'; }
+      if (qBar8) { qBar8.style.transition = 'none'; qBar8.style.width = '0%'; }
       document.getElementById('speed-winner').style.display = 'none';
       document.getElementById('speed-viz').innerHTML = '';
-      document.querySelectorAll('.speed-challenge-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.speed-challenge-btn').forEach((b,i) => b.classList.toggle('active', i === 0));
+      runSpeedChallenge(0);
       break;
     case 9:
       document.querySelectorAll('.future-card-detail').forEach(d => d.classList.remove('open'));
