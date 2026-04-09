@@ -334,6 +334,23 @@ footer {
   font-size: 1.1rem;
 }
 
+.key-concepts-box {
+  background: linear-gradient(135deg, #0d2a1a, #0a0a1a);
+  border: 2px solid #1a5a3a;
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin-top: 16px;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #b0c0e0;
+}
+
+.key-concepts-box h3 {
+  color: #10b981;
+  margin-bottom: 8px;
+  font-size: 1.1rem;
+}
+
 /* ===== TAB 1 — HOW TO PLAY ===== */
 #tab1 .welcome-title {
   font-size: clamp(1.8rem, 4vw, 2.8rem);
@@ -1768,7 +1785,15 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
 
     <div class="explanation-box">
       <h3>🔬 What is Quantum Computing?</h3>
-      <p>Regular computers use <strong>bits</strong> — like tiny light switches that are either ON or OFF. Quantum computers use <strong>qubits</strong>, which can be ON, OFF, or <em>both at the same time</em> thanks to a weird quantum trick called <strong>superposition</strong>! This lets quantum computers solve some problems millions of times faster than regular computers. Scientists at DARPA and companies like Tetrabolt LLC are working on quantum technology every day!</p>
+      <div class="level-text active" data-level="explorer">
+        <p>Normal computers use BITS — tiny switches that are either ON (1) or OFF (0). Quantum computers use QUBITS — special switches that can be ON, OFF, or BOTH at the same time! This superpower lets quantum computers solve problems that would take normal computers longer than the age of the universe!</p>
+      </div>
+      <div class="level-text" data-level="scientist">
+        <p>Classical computers process information as binary bits (0 or 1). Quantum computers use qubits that exploit superposition (existing in multiple states simultaneously), entanglement (correlated multi-particle states), and interference (amplifying correct answers). This gives exponential speedup for certain problem classes: factoring (Shor), search (Grover), simulation (VQE/QPE).</p>
+      </div>
+      <div class="level-text" data-level="engineer">
+        <p>Classical Turing model: sequential bit operations on {0,1}^n. Quantum model: unitary evolution on 2^n-dimensional Hilbert space C^(2^n). Key resources: superposition (H gate), entanglement (CNOT), interference (phase kickback). Complexity classes: BQP (bounded-error quantum polynomial) &#x2283; BPP. Major open question: BQP vs NP. Applications proven quantum-superior: factoring (Shor, exponential), search (Grover, quadratic), simulation (Lloyd, exponential for quantum systems).</p>
+      </div>
     </div>
   </div>
 
@@ -1801,6 +1826,18 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
       </div>
       <div class="level-text" data-level="engineer">
         <p>Qubit |ψ⟩ = α|0⟩ + β|1⟩, |α|²+|β|²=1. Hadamard gate H|0⟩=(|0⟩+|1⟩)/√2. Measurement collapses to |0⟩ with probability |α|²=0.5.</p>
+      </div>
+    </div>
+    <div class="key-concepts-box">
+      <h3>📖 Key Concepts</h3>
+      <div class="level-text active" data-level="explorer">
+        <p>🪙 <strong>SUPERPOSITION</strong>: Being in two states at once! Like a coin spinning in the air — it&#39;s both heads AND tails until it lands. 👁️ <strong>MEASUREMENT</strong>: The act of looking at a qubit. The moment you look, it picks one state! 🔮 <strong>QUBIT</strong>: A quantum bit — the basic building block of a quantum computer.</p>
+      </div>
+      <div class="level-text" data-level="scientist">
+        <p><strong>SUPERPOSITION</strong>: A qubit |ψ⟩ = α|0⟩ + β|1⟩ where |α|² + |β|² = 1. The coefficients α and β are probability amplitudes. <strong>MEASUREMENT</strong>: Projects the state onto the computational basis, collapsing to |0⟩ with prob |α|² or |1⟩ with prob |β|². <strong>HADAMARD GATE</strong>: H = (1/√2)[[1,1],[1,-1]] — creates equal superposition from |0⟩: H|0⟩ = |+⟩ = (|0⟩+|1⟩)/√2. <strong>WAVE FUNCTION COLLAPSE</strong>: Post-measurement state is definite — information about the superposition is destroyed.</p>
+      </div>
+      <div class="level-text" data-level="engineer">
+        <p><strong>STATE VECTOR</strong>: |ψ⟩ ∈ C² with |α|²+|β|²=1 (normalization). <strong>BLOCH SPHERE</strong>: Pure qubit states as points on S² — poles are |0⟩,|1⟩; equator is equal superposition. <strong>BORN RULE</strong>: P(outcome i) = |⟨i|ψ⟩|². <strong>DENSITY MATRIX</strong>: ρ = |ψ⟩⟨ψ| for pure states. <strong>DECOHERENCE</strong>: Interaction with environment collapses superposition — key engineering challenge. T1 (relaxation), T2 (dephasing) times: IBM superconducting qubits achieve T1~100-500μs.</p>
       </div>
     </div>
   </div>
@@ -1846,6 +1883,18 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
       </div>
       <div class="level-text" data-level="engineer">
         <p>N entangled Bell pairs form the resource for quantum networking. CHSH S = |E(a,b)-E(a,b')+E(a',b)+E(a',b')| &lt;= 2 classically, quantum allows S &lt;= 2*sqrt(2). Eavesdropping via intercept-resend introduces ~25% QBER (Quantum Bit Error Rate) — detectable above noise threshold. Basis of BB84 and E91 QKD protocols. Multi-pair entanglement enables quantum key distribution at scale.</p>
+      </div>
+    </div>
+    <div class="key-concepts-box">
+      <h3>📖 Key Concepts</h3>
+      <div class="level-text active" data-level="explorer">
+        <p>🔗 <strong>ENTANGLEMENT</strong>: A special connection between two particles — like a magic walkie-talkie that works across the universe instantly! 👻 <strong>SPOOKY ACTION</strong>: Einstein&#39;s nickname for entanglement — he thought it was impossible, but it&#39;s REAL! 🔑 <strong>QUANTUM KEY DISTRIBUTION (QKD)</strong>: Using entanglement to send secret messages that CANNOT be spied on!</p>
+      </div>
+      <div class="level-text" data-level="scientist">
+        <p><strong>BELL STATE</strong>: A maximally entangled 2-qubit state. The four Bell states are: |Φ⁺⟩=(|00⟩+|11⟩)/√2, |Φ⁻⟩=(|00⟩-|11⟩)/√2, |Ψ⁺⟩=(|01⟩+|10⟩)/√2, |Ψ⁻⟩=(|01⟩-|10⟩)/√2. <strong>BELL INEQUALITY</strong>: Classical bound S≤2, quantum allows S≤2√2≈2.83 (Tsirelson bound). <strong>NO-CLONING THEOREM</strong>: An unknown quantum state cannot be copied — makes eavesdropping detectable. <strong>BB84 PROTOCOL</strong>: First QKD protocol (Bennett &amp; Brassard, 1984) — uses 4 quantum states in 2 non-orthogonal bases.</p>
+      </div>
+      <div class="level-text" data-level="engineer">
+        <p><strong>CHSH INEQUALITY</strong>: S=|E(a,b)-E(a,b')+E(a',b)+E(a',b')|≤2 classically. Quantum: S=2√2 for optimal measurement angles. <strong>BELL TEST LOOPHOLES</strong>: locality loophole (closed by Delft 2015), detection loophole (closed by NIST 2015), both closed simultaneously (Vienna 2015). <strong>ENTANGLEMENT ENTROPY</strong>: S(ρ_A)=-Tr(ρ_A log ρ_A), S=1 for Bell states. <strong>QUANTUM NETWORK</strong>: Entanglement swapping via Bell state measurement enables long-distance entanglement. Quantum repeater beating direct transmission with O(log N) resource overhead.</p>
       </div>
     </div>
   </div>
@@ -1898,6 +1947,18 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
       </div>
       <div class="level-text" data-level="engineer">
         <p><strong>Grover's algorithm</strong> uses amplitude amplification: apply oracle O and diffusion operator D repeatedly for O(√N) iterations, each flipping the phase of the target state. After √N iterations, the target amplitude is O(1) and measurement succeeds with high probability. Quadratic speedup is provably optimal for unstructured search (BBBV theorem).</p>
+      </div>
+    </div>
+    <div class="key-concepts-box">
+      <h3>📖 Key Concepts</h3>
+      <div class="level-text active" data-level="explorer">
+        <p>⚡ <strong>QUANTUM PARALLELISM</strong>: Trying ALL answers at the same time! Like having a million helpers each trying a different path through the maze. 🏎️ <strong>SPEEDUP</strong>: How much faster quantum is than classical. For mazes, quantum is √N times faster! 🌊 <strong>INTERFERENCE</strong>: Quantum waves that cancel out wrong answers and amplify the right one!</p>
+      </div>
+      <div class="level-text" data-level="scientist">
+        <p><strong>GROVER&#39;S ALGORITHM</strong>: Quantum search algorithm achieving O(√N) query complexity vs classical O(N). Uses <strong>AMPLITUDE AMPLIFICATION</strong>: the oracle O marks the target state by flipping its phase, then the diffusion operator D=2|s⟩⟨s|-I amplifies its amplitude. After O(√N) iterations, measurement gives the target with high probability. <strong>QUANTUM ORACLE</strong>: A unitary O_f: |x⟩|y⟩ → |x⟩|y⊕f(x)⟩ that marks solutions to a search problem. <strong>BBBV THEOREM</strong>: Proves Grover&#39;s O(√N) is optimal for unstructured quantum search.</p>
+      </div>
+      <div class="level-text" data-level="engineer">
+        <p><strong>AMPLITUDE AMPLIFICATION</strong>: Generalization of Grover&#39;s. If A prepares initial state with success prob p, amplification achieves success in O(1/√p) applications. <strong>PHASE KICKBACK</strong>: Oracle encodes solution into phase: O_f|x⟩|−⟩ = (−1)^f(x)|x⟩|−⟩. <strong>DIFFUSION OPERATOR</strong>: D=H^⊗n (2|0⟩⟨0|-I) H^⊗n = 2|s⟩⟨s|-I where |s⟩=(1/√N)Σ|x⟩. <strong>QUANTUM WALK</strong>: Alternative to Grover&#39;s for structured search problems — achieves O(√N) on hypercube. Applications: element distinctness O(N^(2/3)), triangle finding O(N^(5/4)).</p>
       </div>
     </div>
   </div>
@@ -1996,6 +2057,18 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         <div class="kyber-key-box" id="kyber-key-box">Click "Generate Quantum-Safe Key" to see a Kyber-1024 public key...</div>
       </div>
     </div>
+    <div class="key-concepts-box">
+      <h3>📖 Key Concepts</h3>
+      <div class="level-text active" data-level="explorer">
+        <p>🔐 <strong>ENCRYPTION</strong>: Scrambling a message so only the right person can read it. Like a secret code! 🔑 <strong>RSA</strong>: The lock that protects your bank account, emails, and websites — quantum computers can CRACK it! 🛡️ <strong>POST-QUANTUM CRYPTOGRAPHY (PQC)</strong>: NEW locks being built RIGHT NOW that quantum computers cannot break! Tetrabolt uses these to protect government secrets!</p>
+      </div>
+      <div class="level-text" data-level="scientist">
+        <p><strong>RSA ENCRYPTION</strong>: Security based on integer factoring hardness. 2048-bit RSA: product of two ~617-digit primes. <strong>SHOR&#39;S ALGORITHM</strong>: Quantum period-finding reduces factoring to O((log N)³) — exponential speedup over best classical O(exp((log N)^(1/3))). <strong>NIST PQC STANDARDS (2024)</strong>: FIPS 203 = ML-KEM (CRYSTALS-Kyber) for key encapsulation. FIPS 204 = ML-DSA (CRYSTALS-Dilithium) for digital signatures. FIPS 205 = SLH-DSA (SPHINCS+) for hash-based signatures. Security basis: lattice problems (LWE, MLWE) and hash functions — believed quantum-resistant.</p>
+      </div>
+      <div class="level-text" data-level="engineer">
+        <p><strong>SHOR&#39;S ALGORITHM</strong>: Phase estimation finds period r of f(x)=a^x mod N. QFT-based: O((log N)² log log N) gates. Continued fraction expansion recovers factors. RSA-2048: ~4096 logical qubits, millions physical (surface code, threshold ~1% error). <strong>ML-KEM (Kyber)</strong>: Module Learning With Errors (MLWE) — security reduces to worst-case lattice SVP. Key sizes: Kyber-512 (AES-128 equiv), Kyber-768 (AES-192), Kyber-1024 (AES-256). <strong>DILITHIUM</strong>: Fiat-Shamir with aborts on Module LWE/SIS. <strong>HYBRID DEPLOYMENT</strong>: TLS 1.3 + X25519Kyber768 (Google Chrome, Cloudflare) — classical + PQC combined. <strong>WOLFSSL 5.9.0</strong>: FIPS 140-3 certs #4718 and #5041, liboqs integration for PQC — used by Tetrabolt LLC.</p>
+      </div>
+    </div>
   </div>
 
   <!-- TAB 6 — QUANTUM QUIZ -->
@@ -2064,10 +2137,22 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
     </div>
 
     <div class="explanation-box">
-      <h3>🔬 What's happening?</h3>
-      <div class="level-text explorer">TELEPORTATION IS REAL! We can move quantum information from one place to another without moving the particle itself! Scientists use this for the quantum internet!</div>
-      <div class="level-text scientist">Quantum teleportation transfers an unknown qubit state using a pre-shared Bell pair plus 2 classical bits. Alice performs a Bell measurement, sends 2 bits to Bob, who applies X and/or Z corrections. The original state is destroyed at Alice (no-cloning theorem upheld).</div>
-      <div class="level-text engineer">Protocol: (1) Share Bell pair |Φ⁺⟩ = (|00⟩+|11⟩)/√2. (2) Alice applies CNOT then H. (3) Measure: 4 outcomes each prob 0.25. (4) Bob applies I, X, Z, or XZ based on bits. Used in quantum repeater networks.</div>
+      <h3>🔬 What&#39;s happening?</h3>
+      <div class="level-text active" data-level="explorer">TELEPORTATION IS REAL! We can move quantum information from one place to another without moving the particle itself! Scientists use this for the quantum internet!</div>
+      <div class="level-text" data-level="scientist">Quantum teleportation transfers an unknown qubit state using a pre-shared Bell pair plus 2 classical bits. Alice performs a Bell measurement, sends 2 bits to Bob, who applies X and/or Z corrections. The original state is destroyed at Alice (no-cloning theorem upheld).</div>
+      <div class="level-text" data-level="engineer">Protocol: (1) Share Bell pair |Φ⁺⟩ = (|00⟩+|11⟩)/√2. (2) Alice applies CNOT then H. (3) Measure: 4 outcomes each prob 0.25. (4) Bob applies I, X, Z, or XZ based on bits. Used in quantum repeater networks.</div>
+    </div>
+    <div class="key-concepts-box">
+      <h3>📖 Key Concepts</h3>
+      <div class="level-text active" data-level="explorer">
+        <p>📡 <strong>TELEPORTATION</strong>: Moving quantum information without moving the particle! Like faxing a drawing — the original is destroyed, but an exact copy appears somewhere else. 🔗 <strong>BELL PAIR</strong>: Two entangled particles used as the &#39;quantum phone line&#39; for teleportation. 2️⃣ <strong>CLASSICAL BITS</strong>: The 2 regular 1s and 0s Alice sends Bob — without these, teleportation doesn&#39;t work!</p>
+      </div>
+      <div class="level-text" data-level="scientist">
+        <p><strong>QUANTUM TELEPORTATION</strong>: Transfers an unknown qubit state using 1 Bell pair + 2 classical bits. Protocol by Bennett et al. (1993), first demonstrated experimentally by Zeilinger (1997). <strong>BELL MEASUREMENT</strong>: Joint measurement of two qubits in the Bell basis — projects onto one of 4 Bell states. <strong>PAULI CORRECTIONS</strong>: Bob applies I, X, Z, or XZ (=iY) based on Alice&#39;s 2-bit outcome: 00→I, 01→X, 10→Z, 11→XZ. The state is EXACTLY reconstructed — no approximation. <strong>NO-CLONING SATISFIED</strong>: Alice&#39;s original is destroyed during Bell measurement.</p>
+      </div>
+      <div class="level-text" data-level="engineer">
+        <p><strong>TELEPORTATION CIRCUIT</strong>: Alice applies CNOT (ctrl:|ψ⟩, target:Bell qubit A), then H to |ψ⟩. Measures in {|0⟩,|1⟩} basis. <strong>RESOURCE COST</strong>: 1 ebit (entangled Bell pair) + 2 cbits per qubit teleported. <strong>FIDELITY</strong>: F=1 for perfect channels and operations. <strong>DENSE CODING DUAL</strong>: 2 cbits can be sent using 1 ebit + 1 qubit (superdense coding). <strong>QUANTUM REPEATER APPLICATION</strong>: Teleportation + entanglement swapping extends quantum channels beyond direct photon loss. <strong>GATE TELEPORTATION</strong>: Can teleport quantum gates — key resource for fault-tolerant quantum computing.</p>
+      </div>
     </div>
   </div>
 
@@ -2109,9 +2194,21 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
 
     <div class="explanation-box" id="speed-explanation">
       <h3>🔬 How does it work?</h3>
-      <div class="level-text explorer">Quantum computers are like having a SUPERPOWER for hard problems! Some tasks that would take longer than the universe has existed can be done in HOURS!</div>
-      <div class="level-text scientist" id="speed-sci-text">Shor's algorithm factors large integers exponentially faster using quantum Fourier transform — breaking RSA encryption that classical computers would need millions of years to crack.</div>
-      <div class="level-text engineer" id="speed-eng-text">Shor's algorithm: O(log³N) quantum vs O(exp(N^1/3)) classical. For 2048-bit RSA: ~10¹³ years classically vs ~8 hours on a fault-tolerant QC.</div>
+      <div class="level-text active" data-level="explorer">Quantum computers are like having a SUPERPOWER for hard problems! Some tasks that would take longer than the universe has existed can be done in HOURS!</div>
+      <div class="level-text" data-level="scientist" id="speed-sci-text">Shor&#39;s algorithm factors large integers exponentially faster using quantum Fourier transform — breaking RSA encryption that classical computers would need millions of years to crack.</div>
+      <div class="level-text" data-level="engineer" id="speed-eng-text">Shor&#39;s algorithm: O(log³N) quantum vs O(exp(N^1/3)) classical. For 2048-bit RSA: ~10¹³ years classically vs ~8 hours on a fault-tolerant QC.</div>
+    </div>
+    <div class="key-concepts-box">
+      <h3>📖 Key Concepts</h3>
+      <div class="level-text active" data-level="explorer">
+        <p>🔑 <strong>SHOR&#39;S ALGORITHM</strong>: The quantum &#39;lock cracker&#39; — finds secret numbers inside big math locks millions of times faster! 🔍 <strong>GROVER&#39;S ALGORITHM</strong>: The quantum &#39;super searcher&#39; — finds what you&#39;re looking for in a huge pile 1000× faster! 🧬 <strong>QUANTUM SIMULATION</strong>: Using quantum computers to pretend to be molecules — to design new medicines! 🗺️ <strong>QAOA</strong>: A quantum GPS that finds the BEST route through many cities super fast!</p>
+      </div>
+      <div class="level-text" data-level="scientist">
+        <p><strong>SHOR&#39;S ALGORITHM</strong>: Polynomial O((log N)³) factoring via QFT period-finding. Threatens RSA/ECC. <strong>GROVER&#39;S ALGORITHM</strong>: Quadratic O(√N) unstructured search speedup. <strong>VQE (Variational Quantum Eigensolver)</strong>: Hybrid quantum-classical for molecular ground state energies — NISQ-compatible. <strong>QAOA (Quantum Approximate Optimization Algorithm)</strong>: Parameterized ansatz for combinatorial optimization (Max-Cut, TSP). <strong>HHL ALGORITHM</strong>: Exponential speedup for sparse linear systems Ax=b — applications in CFD, climate modeling, ML. All these represent BQP algorithms with proven or expected quantum advantage.</p>
+      </div>
+      <div class="level-text" data-level="engineer">
+        <p><strong>ALGORITHM COMPLEXITY COMPARISON</strong>: Factoring: Shor O((log N)³) vs GNFS O(exp((64/9)^(1/3)(log N)^(1/3)(log log N)^(2/3))). Search: Grover O(√N) vs classical O(N) — proven optimal by BBBV. Simulation: VQE O(N^4) measurements vs exact diag O(2^N). Optimization: QAOA depth-p achieves approx ratio &gt;0.6929 for Max-Cut (p→∞ optimal). HHL: O(log N * kappa^2 * epsilon^-1) vs classical O(N * kappa). <strong>FAULT TOLERANCE OVERHEAD</strong>: Surface code with p_phys=0.1% needs ~1000 physical qubits per logical qubit. All large-scale algorithms require fault-tolerant QC — estimated 2030-2040 for RSA-2048 scale.</p>
+      </div>
     </div>
   </div>
 
@@ -3291,9 +3388,9 @@ function showQuizResult() {
   const pct = quizScore / quizQuestions.length;
   let badge, title;
   if (currentLevel === 'explorer') {
-    if (pct >= 0.8) { badge = '🏆'; title = 'Quantum Superstar! You're a natural!'; }
+    if (pct >= 0.8) { badge = '🏆'; title = "Quantum Superstar! You're a natural!"; }
     else if (pct >= 0.5) { badge = '🌟'; title = 'Quantum Explorer! Keep learning!'; }
-    else { badge = '🔬'; title = 'Quantum Beginner — You're just getting started!'; }
+    else { badge = '🔬'; title = "Quantum Beginner — You're just getting started!"; }
   } else {
     if (pct >= 0.8) { badge = '🏆'; title = 'Quantum Master!'; }
     else if (pct >= 0.5) { badge = '🎓'; title = 'Quantum Graduate!'; }
