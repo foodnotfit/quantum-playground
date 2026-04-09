@@ -1,3 +1,4 @@
+# Classical baseline — see index.html for the quantum comparison demo
 #!/usr/bin/env python3
 """
 PASSWORD CRACKER - Family Day Edition!
