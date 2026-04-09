@@ -2633,6 +2633,10 @@ function quantumCrack() {
 function showQuantumSafe() {
   document.getElementById('quantum-safe-reveal').classList.add('visible');
   document.getElementById('quantum-safe-reveal').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  if (currentLevel === 'scientist' || currentLevel === 'engineer') {
+    const pqc = document.getElementById('pqc-section');
+    if (pqc) { pqc.style.display = 'block'; }
+  }
 }
 
 // Initialize
