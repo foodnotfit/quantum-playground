@@ -279,6 +279,18 @@ body.engineer .sci-eng-only { display: flex; }
 .pqc-bar-label { font-size:0.85rem; font-weight:700; text-align:center; max-width:90px; line-height:1.3; }
 .kyber-key-box { background:#0a1a0a; border:2px solid #10b981; border-radius:12px; padding:14px 16px; font-family:monospace; font-size:0.78rem; color:#10b981; word-break:break-all; min-height:60px; margin:10px 0; }
 
+/* ===== HARDWARE TABLE (Tab 10) ===== */
+.hw-table { width:100%; border-collapse:collapse; font-size:0.9rem; margin:16px 0; }
+.hw-table th { background:#1a1a3a; color:#00d4ff; padding:10px 12px; text-align:left; border-bottom:2px solid #2a2a5a; }
+.hw-table td { padding:10px 12px; border-bottom:1px solid #1a1a3a; color:#c0c0e0; }
+.hw-table tr:hover td { background:#1a1a2a; }
+.hw-row-cyan td:first-child { border-left:4px solid #00d4ff; }
+.hw-row-purple td:first-child { border-left:4px solid #8b5cf6; }
+.hw-row-gold td:first-child { border-left:4px solid #fbbf24; }
+.hw-row-green td:first-child { border-left:4px solid #10b981; }
+.hw-row-red td:first-child { border-left:4px solid #ef4444; }
+@media(max-width:700px){ .hw-table { display:block; overflow-x:auto; } }
+
 /* ===== FOOTER ===== */
 footer {
   text-align: center;
@@ -1739,6 +1751,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
   <button class="tab-btn" data-tab="7">🎮 Teleporter</button>
   <button class="tab-btn" data-tab="8">🏎️ Speed Test</button>
   <button class="tab-btn" data-tab="9">🌍 Quantum Future</button>
+  <button class="tab-btn" data-tab="10">⚙️ Hardware</button>
 </div>
 
 <!-- ===== TAB CONTENT ===== -->
@@ -2318,6 +2331,126 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
 
     </div>
     <div class="future-tagline">🌐 Built by Tetrabolt LLC — Securing the quantum future</div>
+  </div>
+
+  <!-- TAB 10 — QUANTUM HARDWARE -->
+  <div id="tab10" class="tab-panel">
+    <h2 style="text-align:center;font-size:2rem;margin-bottom:8px;color:#00d4ff;">⚙️ Quantum Hardware</h2>
+    <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(10)">🔄 Reset</button></div>
+    <p style="text-align:center;color:#8080aa;margin-bottom:24px;">The 5 technologies racing to build the quantum computer of the future.</p>
+
+    <!-- Section 1 — Hardware Cards -->
+    <div class="future-grid">
+
+      <div class="future-card" style="--accent:#00d4ff;">
+        <div class="future-card-header" onclick="toggleFutureCard(this)">
+          <span class="future-card-emoji">⚡</span>
+          <div style="flex:1;">
+            <div class="future-card-title">Superconducting Qubits</div>
+            <div class="future-card-teaser">The fastest gates — powering Google and IBM today</div>
+          </div>
+          <button class="future-card-toggle">Learn More ▼</button>
+        </div>
+        <div class="future-card-detail">
+          <div class="level-text active" data-level="explorer">Superconducting quantum computers are made from tiny loops of special metal cooled to -459°F — colder than outer space! They are the fastest type of quantum computer and IBM and Google are building them RIGHT NOW. IBM's quantum computers are already available for scientists to use online! ❄️⚡</div>
+          <div class="level-text" data-level="scientist">Superconducting qubits use Josephson junctions — non-linear inductors from two superconductors separated by a thin insulator. Cooled to ~15 millikelvin (colder than space). Gate times: 10-100 nanoseconds. T2 coherence times: 10-500 microseconds. Current scale: 100-1000+ physical qubits (IBM Eagle, Osprey, Heron). Error rates: ~0.1-1% per gate. Advantage: fast gates, mature fabrication. Challenge: requires dilution refrigerators, limited connectivity.</div>
+          <div class="level-text" data-level="engineer">Qubit type: Transmon (LC circuit with Josephson junction EJ/EC &gt;&gt; 1, reduces charge noise). Hamiltonian: H = 4EC(n-ng)² - EJ cos(φ). Gate times: single-qubit ~20ns, two-qubit (CZ/CNOT) ~40-200ns. T1~100-500μs, T2~50-300μs on best devices. Error: ~0.1% single-qubit, ~0.5-1% two-qubit (IBM 2023). Connectivity: heavy-hex lattice (IBM), planar grid (Google). Google Sycamore: 53 qubits, claimed quantum supremacy 2019. IBM roadmap: 100,000 qubit systems by 2033 via modular architecture. Cryogenic control electronics (CryoSPEC) to reduce wiring overhead.</div>
+        </div>
+      </div>
+
+      <div class="future-card" style="--accent:#8b5cf6;">
+        <div class="future-card-header" onclick="toggleFutureCard(this)">
+          <span class="future-card-emoji">🔬</span>
+          <div style="flex:1;">
+            <div class="future-card-title">Trapped Ion Qubits</div>
+            <div class="future-card-teaser">The most accurate — perfect for cryptography and finance</div>
+          </div>
+          <button class="future-card-toggle">Learn More ▼</button>
+        </div>
+        <div class="future-card-detail">
+          <div class="level-text active" data-level="explorer">Trapped ion quantum computers use REAL ATOMS floating in space, held still by invisible electric fields! These atoms are the most accurate qubits in existence — like using the most careful, precise worker in the factory. IonQ and Honeywell use this technology! 🌟🔬</div>
+          <div class="level-text" data-level="scientist">Trapped ions use individual atomic ions (typically Ytterbium-171 or Barium-133) confined by electromagnetic Paul traps and cooled by laser cooling to near absolute zero. Gate times: 1-100 microseconds (slower than superconducting). T2 coherence: seconds to minutes (far superior to superconducting). Error rates: &lt;0.1% single-qubit, ~0.2-0.5% two-qubit (best in class). All-to-all connectivity (advantage over superconducting). Scale: 20-30 high-quality qubits currently. Key companies: IonQ, Quantinuum (Honeywell).</div>
+          <div class="level-text" data-level="engineer">Qubit encoding: hyperfine ground states (Yb-171: |F=0,mF=0⟩ and |F=1,mF=0⟩ at 12.6 GHz). Lasers or microwave pulses for gates. Two-qubit gate via Mølmer-Sørensen interaction through shared phonon bus: XX gate. Gate fidelity: 99.9%+ single-qubit (best demonstrated), 99.5%+ two-qubit. T2: hours in best systems. All-to-all connectivity enables lower SWAP overhead. Algorithmic Qubits (AQ): Quantinuum H2 achieves 56 AQ (quality metric). Challenge: slow gate speed limits circuit depth before decoherence. Photonic interconnects for multi-trap scaling.</div>
+        </div>
+      </div>
+
+      <div class="future-card" style="--accent:#fbbf24;">
+        <div class="future-card-header" onclick="toggleFutureCard(this)">
+          <span class="future-card-emoji">💡</span>
+          <div style="flex:1;">
+            <div class="future-card-title">Photonic Qubits</div>
+            <div class="future-card-teaser">Room temperature quantum — operating at the speed of light</div>
+          </div>
+          <button class="future-card-toggle">Learn More ▼</button>
+        </div>
+        <div class="future-card-detail">
+          <div class="level-text active" data-level="explorer">Photonic quantum computers use PARTICLES OF LIGHT as qubits! Since light can travel through fiber optic cables, photonic quantum computers can work at ROOM TEMPERATURE (no super-cold needed!) and could become the backbone of the quantum internet! 💡🌐</div>
+          <div class="level-text" data-level="scientist">Photonic quantum computers encode information in properties of photons: polarization, time-bin, or path. Key advantage: room-temperature operation, natural compatibility with fiber networks. Challenges: photon loss, probabilistic gates (linear optics gates succeed with some probability). Approaches: linear optical quantum computing (KLM protocol), boson sampling (quantum advantage demonstration), continuous-variable (Gaussian boson sampling). Companies: PsiQuantum (building million-qubit photonic QC using silicon photonics fab), Xanadu (Borealis device).</div>
+          <div class="level-text" data-level="engineer">ENCODING: Dual-rail (|0⟩=|1,0⟩, |1⟩=|0,1⟩ in two waveguides) or polarization. LINEAR OPTICAL GATES: Beamsplitters + phase shifters are Clifford gates. Non-linear (CNOT) requires ancilla photons + measurement + feedforward (KLM). BOSON SAMPLING: Sampling from |ψ_out⟩ = U|1^n 0^(m-n)⟩ is #P-hard classically — quantum advantage target. Xanadu Borealis (2022): 216-mode Gaussian boson sampler, claimed quantum advantage. PsiQuantum approach: fault-tolerant via photonic fusion-based QC (FBQC). Requires photon number-resolving detectors (SNSPDs) and low-loss waveguides. Silicon photonics: CMOS-compatible fab, potential for wafer-scale integration.</div>
+        </div>
+      </div>
+
+      <div class="future-card" style="--accent:#10b981;">
+        <div class="future-card-header" onclick="toggleFutureCard(this)">
+          <span class="future-card-emoji">⚛️</span>
+          <div style="flex:1;">
+            <div class="future-card-title">Neutral Atom Qubits</div>
+            <div class="future-card-teaser">Massively scalable — thousands of qubits in a programmable array</div>
+          </div>
+          <button class="future-card-toggle">Learn More ▼</button>
+        </div>
+        <div class="future-card-detail">
+          <div class="level-text active" data-level="explorer">Neutral atom quantum computers use thousands of individual atoms arranged in special patterns using laser tweezers — like picking up atoms with beams of light! You can arrange them in ANY pattern you want, making them super flexible. Harvard and MIT are building these! 🔵⚛️</div>
+          <div class="level-text" data-level="scientist">Neutral atom qubits use individual neutral atoms (Rubidium-87, Cesium-133, or Ytterbium) trapped in optical tweezer arrays. Two-qubit gates via Rydberg blockade: exciting atoms to high-energy Rydberg states creates strong dipole-dipole interactions. Advantages: highly scalable (demonstrated 1000+ qubit arrays), programmable connectivity, long coherence. Gate times: 0.1-1 microsecond. T2: 1-10 seconds. Error: ~0.5% two-qubit. Companies: QuEra (Harvard spin-off), Atom Computing, Pasqal, Infleqtion.</div>
+          <div class="level-text" data-level="engineer">RYDBERG BLOCKADE: When atom A is in Rydberg state |r⟩, the interaction V(R)=C6/R^6 (van der Waals, ~MHz at 5μm) prevents neighboring atom B from also exciting — enables CZ gate. Gate protocol: π pulse A→|r⟩, π pulse B conditional on blockade, π pulse A→|g⟩. Fidelity: 99.5% demonstrated. TWEEZER ARRAY: Acousto-optic deflectors or spatial light modulators arrange atoms in arbitrary 2D/3D geometries. QuEra Aquila: 256 qubits, analog mode. Harvard 2023: 48-qubit error-corrected logical qubits from 280 physical. SCALING: 10,000+ atom arrays demonstrated. Mid-circuit measurement + real-time feedforward enabled. DARPA: Funded via ONISQ program and quantum benchmark programs.</div>
+        </div>
+      </div>
+
+      <div class="future-card" style="--accent:#ef4444;">
+        <div class="future-card-header" onclick="toggleFutureCard(this)">
+          <span class="future-card-emoji">🌀</span>
+          <div style="flex:1;">
+            <div class="future-card-title">Topological Qubits</div>
+            <div class="future-card-teaser">Microsoft's moonshot — intrinsically error-free qubits</div>
+          </div>
+          <button class="future-card-toggle">Learn More ▼</button>
+        </div>
+        <div class="future-card-detail">
+          <div class="level-text active" data-level="explorer">Topological quantum computers are the most MYSTERIOUS and FUTURISTIC type! They use special particles called Majorana fermions that might be their own antiparticle — something that might not even exist yet in nature! Microsoft is building these and if they work, they could be the most powerful quantum computers ever! 🌀✨</div>
+          <div class="level-text" data-level="scientist">Topological qubits use non-Abelian anyons (specifically Majorana zero modes) to store quantum information in a way that is intrinsically protected from local noise — errors cancel themselves out topologically. This would dramatically reduce the error correction overhead. Microsoft is developing these using semiconductor nanowires (InAs) with superconducting Al layers. Status: theoretical promise is high, experimental realization is extremely challenging. 2023: Microsoft claimed first topological qubit demonstration (controversial, retracted/revised).</div>
+          <div class="level-text" data-level="engineer">MAJORANA ZERO MODES (MZM): Zero-energy bound states at ends of 1D topological superconductor. Created in semiconductor (InAs) nanowire + s-wave superconductor (Al) under magnetic field — proximity-induced p-wave superconductivity (Kitaev chain model). TOPOLOGICAL PROTECTION: Quantum information stored non-locally across two MZMs — local perturbations cannot flip the qubit (gap protection). BRAID OPERATIONS: Exchanging (braiding) non-Abelian anyons implements quantum gates topologically — immune to local errors. TARGET: logical error rate &lt;10^-6 without conventional error correction overhead. CHALLENGE: Demonstrating genuine non-Abelian statistics experimentally. Microsoft Azure Quantum: investing billions, claims 2025+ topological qubit systems.</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Section 2 — Comparison Table (Scientist + Engineer only) -->
+    <div class="sci-eng-only" style="flex-direction:column;margin-top:28px;">
+      <h3 style="color:#00d4ff;font-size:1.2rem;margin-bottom:8px;">📊 Side-by-Side Comparison</h3>
+      <div style="overflow-x:auto;">
+        <table class="hw-table">
+          <thead><tr>
+            <th>Technology</th><th>Gate Speed</th><th>Coherence (T2)</th><th>Temperature</th><th>Scale Today</th><th>Key Players</th>
+          </tr></thead>
+          <tbody>
+            <tr class="hw-row-cyan"><td>⚡ Superconducting</td><td>10-100 ns</td><td>10-500 μs</td><td>15 mK</td><td>100-1000+ qubits</td><td>IBM, Google</td></tr>
+            <tr class="hw-row-purple"><td>🔬 Trapped Ion</td><td>1-100 μs</td><td>Seconds-minutes</td><td>Room (trap)</td><td>20-30 high-quality</td><td>IonQ, Quantinuum</td></tr>
+            <tr class="hw-row-gold"><td>💡 Photonic</td><td>Picoseconds</td><td>N/A (no memory)</td><td>Room temp</td><td>100s modes</td><td>PsiQuantum, Xanadu</td></tr>
+            <tr class="hw-row-green"><td>⚛️ Neutral Atom</td><td>0.1-1 μs</td><td>1-10 seconds</td><td>μK (traps)</td><td>100-1000+ qubits</td><td>QuEra, Pasqal</td></tr>
+            <tr class="hw-row-red"><td>🌀 Topological</td><td>TBD</td><td>Very long (theoretical)</td><td>~mK</td><td>Experimental</td><td>Microsoft</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Section 3 — Which will win? (all levels) -->
+    <div class="explanation-box" style="margin-top:24px">
+      <h3>🏆 Which technology will win?</h3>
+      <div class="level-text active" data-level="explorer">Probably ALL of them! Different quantum computers are good at different things — like how some cars are fast, some are safe, and some can go off-road. Superconducting is winning RIGHT NOW for speed. Trapped Ion is winning for accuracy. Neutral atoms are winning for scale. And topological might win everything someday — if scientists can figure it out! 🏎️🔬⚛️</div>
+      <div class="level-text" data-level="scientist">The "winning" technology depends on the application. Near-term (2025-2030): superconducting (IBM/Google) and trapped ion (IonQ/Quantinuum) lead for NISQ applications. Medium-term (2030-2035): neutral atoms may dominate due to scalability and all-to-all connectivity. Photonic leads for quantum networking. Long-term: topological qubits could render other platforms obsolete IF Majorana qubits achieve predicted error rates — but this remains undemonstrated. Most experts expect a hybrid future with different platforms optimized for different tasks.</div>
+      <div class="level-text" data-level="engineer">BENCHMARKS FAVOR: Superconducting for circuit depth (fast gates, mature control). Trapped ion for algorithmic qubits (best fidelity, all-to-all). Neutral atom for analog simulation and scale. Photonic for quantum networking. FAULT TOLERANCE THRESHOLD: Surface code ~1% error threshold — superconducting at 0.5% approaching, trapped ion already below. RESOURCE ESTIMATION: RSA-2048 Shor's needs ~4096 logical qubits × ~1000 physical/logical = ~4M physical qubits. Current best: IBM 1121-qubit Condor (2023). Timeline to cryptographically-relevant QC: optimistic 2030, consensus 2035-2040. DARPA funding all 5 platforms via ONISQ, Quantum Benchmarking, and US2QC programs.</div>
+    </div>
+
   </div>
 
 </div><!-- end #tab-content -->
@@ -3940,6 +4073,10 @@ function resetTab(n) {
     case 9:
       document.querySelectorAll('.future-card-detail').forEach(d => d.classList.remove('open'));
       document.querySelectorAll('.future-card-toggle').forEach(b => b.textContent = 'Learn More ▼');
+      break;
+    case 10:
+      document.querySelectorAll('#tab10 .future-card-detail').forEach(d => d.classList.remove('open'));
+      document.querySelectorAll('#tab10 .future-card-toggle').forEach(b => b.textContent = 'Learn More ▼');
       break;
   }
 }
