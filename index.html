@@ -1619,6 +1619,47 @@ footer {
   flex-wrap: wrap;
   margin-bottom: 20px;
 }
+
+/* ===== TAB 7 — TELEPORTER ===== */
+.teleport-stage { display:flex; flex-direction:row; justify-content:center; align-items:center; gap:60px; min-height:200px; margin-bottom:24px; position:relative; }
+.teleport-particle { width:120px; height:120px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:3rem; background:#12122a; border:4px solid #8b5cf6; box-shadow:0 4px 20px rgba(139,92,246,0.4); }
+.teleport-bits { font-family:monospace; font-size:3rem; font-weight:900; color:#fbbf24; min-width:100px; text-align:center; }
+.teleport-step-counter { text-align:center; font-size:1.2rem; font-weight:700; color:#a0a0cc; margin-bottom:16px; }
+.teleport-controls { display:flex; flex-direction:column; gap:10px; align-items:center; margin-bottom:20px; }
+@keyframes entangleLine { 0%,100%{opacity:0.5;} 50%{opacity:1;} }
+.teleport-link-line { display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:120px; height:5px; background:linear-gradient(90deg,#00d4ff,#8b5cf6,#00d4ff); border-radius:4px; animation:entangleLine 0.8s ease-in-out infinite; }
+.teleport-link-line.show { display:block; }
+@keyframes flyBits { from{transform:translateX(-60px);opacity:0;} to{transform:translateX(0);opacity:1;} }
+.teleport-bits.flying { animation:flyBits 0.5s ease forwards; }
+
+/* ===== TAB 8 — SPEED TEST ===== */
+.speed-challenges { display:flex; flex-direction:row; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:20px; }
+.speed-challenge-btn { min-height:44px; padding:10px 16px; border:2px solid #2a2a4a; border-radius:10px; background:#12122a; color:#6060aa; font-size:0.9rem; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.speed-challenge-btn:hover { border-color:#8b5cf6; color:#c0c0ff; background:#1a1a3a; }
+.speed-challenge-btn.active { background:linear-gradient(135deg,#1a0a3a,#0a0a2a); color:#8b5cf6; border-color:#8b5cf6; }
+.speed-race { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:20px; }
+@media(max-width:600px){ .speed-race{grid-template-columns:1fr;} }
+.speed-race-panel { background:#12122a; border:2px solid #2a2a4a; border-radius:14px; padding:20px; }
+.speed-bar-label { font-weight:700; font-size:1.1rem; min-height:28px; margin-bottom:10px; }
+.speed-bar-track { height:28px; background:#0a0a1a; border-radius:14px; overflow:hidden; border:1px solid #2a2a4a; margin-bottom:8px; }
+.speed-bar-fill { height:100%; width:0%; border-radius:14px; }
+.speed-bar-classical { background:linear-gradient(90deg,#374151,#6b7280); }
+.speed-bar-quantum  { background:linear-gradient(90deg,#6a3fcf,#8b5cf6); }
+.speed-time-label { font-size:0.95rem; color:#a0a0cc; font-weight:600; }
+.speed-winner { display:none; text-align:center; background:linear-gradient(135deg,#1a0a3a,#0a0a2a); border:3px solid #fbbf24; border-radius:16px; padding:18px; font-size:1.4rem; font-weight:900; color:#fbbf24; animation:bannerPop 0.4s ease; }
+
+/* ===== TAB 9 — QUANTUM FUTURE ===== */
+.future-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:24px; }
+@media(max-width:700px){ .future-grid{grid-template-columns:1fr;} }
+.future-card { background:#12122a; border-radius:16px; padding:20px; border-left:4px solid var(--accent,#8b5cf6); }
+.future-card-header { display:flex; flex-direction:row; align-items:center; gap:12px; cursor:pointer; }
+.future-card-emoji { font-size:2rem; }
+.future-card-title { font-size:1.15rem; font-weight:800; color:#e0e0ff; flex:1; }
+.future-card-teaser { font-size:0.95rem; color:#8080aa; margin-top:4px; line-height:1.5; }
+.future-card-toggle { font-size:0.9rem; color:#8b5cf6; cursor:pointer; white-space:nowrap; padding:4px 10px; border:1px solid #8b5cf6; border-radius:8px; background:transparent; font-weight:600; }
+.future-card-detail { display:none; margin-top:12px; color:#b0b0d0; line-height:1.7; font-size:0.95rem; }
+.future-card-detail.open { display:block; animation:slideIn 0.3s ease; }
+.future-tagline { text-align:center; color:#6060aa; font-size:1rem; margin-top:16px; font-weight:600; }
 </style>
 </head>
 <body>
@@ -1647,6 +1688,9 @@ footer {
   <button class="tab-btn" data-tab="4">🏁 Quantum Race</button>
   <button class="tab-btn" data-tab="5">🔐 Code Breaker</button>
   <button class="tab-btn" id="tab6-btn" data-tab="6">🧠 Quantum Quiz</button>
+  <button class="tab-btn" data-tab="7">🎮 Teleporter</button>
+  <button class="tab-btn" data-tab="8">🏎️ Speed Test</button>
+  <button class="tab-btn" data-tab="9">🌍 Quantum Future</button>
 </div>
 
 <!-- ===== TAB CONTENT ===== -->
@@ -1956,6 +2000,179 @@ footer {
       <div class="quiz-score-num" id="quiz-score-num">10 / 10</div>
       <button class="btn btn-purple" onclick="restartQuiz()" style="margin-top:8px;">🔄 Try Again</button>
     </div>
+  </div>
+
+  <!-- TAB 7 — TELEPORTER -->
+  <div id="tab7" class="tab-panel">
+    <h2 style="text-align:center;font-size:2rem;margin-bottom:8px;color:#8b5cf6;">🎮 Quantum Teleporter</h2>
+    <p style="text-align:center;color:#8080aa;margin-bottom:24px;">Transfer quantum information without moving the particle itself!</p>
+
+    <div style="text-align:center;font-size:1.2rem;font-weight:700;color:#e0e0ff;margin-bottom:20px;">
+      Alice has a <span style="color:#fbbf24;">SECRET</span> state: <span id="alice-secret" style="font-size:2rem;">🟠</span>
+    </div>
+
+    <div class="teleport-step-counter" id="teleport-step-counter">Step 1 of 4</div>
+
+    <div class="teleport-stage" id="teleport-stage">
+      <div class="particle-wrap">
+        <div class="particle-label">Alice</div>
+        <div class="teleport-particle" id="tp-alice">🟠</div>
+      </div>
+      <div style="position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:120px;">
+        <div class="teleport-link-line" id="tp-link"></div>
+        <div class="teleport-bits" id="tp-bits" style="visibility:hidden;">??</div>
+      </div>
+      <div class="particle-wrap">
+        <div class="particle-label">Bob</div>
+        <div class="teleport-particle" id="tp-bob" style="border-color:#2a2a4a;box-shadow:none;">❓</div>
+      </div>
+    </div>
+
+    <div class="teleport-controls">
+      <button class="btn btn-purple" id="tp-btn1" onclick="teleportStep(1)">🔗 Step 1: Entangle Particles</button>
+      <button class="btn btn-blue" id="tp-btn2" onclick="teleportStep(2)" disabled>📡 Step 2: Measure Alice</button>
+      <button class="btn btn-gold" id="tp-btn3" onclick="teleportStep(3)" disabled>✉️ Step 3: Send Classical Bits</button>
+      <button class="btn btn-green" id="tp-btn4" onclick="teleportStep(4)" disabled>⚛️ Step 4: Apply Correction</button>
+      <div id="tp-victory" style="display:none;text-align:center;font-size:1.5rem;font-weight:900;color:#10b981;margin-top:8px;">🎉 Teleportation Complete! Bob received Alice's secret state!</div>
+      <button class="btn btn-gray btn-sm" onclick="teleportReset()" style="margin-top:8px;">🔄 Teleport Again</button>
+    </div>
+
+    <div class="explanation-box">
+      <h3>🔬 What's happening?</h3>
+      <div class="level-text explorer">TELEPORTATION IS REAL! We can move quantum information from one place to another without moving the particle itself! Scientists use this for the quantum internet!</div>
+      <div class="level-text scientist">Quantum teleportation transfers an unknown qubit state using a pre-shared Bell pair plus 2 classical bits. Alice performs a Bell measurement, sends 2 bits to Bob, who applies X and/or Z corrections. The original state is destroyed at Alice (no-cloning theorem upheld).</div>
+      <div class="level-text engineer">Protocol: (1) Share Bell pair |Φ⁺⟩ = (|00⟩+|11⟩)/√2. (2) Alice applies CNOT then H. (3) Measure: 4 outcomes each prob 0.25. (4) Bob applies I, X, Z, or XZ based on bits. Used in quantum repeater networks.</div>
+    </div>
+  </div>
+
+  <!-- TAB 8 — SPEED TEST -->
+  <div id="tab8" class="tab-panel">
+    <h2 style="text-align:center;font-size:2rem;margin-bottom:8px;color:#00d4ff;">🏎️ Quantum Speed Test</h2>
+    <p style="text-align:center;color:#8080aa;margin-bottom:20px;">See how quantum computers crush classical computers at hard problems!</p>
+
+    <div class="speed-challenges">
+      <button class="speed-challenge-btn active" data-challenge="0" onclick="runSpeedChallenge(0)">⚙️ Factor Number</button>
+      <button class="speed-challenge-btn" data-challenge="1" onclick="runSpeedChallenge(1)">🔍 Search Database</button>
+      <button class="speed-challenge-btn" data-challenge="2" onclick="runSpeedChallenge(2)">🧬 Simulate Molecule</button>
+      <button class="speed-challenge-btn" data-challenge="3" onclick="runSpeedChallenge(3)">🗺️ Optimize Route</button>
+      <button class="speed-challenge-btn" data-challenge="4" onclick="runSpeedChallenge(4)">🌤️ Predict Weather</button>
+    </div>
+
+    <div class="speed-race">
+      <div class="speed-race-panel">
+        <div class="speed-bar-label" style="color:#6b7280;">💻 Classical Computer</div>
+        <div class="speed-bar-track"><div class="speed-bar-fill speed-bar-classical" id="speed-classical-bar"></div></div>
+        <div class="speed-time-label" id="speed-classical-label">Millions of years</div>
+      </div>
+      <div class="speed-race-panel">
+        <div class="speed-bar-label" style="color:#8b5cf6;">⚛️ Quantum Computer</div>
+        <div class="speed-bar-track"><div class="speed-bar-fill speed-bar-quantum" id="speed-quantum-bar"></div></div>
+        <div class="speed-time-label" id="speed-quantum-label">~8 hours</div>
+      </div>
+    </div>
+    <div class="speed-winner" id="speed-winner">⚡ Quantum wins — <span id="speed-factor">1 trillion×</span> faster!</div>
+
+    <div class="explanation-box" id="speed-explanation">
+      <h3>🔬 How does it work?</h3>
+      <div class="level-text explorer">Quantum computers are like having a SUPERPOWER for hard problems! Some tasks that would take longer than the universe has existed can be done in HOURS!</div>
+      <div class="level-text scientist" id="speed-sci-text">Shor's algorithm factors large integers exponentially faster using quantum Fourier transform — breaking RSA encryption that classical computers would need millions of years to crack.</div>
+      <div class="level-text engineer" id="speed-eng-text">Shor's algorithm: O(log³N) quantum vs O(exp(N^1/3)) classical. For 2048-bit RSA: ~10¹³ years classically vs ~8 hours on a fault-tolerant QC.</div>
+    </div>
+  </div>
+
+  <!-- TAB 9 — QUANTUM FUTURE -->
+  <div id="tab9" class="tab-panel">
+    <h2 style="text-align:center;font-size:2rem;margin-bottom:8px;color:#10b981;">🌍 Our Quantum Future</h2>
+    <p style="text-align:center;color:#8080aa;margin-bottom:24px;">Quantum technology will transform every field — from medicine to space exploration.</p>
+
+    <div class="future-grid">
+
+      <div class="future-card" style="--accent:#ef4444;">
+        <div class="future-card-header" onclick="toggleFutureCard(this)">
+          <span class="future-card-emoji">💊</span>
+          <div style="flex:1;">
+            <div class="future-card-title">Quantum Medicine</div>
+            <div class="future-card-teaser">Drug discovery in years, not decades</div>
+          </div>
+          <button class="future-card-toggle">Learn More ▼</button>
+        </div>
+        <div class="future-card-detail">
+          Quantum computers can simulate protein folding and molecular interactions at the quantum level — something impossible on classical hardware. IBM and Google are already running early VQE (Variational Quantum Eigensolver) experiments on drug molecules. This could compress a 10-year drug discovery cycle to under 2 years, revolutionizing treatment of cancer, Alzheimer's, and antibiotic resistance.
+        </div>
+      </div>
+
+      <div class="future-card" style="--accent:#06b6d4;">
+        <div class="future-card-header" onclick="toggleFutureCard(this)">
+          <span class="future-card-emoji">🌤️</span>
+          <div style="flex:1;">
+            <div class="future-card-title">Climate &amp; Weather</div>
+            <div class="future-card-teaser">Fighting climate change with quantum simulation</div>
+          </div>
+          <button class="future-card-toggle">Learn More ▼</button>
+        </div>
+        <div class="future-card-detail">
+          Accurate climate modeling requires simulating millions of atmospheric variables simultaneously. Quantum algorithms can optimize energy grids, model carbon capture chemistry, and run weather simulations orders of magnitude faster. NOAA and research labs are already exploring quantum-enhanced weather prediction that could save thousands of lives through earlier storm warnings.
+        </div>
+      </div>
+
+      <div class="future-card" style="--accent:#fbbf24;">
+        <div class="future-card-header" onclick="toggleFutureCard(this)">
+          <span class="future-card-emoji">🔒</span>
+          <div style="flex:1;">
+            <div class="future-card-title">Unbreakable Security</div>
+            <div class="future-card-teaser">The quantum internet cannot be spied on</div>
+          </div>
+          <button class="future-card-toggle">Learn More ▼</button>
+        </div>
+        <div class="future-card-detail">
+          Quantum Key Distribution (QKD) uses the laws of physics — not math — to guarantee security. Any eavesdropper disturbs the quantum state, instantly alerting the receiver. China has deployed a 2,000 km QKD satellite network. DARPA is funding quantum networking research to build a quantum-secure internet backbone for government and military communications.
+        </div>
+      </div>
+
+      <div class="future-card" style="--accent:#8b5cf6;">
+        <div class="future-card-header" onclick="toggleFutureCard(this)">
+          <span class="future-card-emoji">🤖</span>
+          <div style="flex:1;">
+            <div class="future-card-title">Quantum AI</div>
+            <div class="future-card-teaser">Machine learning millions of times faster</div>
+          </div>
+          <button class="future-card-toggle">Learn More ▼</button>
+        </div>
+        <div class="future-card-detail">
+          The HHL algorithm solves linear systems exponentially faster on a quantum computer — a core operation in machine learning. Quantum Neural Networks (QNNs) and Quantum Machine Learning (QML) frameworks are being developed by Google, IBM, and Xanadu. Quantum-enhanced AI could train models in seconds that currently require weeks of GPU time.
+        </div>
+      </div>
+
+      <div class="future-card" style="--accent:#10b981;">
+        <div class="future-card-header" onclick="toggleFutureCard(this)">
+          <span class="future-card-emoji">🚀</span>
+          <div style="flex:1;">
+            <div class="future-card-title">Space &amp; Navigation</div>
+            <div class="future-card-teaser">GPS-free navigation with quantum sensors</div>
+          </div>
+          <button class="future-card-toggle">Learn More ▼</button>
+        </div>
+        <div class="future-card-detail">
+          Quantum inertial navigation uses atomic interferometry — measuring how atoms behave in gravity — to navigate with 1000× better precision than GPS. DARPA's Quantum Sensing program is developing quantum accelerometers and gravimeters that work underground, underwater, and in space where GPS signals don't reach. Submarines and spacecraft will navigate with quantum precision.
+        </div>
+      </div>
+
+      <div class="future-card" style="--accent:#00d4ff;">
+        <div class="future-card-header" onclick="toggleFutureCard(this)">
+          <span class="future-card-emoji">⚛️</span>
+          <div style="flex:1;">
+            <div class="future-card-title">Quantum Internet</div>
+            <div class="future-card-teaser">Data teleported, not transmitted</div>
+          </div>
+          <button class="future-card-toggle">Learn More ▼</button>
+        </div>
+        <div class="future-card-detail">
+          The quantum internet will distribute entangled particles across the globe using quantum repeaters. Unlike classical networks, quantum data cannot be intercepted — measuring it destroys it. The EU Quantum Flagship and US DOE have roadmaps targeting a continental quantum network by 2035. Early demonstrations already link universities across cities via entanglement distribution.
+        </div>
+      </div>
+
+    </div>
+    <div class="future-tagline">🌐 Built by Tetrabolt LLC — Securing the quantum future</div>
   </div>
 
 </div><!-- end #tab-content -->
@@ -2846,6 +3063,152 @@ function restartQuiz() {
 
 // Init quiz on load
 initQuiz();
+
+/* =====================================================
+   TAB 7 — QUANTUM TELEPORTER
+   ===================================================== */
+const TP_SECRETS = ['🟠','🟦','🟩','🟥','🟨'];
+let tpSecret = '🟠';
+let tpCurrentStep = 0;
+
+function teleportReset() {
+  tpSecret = TP_SECRETS[Math.floor(Math.random() * TP_SECRETS.length)];
+  tpCurrentStep = 0;
+  document.getElementById('alice-secret').textContent = tpSecret;
+  document.getElementById('tp-alice').textContent = tpSecret;
+  document.getElementById('tp-bob').textContent = '❓';
+  document.getElementById('tp-bob').style.borderColor = '#2a2a4a';
+  document.getElementById('tp-bob').style.boxShadow = 'none';
+  document.getElementById('tp-link').classList.remove('show');
+  const bitsEl = document.getElementById('tp-bits');
+  bitsEl.style.visibility = 'hidden';
+  bitsEl.classList.remove('flying');
+  bitsEl.textContent = '??';
+  document.getElementById('tp-victory').style.display = 'none';
+  document.getElementById('teleport-step-counter').textContent = 'Step 1 of 4';
+  ['tp-btn1','tp-btn2','tp-btn3','tp-btn4'].forEach((id, i) => {
+    const btn = document.getElementById(id);
+    btn.disabled = i > 0;
+    btn.style.opacity = i > 0 ? '0.4' : '1';
+  });
+}
+
+function teleportStep(step) {
+  const bits = ['00','01','10','11'][Math.floor(Math.random()*4)];
+  const bitsEl = document.getElementById('tp-bits');
+  const linkEl = document.getElementById('tp-link');
+  document.getElementById('teleport-step-counter').textContent = `Step ${step} of 4`;
+  document.getElementById('tp-btn'+step).disabled = true;
+  document.getElementById('tp-btn'+step).style.opacity = '0.4';
+
+  if (step === 1) {
+    linkEl.classList.add('show');
+    document.getElementById('tp-alice').style.borderColor = '#00d4ff';
+    document.getElementById('tp-alice').style.boxShadow = '0 0 24px rgba(0,212,255,0.7)';
+    document.getElementById('tp-bob').style.borderColor = '#ef4444';
+    document.getElementById('tp-bob').style.boxShadow = '0 0 24px rgba(239,68,68,0.7)';
+    enableTpBtn(2);
+  } else if (step === 2) {
+    bitsEl.textContent = bits;
+    bitsEl.style.visibility = 'visible';
+    enableTpBtn(3);
+  } else if (step === 3) {
+    bitsEl.classList.remove('flying');
+    void bitsEl.offsetWidth;
+    bitsEl.classList.add('flying');
+    linkEl.classList.remove('show');
+    enableTpBtn(4);
+  } else if (step === 4) {
+    document.getElementById('tp-bob').textContent = tpSecret;
+    document.getElementById('tp-bob').style.borderColor = '#10b981';
+    document.getElementById('tp-bob').style.boxShadow = '0 0 30px rgba(16,185,129,0.8)';
+    document.getElementById('tp-alice').textContent = '💨';
+    bitsEl.style.visibility = 'hidden';
+    document.getElementById('tp-victory').style.display = 'block';
+    document.getElementById('teleport-step-counter').textContent = '✅ Complete!';
+  }
+  tpCurrentStep = step;
+}
+
+function enableTpBtn(step) {
+  const btn = document.getElementById('tp-btn'+step);
+  btn.disabled = false;
+  btn.style.opacity = '1';
+}
+
+teleportReset();
+
+/* =====================================================
+   TAB 8 — SPEED TEST
+   ===================================================== */
+const SPEED_DATA = [
+  { label:'Factor Number',      classical:'Millions of years',        quantum:'~8 hours',             factor:'1 trillion×',
+    sci:'Shor\'s algorithm uses quantum Fourier transform to factor large integers in polynomial time — breaking RSA encryption that would take classical computers millions of years.',
+    eng:'Shor\'s: O(log³N) quantum vs O(exp(N^1/3)) classical. For 2048-bit RSA: ~10¹³ years classically vs ~8 hours on a fault-tolerant QC.' },
+  { label:'Search Database',    classical:'1,000,000 steps',          quantum:'~1,000 steps (Grover)', factor:'1,000×',
+    sci:'Grover\'s algorithm searches an unsorted database of N items in O(√N) steps — a quadratic speedup. It\'s provably optimal for unstructured search.',
+    eng:'Grover\'s: O(√N) quantum vs O(N) classical. For N=10⁶: 1000 vs 1,000,000 queries. Amplitude amplification doubles the probability amplitude each iteration.' },
+  { label:'Simulate Molecule',  classical:'Impossible classically',   quantum:'Minutes on QC',         factor:'∞',
+    sci:'Variational Quantum Eigensolver (VQE) simulates molecular electron structure natively in quantum superposition — classically exponential in the number of electrons.',
+    eng:'VQE: parameterized quantum circuit minimizes ⟨ψ|H|ψ⟩. For N electrons: 2^N classical states vs N qubits quantum. FeMoco nitrogenase: ~100 logical qubits needed.' },
+  { label:'Optimize Route',     classical:'Years for 50 cities',      quantum:'Hours (QAOA)',          factor:'10,000×',
+    sci:'QAOA (Quantum Approximate Optimization Algorithm) solves combinatorial optimization problems like the Traveling Salesman Problem using quantum interference to find near-optimal solutions.',
+    eng:'QAOA: p-layer alternating Ising+mixer unitaries. For 50-city TSP: classical BF O(N!) ≈ 3×10⁶⁴ paths. QAOA approximation ratio improves with circuit depth p.' },
+  { label:'Predict Weather',    classical:'Days of compute',          quantum:'Hours',                 factor:'100×',
+    sci:'Weather prediction involves solving massive systems of differential equations. Quantum linear systems algorithms (HHL) offer exponential speedup for certain classes of these equations.',
+    eng:'HHL algorithm: O(log N · κ²) quantum vs O(N · κ) classical for Ax=b with condition number κ. 10-day global forecast: quantum reduces classical supercomputer-days to hours.' }
+];
+
+let speedRaceActive = false;
+let currentChallenge = 0;
+
+function runSpeedChallenge(idx) {
+  if (speedRaceActive) return;
+  currentChallenge = idx;
+  document.querySelectorAll('.speed-challenge-btn').forEach((b,i) => b.classList.toggle('active', i === idx));
+
+  const d = SPEED_DATA[idx];
+  document.getElementById('speed-classical-label').textContent = d.classical;
+  document.getElementById('speed-quantum-label').textContent = d.quantum;
+  document.getElementById('speed-sci-text').textContent = d.sci;
+  document.getElementById('speed-eng-text').textContent = d.eng;
+  document.getElementById('speed-winner').style.display = 'none';
+  document.getElementById('speed-factor').textContent = d.factor;
+
+  const cBar = document.getElementById('speed-classical-bar');
+  const qBar = document.getElementById('speed-quantum-bar');
+  cBar.style.transition = 'none'; cBar.style.width = '0%';
+  qBar.style.transition = 'none'; qBar.style.width = '0%';
+
+  speedRaceActive = true;
+  void cBar.offsetWidth;
+
+  // Quantum bar: fills in ~0.8s
+  qBar.style.transition = 'width 0.8s linear';
+  qBar.style.width = '100%';
+
+  // Classical bar: fills in ~4s
+  cBar.style.transition = 'width 4s linear';
+  cBar.style.width = '100%';
+
+  setTimeout(() => {
+    document.getElementById('speed-winner').style.display = 'block';
+    speedRaceActive = false;
+  }, 4200);
+}
+
+runSpeedChallenge(0);
+
+/* =====================================================
+   TAB 9 — QUANTUM FUTURE ACCORDION
+   ===================================================== */
+function toggleFutureCard(header) {
+  const detail = header.parentElement.querySelector('.future-card-detail');
+  const btn = header.querySelector('.future-card-toggle');
+  const isOpen = detail.classList.contains('open');
+  detail.classList.toggle('open', !isOpen);
+  btn.textContent = isOpen ? 'Learn More ▼' : 'Close ▲';
+}
 </script>
 </body>
 </html>
