@@ -65,6 +65,81 @@ body {
   letter-spacing: 1px;
 }
 
+/* ===== LEVEL SELECTOR ===== */
+#level-selector {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 14px 12px;
+  background: #0d0d2b;
+  border-bottom: 2px solid #1a1a3a;
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+#level-label {
+  display: flex;
+  align-items: center;
+  font-size: 0.85rem;
+  color: #6060aa;
+  font-weight: 600;
+  letter-spacing: 1px;
+  margin-right: 4px;
+}
+
+.level-btn {
+  padding: 10px 20px;
+  border: 2px solid #2a2a4a;
+  border-radius: 12px;
+  background: #12122a;
+  color: #8080aa;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  line-height: 1.3;
+  min-height: 54px;
+}
+
+.level-btn small {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: #6060aa;
+  margin-top: 2px;
+}
+
+.level-btn:hover {
+  background: #1a1a3a;
+  color: #c0c0ff;
+  border-color: #4a4a6a;
+}
+
+.level-btn.active[data-level="explorer"] {
+  background: linear-gradient(135deg, #1a2a0a, #0a1a08);
+  color: #fbbf24;
+  border-color: #fbbf24;
+  box-shadow: 0 0 16px rgba(251,191,36,0.25);
+}
+.level-btn.active[data-level="explorer"] small { color: #d97706; }
+
+.level-btn.active[data-level="scientist"] {
+  background: linear-gradient(135deg, #0a1a3a, #0a0a2a);
+  color: #00d4ff;
+  border-color: #00d4ff;
+  box-shadow: 0 0 16px rgba(0,212,255,0.2);
+}
+.level-btn.active[data-level="scientist"] small { color: #0088aa; }
+
+.level-btn.active[data-level="engineer"] {
+  background: linear-gradient(135deg, #1a0a3a, #0a0a2a);
+  color: #8b5cf6;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 16px rgba(139,92,246,0.25);
+}
+.level-btn.active[data-level="engineer"] small { color: #6d28d9; }
+
 /* ===== TABS ===== */
 #tab-bar {
   display: flex;
@@ -105,6 +180,9 @@ body {
   margin-bottom: -2px;
 }
 
+#quiz-tab-btn { display: none; }
+#quiz-tab-btn.quiz-visible { display: inline-flex; }
+
 /* ===== MAIN CONTENT ===== */
 #tab-content {
   flex: 1;
@@ -116,6 +194,86 @@ body {
 
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
+
+/* ===== LEVEL BAR ===== */
+#level-bar {
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  background: #060614;
+  justify-content: center;
+  border-bottom: 2px solid #1a1a3a;
+  flex-wrap: wrap;
+}
+.level-btn {
+  padding: 8px 22px;
+  border: 2px solid #2a2a4a;
+  border-radius: 20px;
+  background: #12122a;
+  color: #8080aa;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+.level-btn span { display: block; font-size: 0.72rem; font-weight: 400; color: #6060aa; }
+.level-btn:hover { border-color: #4a4a7a; color: #c0c0ff; }
+.level-btn.active { background: #1a0a3a; color: #8b5cf6; border-color: #8b5cf6; }
+.level-btn.active span { color: #a080cc; }
+
+/* ===== LEVEL TEXT ===== */
+.level-text { display: none; }
+.level-text.active { display: block; }
+.sci-eng-only { display: none; }
+body.scientist .sci-eng-only,
+body.engineer .sci-eng-only { display: flex; }
+body.explorer #tab6-btn { display: none !important; }
+
+/* ===== QUIZ TAB ===== */
+#tab6 .quiz-header { text-align:center; font-size:2rem; margin-bottom:20px; color:#fbbf24; }
+.quiz-progress-wrap { margin-bottom:18px; }
+.quiz-progress-label { font-size:1rem; color:#a0a0cc; margin-bottom:6px; text-align:center; }
+.quiz-progress-bar { height:10px; background:#1a1a3a; border-radius:8px; overflow:hidden; }
+.quiz-progress-fill { height:100%; background:linear-gradient(90deg,#8b5cf6,#00d4ff); border-radius:8px; transition:width 0.4s; }
+.quiz-question-box { background:#12122a; border:2px solid #2a2a4a; border-radius:16px; padding:24px; margin-bottom:20px; }
+.quiz-question-text { font-size:1.2rem; font-weight:700; color:#e0e0ff; margin-bottom:20px; line-height:1.5; }
+.quiz-options { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(max-width:600px){ .quiz-options { grid-template-columns:1fr; } }
+.quiz-opt-btn { padding:14px 16px; border:2px solid #2a2a4a; border-radius:12px; background:#0d0d22; color:#c0c0e0; font-size:1rem; font-weight:600; cursor:pointer; text-align:left; transition:all 0.15s; line-height:1.4; }
+.quiz-opt-btn:hover:not(:disabled) { border-color:#8b5cf6; background:#1a0a3a; }
+.quiz-opt-btn.correct { border-color:#10b981!important; background:#0a2a1a!important; color:#10b981!important; }
+.quiz-opt-btn.wrong { border-color:#ef4444!important; background:#2a0a0a!important; color:#ef4444!important; }
+.quiz-opt-btn:disabled { cursor:default; }
+.quiz-score-reveal { display:none; text-align:center; background:#12122a; border:2px solid #fbbf24; border-radius:20px; padding:36px 24px; animation:bannerPop 0.5s ease; }
+.quiz-score-reveal.visible { display:block; }
+.quiz-badge { font-size:3rem; margin-bottom:12px; }
+.quiz-badge-title { font-size:1.8rem; font-weight:900; color:#fbbf24; margin-bottom:10px; }
+.quiz-score-num { font-size:1.3rem; color:#a0a0cc; margin-bottom:20px; }
+
+/* ===== PROB METER ===== */
+.prob-meter-wrap { margin:14px 0 4px; }
+.prob-meter-label { font-size:0.95rem; color:#a0a0cc; margin-bottom:6px; text-align:center; }
+.prob-meter-bar { height:14px; background:#1a1a3a; border-radius:8px; overflow:hidden; border:1px solid #2a2a4a; }
+.prob-meter-fill { height:100%; width:50%; background:linear-gradient(90deg,#8b5cf6,#00d4ff); border-radius:8px; transition:width 0.5s; }
+
+/* ===== MEASURE COUNTER ===== */
+.measure-counter { text-align:center; font-size:1rem; color:#a0a0cc; margin-bottom:14px; font-weight:600; }
+.measure-counter span { color:#fbbf24; }
+
+/* ===== EAVESDROPPER BOX ===== */
+.eavesdrop-box { background:#2a0a0a; border:2px solid #ef4444; border-radius:14px; padding:16px 20px; margin-top:14px; color:#ffaaaa; font-size:0.95rem; line-height:1.6; display:none; }
+.eavesdrop-box.visible { display:block; animation:slideIn 0.3s ease; }
+
+/* ===== PQC SECTION ===== */
+.pqc-section { display:none; background:#0a0a1a; border:2px solid #8b5cf6; border-radius:16px; padding:24px; margin-top:20px; animation:slideIn 0.5s ease; }
+.pqc-section.visible { display:block; }
+.pqc-title { font-size:1.3rem; font-weight:900; color:#8b5cf6; text-align:center; margin-bottom:16px; }
+.pqc-bars { display:flex; gap:24px; justify-content:center; align-items:flex-end; margin-bottom:16px; height:140px; }
+.pqc-bar-wrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
+.pqc-bar { width:80px; border-radius:8px 8px 0 0; }
+.pqc-bar-label { font-size:0.85rem; font-weight:700; text-align:center; max-width:90px; line-height:1.3; }
+.kyber-key-box { background:#0a1a0a; border:2px solid #10b981; border-radius:12px; padding:14px 16px; font-family:monospace; font-size:0.78rem; color:#10b981; word-break:break-all; min-height:60px; margin:10px 0; }
 
 /* ===== FOOTER ===== */
 footer {
@@ -152,6 +310,8 @@ footer {
 .btn-green  { background: linear-gradient(135deg, #059669, #10b981); color: #fff; }
 .btn-red    { background: linear-gradient(135deg, #b91c1c, #ef4444); color: #fff; }
 .btn-gray   { background: linear-gradient(135deg, #374151, #6b7280); color: #fff; }
+.btn-teal   { background: linear-gradient(135deg, #0e7490, #06b6d4); color: #fff; }
+.btn-sm { min-height: 44px; padding: 10px 18px; font-size: 0.95rem; }
 
 .explanation-box {
   background: linear-gradient(135deg, #0d1a2a, #0a0a1a);
@@ -341,6 +501,152 @@ footer {
 .coin-tally span.heads { color: #00d4ff; }
 .coin-tally span.tails { color: #ef4444; }
 
+/* ===== FLIP CHART (100 flips) ===== */
+#flip-chart-wrap {
+  display: none;
+  background: #12122a;
+  border: 2px solid #2a2a4a;
+  border-radius: 16px;
+  padding: 20px 24px;
+  margin: 16px 0 20px;
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.flip-chart-title {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #a0a0cc;
+  margin-bottom: 16px;
+}
+
+.flip-bars-container {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  height: 130px;
+  align-items: flex-end;
+}
+
+.flip-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 88px;
+}
+
+.flip-bar-track {
+  width: 88px;
+  height: 120px;
+  background: #0a0a1a;
+  border-radius: 8px 8px 0 0;
+  border: 1px solid #2a2a4a;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.flip-bar {
+  width: 100%;
+  border-radius: 6px 6px 0 0;
+  transition: height 0.12s ease;
+  min-height: 3px;
+}
+
+.flip-bar.heads-bar { background: linear-gradient(180deg, #00d4ff, #0066aa); }
+.flip-bar.tails-bar { background: linear-gradient(180deg, #ef4444, #991b1b); }
+
+.flip-bar-emoji { font-size: 1.2rem; }
+
+.flip-bar-count {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #e0e0ff;
+  min-height: 28px;
+}
+
+.flip-chart-footer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #8080aa;
+  margin-top: 10px;
+}
+
+/* ===== PROBABILITY METER ===== */
+.prob-meter-wrap {
+  background: #12122a;
+  border: 2px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin: 0 0 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.prob-meter-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #a0a0cc;
+}
+
+.prob-meter-bar-wrap {
+  width: 100%;
+  max-width: 320px;
+  height: 26px;
+  background: #1a1a3a;
+  border-radius: 13px;
+  overflow: hidden;
+  border: 1px solid #2a2a4a;
+  position: relative;
+}
+
+.prob-meter-fill {
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, #0066aa, #00d4ff);
+  border-radius: 13px;
+  position: relative;
+}
+
+.prob-meter-empty {
+  position: absolute;
+  top: 0; right: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, #991b1b, #ef4444);
+  border-radius: 0 13px 13px 0;
+}
+
+.prob-meter-center-mark {
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 3px;
+  height: 100%;
+  background: #fbbf24;
+  opacity: 0.8;
+  z-index: 2;
+}
+
+.prob-meter-pct {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e0e0ff;
+  display: flex;
+  gap: 24px;
+}
+
+.prob-meter-pct .p-heads { color: #00d4ff; }
+.prob-meter-pct .p-tails { color: #ef4444; }
+
 /* ===== TAB 3 — ENTANGLEMENT ===== */
 #tab3 h2 {
   text-align: center;
@@ -502,6 +808,55 @@ footer {
   color: #fbbf24;
 }
 
+/* ===== MEASURE COUNT ===== */
+.measure-count-wrap {
+  background: #12122a;
+  border: 2px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 12px 24px;
+  margin: 0 auto 16px;
+  text-align: center;
+  max-width: 280px;
+}
+
+.measure-count-label {
+  font-size: 0.85rem;
+  color: #8080aa;
+  margin-bottom: 2px;
+}
+
+.measure-count-num {
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #8b5cf6;
+  line-height: 1;
+}
+
+/* ===== EAVESDROPPER ALERT ===== */
+.eavesdrop-btn-wrap {
+  text-align: center;
+  margin: 8px 0 16px;
+}
+
+.eavesdrop-alert {
+  background: linear-gradient(135deg, #2a0a0a, #1a0a0a);
+  border: 2px solid #ef4444;
+  border-radius: 14px;
+  padding: 18px 20px;
+  margin: 0 0 16px;
+  font-size: 0.95rem;
+  color: #fca5a5;
+  line-height: 1.6;
+  display: none;
+  animation: fadeInUp 0.4s ease;
+}
+
+.eavesdrop-alert h4 {
+  color: #ef4444;
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
 /* ===== TAB 4 — QUANTUM RACE ===== */
 #tab4 h2 {
   text-align: center;
@@ -515,8 +870,111 @@ footer {
   gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
+
+/* Difficulty selector */
+.difficulty-selector-wrap {
+  display: none;
+  text-align: center;
+  margin-bottom: 16px;
+  background: #12122a;
+  border: 2px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 12px 20px;
+}
+
+.difficulty-selector-wrap.visible { display: block; }
+
+.diff-sel-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #a0a0cc;
+  margin-bottom: 10px;
+}
+
+.difficulty-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.diff-btn {
+  padding: 8px 22px;
+  border: 2px solid #2a2a4a;
+  border-radius: 10px;
+  background: #0d0d22;
+  color: #8080aa;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 42px;
+}
+
+.diff-btn.active {
+  background: linear-gradient(135deg, #0a1a2a, #0a0a1a);
+  color: #10b981;
+  border-color: #10b981;
+}
+
+.diff-btn:hover:not(.active) {
+  background: #1a1a3a;
+  color: #c0c0ff;
+}
+
+/* Paths counter */
+.paths-counter-wrap {
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.paths-counter-wrap.visible { display: grid; }
+
+.paths-counter-box {
+  background: #12122a;
+  border: 2px solid #2a2a4a;
+  border-radius: 10px;
+  padding: 10px 14px;
+  text-align: center;
+}
+
+.paths-counter-box.classical-box { border-color: #0066aa; }
+.paths-counter-box.quantum-box { border-color: #4c1d95; }
+
+.paths-counter-label {
+  font-size: 0.8rem;
+  color: #8080aa;
+  margin-bottom: 2px;
+}
+
+.paths-counter-num {
+  font-size: 1.5rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.classical-box .paths-counter-num { color: #00d4ff; }
+.quantum-box .paths-counter-num { color: #8b5cf6; }
+
+/* Complexity box */
+.complexity-info {
+  display: none;
+  background: #12122a;
+  border: 2px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+  color: #b0b0e0;
+  line-height: 1.6;
+}
+
+.complexity-info.visible { display: block; }
+.complexity-info strong { color: #8b5cf6; }
+.complexity-info .highlight { color: #fbbf24; font-weight: 700; }
 
 .race-panels {
   display: grid;
@@ -527,6 +985,7 @@ footer {
 
 @media (max-width: 700px) {
   .race-panels { grid-template-columns: 1fr; }
+  .paths-counter-wrap.visible { grid-template-columns: 1fr 1fr; }
 }
 
 .race-panel {
@@ -566,25 +1025,11 @@ footer {
   overflow: hidden;
 }
 
-.maze-cell {
-  background: #1a1a3a;
-}
-
-.maze-cell.wall {
-  background: #080818;
-}
-
-.maze-cell.path {
-  background: #1a1a3a;
-}
-
-.maze-cell.start {
-  background: #0a3a2a;
-}
-
-.maze-cell.exit {
-  background: #3a0a0a;
-}
+.maze-cell { background: #1a1a3a; }
+.maze-cell.wall  { background: #080818; }
+.maze-cell.path  { background: #1a1a3a; }
+.maze-cell.start { background: #0a3a2a; }
+.maze-cell.exit  { background: #3a0a0a; }
 
 .maze-dots-layer {
   position: absolute;
@@ -630,9 +1075,7 @@ footer {
   font-size: 2rem;
   margin-bottom: 20px;
   color: #fbbf24;
-}
-
-/* CSS Vault Art */
+}/* CSS Vault Art */
 .vault-wrap {
   display: flex;
   justify-content: center;
@@ -685,7 +1128,6 @@ footer {
   cursor: default;
 }
 
-/* Bolt circles at 8 positions */
 .vault-bolt {
   position: absolute;
   width: 18px;
@@ -805,7 +1247,6 @@ footer {
 .classical-crack .crack-result { color: #10b981; }
 .quantum-crack .crack-result   { color: #8b5cf6; }
 
-/* Quantum flickering grid */
 .quantum-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -829,7 +1270,7 @@ footer {
   font-variant-numeric: tabular-nums;
 }
 
-/* Quantum safe reveal */
+/* Quantum Safe Reveal BASIC (always shown) */
 #quantum-safe-reveal {
   display: none;
   background: linear-gradient(135deg, #0a1a0a, #0a0a1a);
@@ -851,7 +1292,6 @@ footer {
   text-align: center;
   font-size: 4rem;
   margin-bottom: 16px;
-  position: relative;
 }
 
 @keyframes sparkle {
@@ -890,6 +1330,288 @@ footer {
   margin-bottom: 16px;
 }
 
+/* ===== QUANTUM-SAFE UPGRADE SECTION (Scientist/Engineer) ===== */
+#quantum-upgrade-section {
+  display: none;
+  margin-top: 24px;
+  background: linear-gradient(135deg, #0a0a2a, #0a1a0a);
+  border: 2px solid #8b5cf6;
+  border-radius: 20px;
+  padding: 28px;
+  animation: slideIn 0.6s ease;
+}
+
+#quantum-upgrade-section.visible { display: block; }
+
+.upgrade-title {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #8b5cf6;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.key-size-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.key-bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.key-bar-label {
+  font-size: 0.9rem;
+  color: #a0a0cc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.key-bar-label .key-size-num {
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.key-bar-track {
+  height: 28px;
+  background: #0a0a1a;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #2a2a4a;
+}
+
+.key-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #0a0a1a;
+  white-space: nowrap;
+}
+
+.key-bar-fill.rsa { background: linear-gradient(90deg, #b91c1c, #ef4444); width: 100%; }
+.key-bar-fill.kyber { background: linear-gradient(90deg, #059669, #10b981); width: 40%; }
+
+.kyber-key-display {
+  display: none;
+  background: #0a0a1a;
+  border: 2px solid #10b981;
+  border-radius: 12px;
+  padding: 16px 18px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  color: #10b981;
+  word-break: break-all;
+  line-height: 1.5;
+  margin-top: 16px;
+  animation: fadeInUp 0.4s ease;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.kyber-key-display.visible { display: block; }
+
+.kyber-key-header {
+  color: #fbbf24;
+  font-weight: 700;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+}
+
+/* ===== TAB 6 — QUANTUM QUIZ ===== */
+#tab6 h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 8px;
+  color: #fbbf24;
+}
+
+#tab6 .quiz-subtitle {
+  text-align: center;
+  color: #8080aa;
+  margin-bottom: 28px;
+  font-size: 1rem;
+}
+
+.quiz-progress-bar-wrap {
+  background: #12122a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  height: 10px;
+  margin-bottom: 24px;
+  overflow: hidden;
+}
+
+.quiz-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #8b5cf6, #fbbf24);
+  border-radius: 8px;
+  transition: width 0.4s ease;
+}
+
+.quiz-question-card {
+  background: linear-gradient(135deg, #12122a, #0d0d22);
+  border: 2px solid #2a2a4a;
+  border-radius: 20px;
+  padding: 28px 24px;
+  margin-bottom: 24px;
+}
+
+.quiz-q-num {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #6060aa;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.quiz-question-text {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #e0e0ff;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.quiz-option {
+  background: #0d0d22;
+  border: 2px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-size: 1rem;
+  color: #c0c0e0;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  line-height: 1.4;
+}
+
+.quiz-option:hover:not(:disabled) {
+  background: #1a1a3a;
+  border-color: #8b5cf6;
+  color: #e0e0ff;
+  transform: translateX(4px);
+}
+
+.quiz-option.correct {
+  background: #0a2a1a;
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.quiz-option.wrong {
+  background: #2a0a0a;
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.quiz-option:disabled { cursor: default; }
+
+.quiz-feedback {
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  margin-top: 14px;
+  display: none;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.quiz-feedback.correct { background: #0a2a1a; color: #10b981; border: 1px solid #10b981; display: block; }
+.quiz-feedback.wrong   { background: #2a0a0a; color: #ef4444; border: 1px solid #ef4444; display: block; }
+
+.quiz-next-btn-wrap {
+  text-align: right;
+  margin-top: 20px;
+  display: none;
+}
+
+/* Results Screen */
+.quiz-results {
+  display: none;
+  text-align: center;
+  animation: bannerPop 0.5s ease;
+}
+
+.quiz-results.visible { display: block; }
+
+.quiz-badge {
+  font-size: 6rem;
+  display: block;
+  margin-bottom: 16px;
+  animation: badgeBounce 0.8s ease;
+}
+
+@keyframes badgeBounce {
+  0%   { transform: scale(0) rotate(-15deg); opacity: 0; }
+  50%  { transform: scale(1.2) rotate(5deg); opacity: 1; }
+  75%  { transform: scale(0.95) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.quiz-cert-title {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #fbbf24;
+  margin-bottom: 8px;
+}
+
+.quiz-cert-subtitle {
+  font-size: 1.1rem;
+  color: #a0a0cc;
+  margin-bottom: 28px;
+}
+
+.quiz-score-circle {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a0a3a, #0a0a2a);
+  border: 6px solid #8b5cf6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 28px;
+  box-shadow: 0 0 40px rgba(139,92,246,0.4);
+}
+
+.quiz-score-num {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #e0e0ff;
+  line-height: 1;
+}
+
+.quiz-score-denom {
+  font-size: 1rem;
+  color: #8080aa;
+  margin-top: 2px;
+}
+
+.quiz-grade-label {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 28px;
+}
+
+.quiz-play-again-wrap { margin-top: 20px; }
+
+/* Top controls */
 .top-controls {
   display: flex;
   gap: 12px;
@@ -910,6 +1632,13 @@ footer {
   </div>
 </div>
 
+<!-- ===== LEVEL BAR ===== -->
+<div id="level-bar">
+  <button class="level-btn active" data-level="explorer">🌟 Explorer <span>ages 6–10</span></button>
+  <button class="level-btn" data-level="scientist">🔬 Scientist <span>ages 11–14</span></button>
+  <button class="level-btn" data-level="engineer">⚛️ Engineer <span>ages 15+</span></button>
+</div>
+
 <!-- ===== TAB BAR ===== -->
 <div id="tab-bar">
   <button class="tab-btn active" data-tab="1">📖 How To Play</button>
@@ -917,6 +1646,7 @@ footer {
   <button class="tab-btn" data-tab="3">⚛️ Entanglement</button>
   <button class="tab-btn" data-tab="4">🏁 Quantum Race</button>
   <button class="tab-btn" data-tab="5">🔐 Code Breaker</button>
+  <button class="tab-btn" id="tab6-btn" data-tab="6">🧠 Quantum Quiz</button>
 </div>
 
 <!-- ===== TAB CONTENT ===== -->
@@ -974,15 +1704,27 @@ footer {
       <button class="btn btn-purple" onclick="prepareQubits()">🔮 Prepare Qubit</button>
       <button class="btn btn-blue" onclick="measureCoins()">👁️ Measure!</button>
       <button class="btn btn-gray" onclick="addCoin()">＋ Add Coin</button>
+      <button class="btn btn-gold" onclick="run100Flips()">🔁 Run 100 Flips</button>
     </div>
     <div class="coins-row" id="coins-row">
       <!-- coins injected by JS -->
     </div>
     <div class="coin-tally" id="coin-tally">Heads: <span class="heads">0</span> &nbsp;|&nbsp; Tails: <span class="tails">0</span></div>
+    <div class="prob-meter-wrap">
+      <div class="prob-meter-label" id="prob-label">P(Heads) = 50%</div>
+      <div class="prob-meter-bar"><div class="prob-meter-fill" id="prob-fill"></div></div>
+    </div>
     <div class="explanation-box">
       <h3>🧠 What's happening?</h3>
-      <p><strong>Classical coin</strong> = always 1 state (heads OR tails), even while spinning.<br>
-      <strong>Quantum coin (qubit)</strong> = BOTH heads AND tails at the same time while spinning — until you <em>look</em> at it! The moment you measure it, it "chooses" one. This magical both-at-once state is called <strong>superposition</strong>. It's how quantum computers try all answers at the same time!</p>
+      <div class="level-text active" data-level="explorer">
+        <p>A quantum coin is MAGIC — it is heads AND tails at the same time until you look! Scientists call this SUPERPOSITION! ✨</p>
+      </div>
+      <div class="level-text" data-level="scientist">
+        <p>A qubit exists in superposition of |0⟩ and |1⟩ simultaneously. Measuring it collapses the wave function to one definite state. Probability is |α|² where state is α|0⟩ + β|1⟩.</p>
+      </div>
+      <div class="level-text" data-level="engineer">
+        <p>Qubit |ψ⟩ = α|0⟩ + β|1⟩, |α|²+|β|²=1. Hadamard gate H|0⟩=(|0⟩+|1⟩)/√2. Measurement collapses to |0⟩ with probability |α|²=0.5.</p>
+      </div>
     </div>
   </div>
 
@@ -1015,6 +1757,13 @@ footer {
     <div class="entangle-controls">
       <button class="btn btn-purple" onclick="entangle()">🔗 Entangle!</button>
       <button class="btn btn-red" onclick="unentangle()">🔓 Un-entangle</button>
+      <button class="btn btn-gold sci-eng-only" style="display:none" onclick="toggleEavesdrop()">🕵️ Eavesdropper Alert</button>
+    </div>
+
+    <div class="measure-counter" id="measure-counter">Alice measured: <span id="alice-count">0</span> times &nbsp;|&nbsp; Bob responded: <span id="bob-count">0</span> times</div>
+
+    <div class="eavesdrop-box" id="eavesdrop-box">
+      🕵️ <strong>Eavesdropper Detected!</strong> If a spy tries to intercept an entangled quantum message, they must <em>measure</em> the particles — which instantly destroys the quantum state and leaves a detectable fingerprint. The receiver sees errors in the data and <strong>knows they've been spied on</strong>. This is the basis of <strong>Quantum Key Distribution (QKD)</strong> — the first provably unbreakable communication system in history.
     </div>
 
     <div class="distance-wrap">
@@ -1030,7 +1779,15 @@ footer {
 
     <div class="explanation-box">
       <h3>🧠 What's happening?</h3>
-      <p>Einstein called this <strong>"spooky action at a distance."</strong> When two particles are <em>entangled</em>, changing one instantly affects its partner — no matter how far apart they are! Even if Bob is on Mars (225 million km away), the moment Alice changes, Bob responds <strong>instantly</strong>. Scientists have proven this is real! This is used in quantum cryptography to make communication that is impossible to spy on.</p>
+      <div class="level-text active" data-level="explorer">
+        <p>When two particles become best friends forever, touching one INSTANTLY tells its friend — even from across the UNIVERSE! Einstein was amazed! 🌌</p>
+      </div>
+      <div class="level-text" data-level="scientist">
+        <p>Entangled particles share correlated quantum states. Measuring one instantly collapses its partner regardless of distance — confirmed by Bell test experiments (Aspect 1982, Delft 2015).</p>
+      </div>
+      <div class="level-text" data-level="engineer">
+        <p>CHSH inequality: S = |E(a,b)-E(a,b')+E(a',b)+E(a',b')| ≤ 2 classically, quantum allows S ≤ 2√2 ≈ 2.83. Enables BB84 QKD protocol.</p>
+      </div>
     </div>
   </div>
 
@@ -1066,9 +1823,22 @@ footer {
 
     <div class="race-banner" id="race-banner"></div>
 
+    <div class="sci-eng-only" style="display:none;justify-content:center;gap:40px;margin-bottom:12px;font-size:1rem;font-weight:700;">
+      <span>🐢 Classical: O(N) — one path at a time</span>
+      <span>⚡ Quantum: O(√N) — all paths simultaneously</span>
+    </div>
+
     <div class="explanation-box">
       <h3>🧠 What's happening?</h3>
-      <p>A <strong>classical computer</strong> is like one explorer trying every path one at a time — slow! A <strong>quantum computer</strong> is like having thousands of explorers trying ALL paths at the same time. The moment any explorer reaches the exit, the quantum computer is done! This is called <strong>quantum parallelism</strong>, and it's why quantum computers can solve mazes (and much harder problems) incredibly fast.</p>
+      <div class="level-text active" data-level="explorer">
+        <p>A <strong>classical computer</strong> is like ONE explorer trying every path one at a time — so slow! A <strong>quantum computer</strong> is like having THOUSANDS of explorers trying ALL paths at the SAME time! ⚡ The moment any explorer finds the exit, done!</p>
+      </div>
+      <div class="level-text" data-level="scientist">
+        <p>Classical search tries paths sequentially: <strong>O(N)</strong> operations. <strong>Grover's algorithm</strong> exploits quantum superposition to search all paths in parallel, achieving a quadratic speedup: <strong>O(√N)</strong>. For N=1,000,000 paths: classical needs 1,000,000 steps; quantum needs only ~1,000.</p>
+      </div>
+      <div class="level-text" data-level="engineer">
+        <p><strong>Grover's algorithm</strong> uses amplitude amplification: apply oracle O and diffusion operator D repeatedly for O(√N) iterations, each flipping the phase of the target state. After √N iterations, the target amplitude is O(1) and measurement succeeds with high probability. Quadratic speedup is provably optimal for unstructured search (BBBV theorem).</p>
+      </div>
     </div>
   </div>
 
@@ -1140,11 +1910,51 @@ footer {
       </div>
       <div class="safe-title">🛡️ But what about quantum-safe encryption?</div>
       <div class="safe-text">
-        Standard encryption uses math problems that quantum computers can solve instantly. In 2024, NIST approved new quantum-safe encryption standards that even quantum computers can't break. Companies like <strong>Tetrabolt LLC</strong> use tools like <strong>wolfSSL</strong> to protect critical infrastructure today.
+        <div class="level-text active" data-level="explorer">Quantum computers can try ALL passwords at the SAME time! 😱 But scientists are building NEW super-locks that even quantum computers can't break! Your data will stay safe! 🔒</div>
+        <div class="level-text" data-level="scientist">Standard RSA encryption relies on the difficulty of factoring large numbers — a problem <strong>Shor's algorithm</strong> solves exponentially faster than any classical computer. RSA-2048 would fall in hours on a large quantum computer. In 2024, <strong>NIST approved post-quantum standards</strong>: CRYSTALS-Kyber, Dilithium, and SPHINCS+ — designed to resist quantum attacks.</div>
+        <div class="level-text" data-level="engineer">Shor's algorithm period-finds using QFT in O((log N)³), vs classical O(e^(log N)^(1/3)) for RSA factoring. RSA-2048 requires ~4000 logical qubits. <strong>NIST FIPS 203</strong> (ML-KEM/Kyber), <strong>FIPS 204</strong> (ML-DSA/Dilithium), <strong>FIPS 205</strong> (SLH-DSA/SPHINCS+). Tetrabolt uses wolfSSL 5.9.0 (FIPS 140-3 certs #4718 &amp; #5041) with liboqs for PQC migration.</div>
       </div>
-      <div class="safe-card">
-        Your data stays safe — even from quantum computers. ✅
+      <div class="safe-card">Your data stays safe — even from quantum computers. ✅</div>
+
+      <!-- PQC Section (Scientist/Engineer only) -->
+      <div class="pqc-section sci-eng-only" id="pqc-section" style="display:none">
+        <div class="pqc-title">🔑 RSA vs Quantum-Safe Encryption</div>
+        <div class="pqc-bars">
+          <div class="pqc-bar-wrap">
+            <div class="pqc-bar" style="height:120px;background:linear-gradient(180deg,#ef4444,#991b1b);"></div>
+            <div class="pqc-bar-label" style="color:#ef4444;">RSA-2048<br>❌ Quantum can break this</div>
+          </div>
+          <div class="pqc-bar-wrap">
+            <div class="pqc-bar" style="height:60px;background:linear-gradient(180deg,#10b981,#065f46);"></div>
+            <div class="pqc-bar-label" style="color:#10b981;">CRYSTALS-Kyber<br>✅ Quantum-safe!</div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-bottom:12px;">
+          <button class="btn btn-green" onclick="generateKyberKey()">🔑 Generate Quantum-Safe Key</button>
+        </div>
+        <div class="kyber-key-box" id="kyber-key-box">Click "Generate Quantum-Safe Key" to see a Kyber-1024 public key...</div>
       </div>
+    </div>
+  </div>
+
+  <!-- TAB 6 — QUANTUM QUIZ -->
+  <div id="tab6" class="tab-panel">
+    <h2 class="quiz-header">🧠 Quantum Quiz</h2>
+    <div id="quiz-container">
+      <div class="quiz-progress-wrap">
+        <div class="quiz-progress-label" id="quiz-progress-label">Question 1 of 10</div>
+        <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div></div>
+      </div>
+      <div class="quiz-question-box">
+        <div class="quiz-question-text" id="quiz-question-text">Loading question...</div>
+        <div class="quiz-options" id="quiz-options"></div>
+      </div>
+    </div>
+    <div class="quiz-score-reveal" id="quiz-score-reveal">
+      <div class="quiz-badge" id="quiz-badge">🏆</div>
+      <div class="quiz-badge-title" id="quiz-badge-title">Quantum Master!</div>
+      <div class="quiz-score-num" id="quiz-score-num">10 / 10</div>
+      <button class="btn btn-purple" onclick="restartQuiz()" style="margin-top:8px;">🔄 Try Again</button>
     </div>
   </div>
 
@@ -1826,6 +2636,236 @@ function showQuantumSafe() {
 
 // Initialize
 generateNewPin();
+
+/* =====================================================
+   LEVEL SYSTEM
+   ===================================================== */
+let currentLevel = 'explorer';
+
+function setLevel(level) {
+  currentLevel = level;
+  // Update body class
+  document.body.classList.remove('explorer','scientist','engineer');
+  document.body.classList.add(level);
+  // Update level buttons
+  document.querySelectorAll('.level-btn').forEach(b => b.classList.toggle('active', b.dataset.level === level));
+  // Update all level-text divs
+  document.querySelectorAll('.level-text').forEach(el => {
+    el.classList.toggle('active', el.dataset.level === level);
+  });
+  // Show/hide sci-eng-only elements
+  document.querySelectorAll('.sci-eng-only').forEach(el => {
+    el.style.display = (level === 'scientist' || level === 'engineer') ? (el.tagName === 'BUTTON' ? 'inline-flex' : 'flex') : 'none';
+  });
+  // Update prob-label
+  const pl = document.getElementById('prob-label');
+  if (pl) pl.textContent = (level === 'explorer') ? 'P(Heads) = 50%' : 'P(|0⟩) = 0.5';
+  // Refresh quiz if on tab 6
+  if (document.getElementById('tab6').classList.contains('active')) initQuiz();
+}
+
+document.querySelectorAll('.level-btn').forEach(btn => {
+  btn.addEventListener('click', () => setLevel(btn.dataset.level));
+});
+
+// Init body class
+document.body.classList.add('explorer');
+
+/* =====================================================
+   COIN FLIP — RUN 100 FLIPS
+   ===================================================== */
+let flipRunning = false;
+function run100Flips() {
+  if (flipRunning) return;
+  flipRunning = true;
+  let h = 0, t = 0, count = 0;
+  const total = 100;
+  const interval = setInterval(() => {
+    const result = Math.random() < 0.5 ? 'H' : 'T';
+    if (result === 'H') h++; else t++;
+    count++;
+    // Update tally
+    const el = document.getElementById('coin-tally');
+    el.innerHTML = `Heads: <span class="heads">${h}</span> &nbsp;|&nbsp; Tails: <span class="tails">${t}</span> &nbsp;<span style="color:#6060aa;font-size:0.85rem">(${count}/100)</span>`;
+    // Update prob meter
+    const pct = Math.round((h / count) * 100);
+    const fill = document.getElementById('prob-fill');
+    if (fill) fill.style.width = pct + '%';
+    const pl = document.getElementById('prob-label');
+    if (pl) pl.textContent = (currentLevel === 'explorer') ? `P(Heads) = ${pct}%` : `P(|0⟩) = ${(h/count).toFixed(2)}`;
+    if (count >= total) {
+      clearInterval(interval);
+      flipRunning = false;
+    }
+  }, 40);
+}
+
+/* =====================================================
+   ENTANGLEMENT — MEASURE COUNTER + EAVESDROP
+   ===================================================== */
+let aliceMeasureCount = 0;
+const _origAliceClick = aliceClick;
+// Patch aliceClick to also increment counter
+window.aliceClick = function() {
+  _origAliceClick();
+  aliceMeasureCount++;
+  const ac = document.getElementById('alice-count');
+  const bc = document.getElementById('bob-count');
+  if (ac) ac.textContent = aliceMeasureCount;
+  if (bc) bc.textContent = aliceMeasureCount;
+};
+
+let eavesdropVisible = false;
+function toggleEavesdrop() {
+  eavesdropVisible = !eavesdropVisible;
+  const box = document.getElementById('eavesdrop-box');
+  if (box) box.classList.toggle('visible', eavesdropVisible);
+}
+
+/* =====================================================
+   CODE BREAKER — PQC / KYBER KEY GENERATOR
+   ===================================================== */
+function generateKyberKey() {
+  const box = document.getElementById('kyber-key-box');
+  if (!box) return;
+  box.textContent = '';
+  const chars = '0123456789abcdef';
+  const len = 192; // fake Kyber-1024 public key snippet
+  let key = 'pk_kyber1024_';
+  for (let i = 0; i < len; i++) key += chars[Math.floor(Math.random()*16)];
+  // Type it out
+  let i = 0;
+  const typeInterval = setInterval(() => {
+    box.textContent += key[i];
+    i++;
+    if (i >= key.length) clearInterval(typeInterval);
+  }, 12);
+}
+
+// Show PQC section when crack completes (patch showQuantumSafe)
+const _origShowQuantumSafe = showQuantumSafe;
+window.showQuantumSafe = function() {
+  _origShowQuantumSafe();
+  if (currentLevel === 'scientist' || currentLevel === 'engineer') {
+    const pqc = document.getElementById('pqc-section');
+    if (pqc) { pqc.style.display = 'block'; pqc.style.animation = 'slideIn 0.5s ease'; }
+  }
+};
+
+/* =====================================================
+   QUANTUM QUIZ
+   ===================================================== */
+const QUIZ_SCIENTIST = [
+  { q: "What is quantum superposition?", opts: ["Both states at once","One state only","Two particles colliding","A type of computer"], ans: 0 },
+  { q: "What does quantum entanglement mean?", opts: ["Particles stay correlated instantly","Particles physically merge","Makes internet faster","A math problem"], ans: 0 },
+  { q: "What event collapses a quantum superposition?", opts: ["Measurement / observation","Temperature change","Gravity","Waiting long enough"], ans: 0 },
+  { q: "What is a qubit?", opts: ["A quantum bit — the basic unit of quantum info","A quantum byte","A type of laser","A subatomic particle"], ans: 0 },
+  { q: "Who experimentally proved entanglement is real?", opts: ["Bell test experiments (Aspect, Zeilinger, Clauser)","Einstein in 1935","Newton's laws","Alan Turing"], ans: 0 },
+  { q: "Why are quantum computers faster for some tasks?", opts: ["Superposition lets them try all answers at once","They have better CPUs","More RAM","Faster clock speeds"], ans: 0 },
+  { q: "What does NIST stand for?", opts: ["National Institute of Standards & Technology","Nuclear Information Systems Tech","New Internet Security Tools","None of these"], ans: 0 },
+  { q: "Which algorithm can break RSA encryption?", opts: ["Shor's algorithm","Grover's algorithm","Bell's theorem","Hadamard transform"], ans: 0 },
+  { q: "What is Quantum Key Distribution (QKD) used for?", opts: ["Provably secure communication","Faster internet speeds","Breaking passwords","Storing quantum data"], ans: 0 },
+  { q: "When did NIST approve post-quantum cryptography standards?", opts: ["2024","2020","2016","2022"], ans: 0 },
+];
+
+const QUIZ_ENGINEER = [
+  { q: "Which quantum gate creates equal superposition from |0⟩?", opts: ["Hadamard (H) gate","CNOT gate","Pauli-X gate","Toffoli gate"], ans: 0 },
+  { q: "What does |ψ⟩ = α|0⟩ + β|1⟩ represent?", opts: ["A general qubit state vector","A Bell state","A density matrix","A unitary operator"], ans: 0 },
+  { q: "What is the classical upper bound of the CHSH inequality?", opts: ["S ≤ 2","S ≤ 2√2","S ≤ 4","S ≤ 1"], ans: 0 },
+  { q: "What is the time complexity of Shor's factoring algorithm?", opts: ["O((log N)³)","O(N²)","O(2^N)","O(N log N)"], ans: 0 },
+  { q: "NIST FIPS 203 standardizes which algorithm?", opts: ["ML-KEM (CRYSTALS-Kyber)","ML-DSA (Dilithium)","SLH-DSA (SPHINCS+)","RSA-4096"], ans: 0 },
+  { q: "What does the quantum no-cloning theorem state?", opts: ["An unknown quantum state cannot be copied","Qubits cannot be measured","Entanglement has distance limits","Superposition is always lossy"], ans: 0 },
+  { q: "What is Grover's algorithm's speedup for unstructured search?", opts: ["O(√N) — quadratic speedup","O(log N) — logarithmic","O(N/2) — linear","O(N²) — quadratic slowdown"], ans: 0 },
+  { q: "Approximately how many logical qubits are needed to break RSA-2048?", opts: ["~4,000 logical qubits","~100 qubits","~1,000,000 qubits","~50 qubits"], ans: 0 },
+  { q: "Which protocol uses entanglement for provably secure communication?", opts: ["BB84 (Bennett-Brassard 1984)","RSA","AES-256","TLS 1.3"], ans: 0 },
+  { q: "Which wolfSSL FIPS 140-3 certificate covers TLS 1.3 with ECC?", opts: ["#4718","#1234","#9001","#5041"], ans: 0 },
+];
+
+let quizQuestions = [];
+let quizIndex = 0;
+let quizScore = 0;
+let quizAnswered = false;
+
+function initQuiz() {
+  quizQuestions = (currentLevel === 'engineer') ? [...QUIZ_ENGINEER] : [...QUIZ_SCIENTIST];
+  quizIndex = 0;
+  quizScore = 0;
+  document.getElementById('quiz-container').style.display = 'block';
+  document.getElementById('quiz-score-reveal').classList.remove('visible');
+  showQuizQuestion();
+}
+
+function showQuizQuestion() {
+  const q = quizQuestions[quizIndex];
+  quizAnswered = false;
+  document.getElementById('quiz-progress-label').textContent = `Question ${quizIndex+1} of ${quizQuestions.length}`;
+  document.getElementById('quiz-progress-fill').style.width = ((quizIndex / quizQuestions.length) * 100) + '%';
+  document.getElementById('quiz-question-text').textContent = q.q;
+  const opts = document.getElementById('quiz-options');
+  opts.innerHTML = '';
+  // Shuffle options keeping track of correct
+  const indices = [0,1,2,3];
+  // Don't shuffle — keep order consistent, just render
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-opt-btn';
+    btn.textContent = opt;
+    btn.onclick = () => answerQuiz(i, q.ans, btn);
+    opts.appendChild(btn);
+  });
+}
+
+function answerQuiz(selected, correct, btn) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const allBtns = document.querySelectorAll('.quiz-opt-btn');
+  allBtns.forEach(b => b.disabled = true);
+  if (selected === correct) {
+    btn.classList.add('correct');
+    quizScore++;
+  } else {
+    btn.classList.add('wrong');
+    allBtns[correct].classList.add('correct');
+  }
+  setTimeout(() => {
+    quizIndex++;
+    if (quizIndex >= quizQuestions.length) {
+      showQuizResult();
+    } else {
+      showQuizQuestion();
+    }
+  }, 900);
+}
+
+function showQuizResult() {
+  document.getElementById('quiz-container').style.display = 'none';
+  const reveal = document.getElementById('quiz-score-reveal');
+  reveal.classList.add('visible');
+  const pct = quizScore / quizQuestions.length;
+  let badge, title;
+  if (pct >= 0.8) { badge = '🏆'; title = 'Quantum Master!'; }
+  else if (pct >= 0.5) { badge = '🎓'; title = 'Quantum Graduate!'; }
+  else { badge = '🔬'; title = 'Keep Experimenting!'; }
+  document.getElementById('quiz-badge').textContent = badge;
+  document.getElementById('quiz-badge-title').textContent = title;
+  document.getElementById('quiz-score-num').textContent = `${quizScore} / ${quizQuestions.length} correct`;
+}
+
+function restartQuiz() {
+  document.getElementById('quiz-container').style.display = 'block';
+  document.getElementById('quiz-score-reveal').classList.remove('visible');
+  initQuiz();
+}
+
+// Patch switchTab to init quiz when switching to tab 6
+const _origSwitchTab = switchTab;
+window.switchTab = function(id) {
+  _origSwitchTab(id);
+  if (String(id) === '6') initQuiz();
+};
+
+// Init quiz on load
+initQuiz();
 </script>
 </body>
 </html>
