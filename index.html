@@ -1971,6 +1971,7 @@ function switchTab(id) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === String(id)));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'tab' + id));
   if (id === '4') initMazes();
+  if (String(id) === '6') initQuiz();
 }
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -2640,7 +2641,7 @@ generateNewPin();
 /* =====================================================
    LEVEL SYSTEM
    ===================================================== */
-let currentLevel = 'explorer';
+let currentLevel = 'explorer'; // eslint-disable-line (single declaration)
 
 function setLevel(level) {
   currentLevel = level;
@@ -2704,16 +2705,6 @@ function run100Flips() {
    ENTANGLEMENT — MEASURE COUNTER + EAVESDROP
    ===================================================== */
 let aliceMeasureCount = 0;
-const _origAliceClick = aliceClick;
-// Patch aliceClick to also increment counter
-window.aliceClick = function() {
-  _origAliceClick();
-  aliceMeasureCount++;
-  const ac = document.getElementById('alice-count');
-  const bc = document.getElementById('bob-count');
-  if (ac) ac.textContent = aliceMeasureCount;
-  if (bc) bc.textContent = aliceMeasureCount;
-};
 
 let eavesdropVisible = false;
 function toggleEavesdrop() {
@@ -2742,15 +2733,7 @@ function generateKyberKey() {
   }, 12);
 }
 
-// Show PQC section when crack completes (patch showQuantumSafe)
-const _origShowQuantumSafe = showQuantumSafe;
-window.showQuantumSafe = function() {
-  _origShowQuantumSafe();
-  if (currentLevel === 'scientist' || currentLevel === 'engineer') {
-    const pqc = document.getElementById('pqc-section');
-    if (pqc) { pqc.style.display = 'block'; pqc.style.animation = 'slideIn 0.5s ease'; }
-  }
-};
+// PQC reveal is handled inside showQuantumSafe() below
 
 /* =====================================================
    QUANTUM QUIZ
@@ -2856,13 +2839,6 @@ function restartQuiz() {
   document.getElementById('quiz-score-reveal').classList.remove('visible');
   initQuiz();
 }
-
-// Patch switchTab to init quiz when switching to tab 6
-const _origSwitchTab = switchTab;
-window.switchTab = function(id) {
-  _origSwitchTab(id);
-  if (String(id) === '6') initQuiz();
-};
 
 // Init quiz on load
 initQuiz();
