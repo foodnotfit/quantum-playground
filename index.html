@@ -2480,15 +2480,15 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
   <!-- TAB 11 — REFERENCES -->
   <div id="tab11" class="tab-panel">
     <h2 style="text-align:center;font-size:2rem;margin-bottom:8px;color:#00d4ff;">📚 Scientific References</h2>
-    <p style="text-align:center;color:#8080aa;margin-bottom:28px;">All concepts in this playground are grounded in peer-reviewed science. These are the foundational papers and authoritative sources used to build each module.</p>
+    <p style="text-align:center;color:#8080aa;margin-bottom:28px;">Every concept in this playground comes from real science. Find the sources here — whether you're 8 or 80.</p>
 
     <style>
       .ref-section { margin-bottom: 32px; }
-      .ref-section-title { font-size: 1.15rem; font-weight: 800; color: #00d4ff; border-bottom: 2px solid #1a1a3a; padding-bottom: 8px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+      .ref-section-title { font-size: 1.1rem; font-weight: 800; color: #00d4ff; border-bottom: 2px solid #1a1a3a; padding-bottom: 8px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
       .ref-list { display: flex; flex-direction: column; gap: 12px; }
       .ref-item { background: #12122a; border: 1px solid #2a2a4a; border-radius: 12px; padding: 14px 18px; transition: border-color 0.2s; }
       .ref-item:hover { border-color: #4a4a7a; }
-      .ref-item a { color: #8b5cf6; font-weight: 700; font-size: 0.95rem; text-decoration: none; word-break: break-all; }
+      .ref-item a { color: #8b5cf6; font-weight: 700; font-size: 0.9rem; text-decoration: none; word-break: break-all; }
       .ref-item a:hover { color: #a78bfa; text-decoration: underline; }
       .ref-item .ref-title { font-size: 0.9rem; font-weight: 700; color: #e0e0ff; margin-bottom: 4px; }
       .ref-item .ref-authors { font-size: 0.8rem; color: #8080aa; margin-bottom: 4px; }
@@ -2499,289 +2499,340 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
       .ref-tag-green  { background: rgba(16,185,129,0.12); color: #10b981; border: 1px solid #10b981; }
       .ref-tag-gold   { background: rgba(251,191,36,0.12); color: #fbbf24; border: 1px solid #fbbf24; }
       .ref-tag-red    { background: rgba(239,68,68,0.12); color: #ef4444; border: 1px solid #ef4444; }
+      .ref-divider-q { border: none; border-top: 2px solid #1a1a3a; margin: 32px 0; }
+      .ref-audience-q { display: inline-block; padding: 4px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; margin-bottom: 20px; }
+      .badge-kids-q     { background: rgba(16,185,129,0.15); color: #10b981; border: 2px solid #10b981; }
+      .badge-advanced-q { background: rgba(0,212,255,0.15); color: #00d4ff; border: 2px solid #00d4ff; }
     </style>
 
-    <!-- SUPERPOSITION & QUBITS -->
+    <!-- KID-FRIENDLY SECTION -->
+    <div class="ref-audience-q badge-kids-q">🌟 Ages 6–14 — Start Here!</div>
+
     <div class="ref-section">
-      <div class="ref-section-title">🪙 Superposition &amp; Qubits <span style="font-size:0.8rem;font-weight:400;color:#6060aa;">(Coin Flip Tab)</span></div>
+      <div class="ref-section-title">🪙 Learn About Quantum Computing</div>
       <div class="ref-list">
         <div class="ref-item">
-          <div class="ref-title">A Single Quantum Cannot Be Cloned (No-Cloning Theorem)</div>
-          <div class="ref-authors">Wootters, W. K. &amp; Zurek, W. H. (1982) — Nature</div>
-          <div class="ref-desc">The foundational paper proving that an unknown quantum state cannot be copied — a key property underlying measurement, superposition, and QKD security.</div>
-          <span class="ref-tag ref-tag-blue">Superposition</span><span class="ref-tag ref-tag-purple">No-Cloning</span>
-          <br><a href="https://www.nature.com/articles/299802a0" target="_blank" rel="noopener">https://www.nature.com/articles/299802a0</a>
+          <div class="ref-title">Quantum Computing for Everyone — IBM Quantum Learning</div>
+          <div class="ref-authors">IBM Research — learning.quantum.ibm.com</div>
+          <div class="ref-desc">IBM makes their real quantum computers available to anyone — for free! Their learning platform has beginner-friendly lessons on qubits, superposition, and entanglement with interactive exercises. You can run code on a REAL quantum computer from your browser, right now.</div>
+          <span class="ref-tag ref-tag-blue">Kid Friendly</span><span class="ref-tag ref-tag-blue">Interactive</span>
+          <br><a href="https://learning.quantum.ibm.com/" target="_blank" rel="noopener">https://learning.quantum.ibm.com/</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">Quantum Mechanics and Path Integrals — Born Rule &amp; Measurement</div>
-          <div class="ref-authors">Born, M. (1926) — Zeitschrift für Physik (English translation archived at APS)</div>
-          <div class="ref-desc">Max Born's original paper establishing the probability interpretation of the wavefunction: P(outcome) = |ψ|². The foundation for all quantum measurement statistics.</div>
+          <div class="ref-title">Quantum Computing — What Is It? (Khan Academy, Free)</div>
+          <div class="ref-authors">Khan Academy — khanacademy.org</div>
+          <div class="ref-desc">Khan Academy's free course explains quantum bits, how they differ from regular bits, and why quantum computers can solve some problems millions of times faster. Short videos and quizzes, completely free for anyone.</div>
+          <span class="ref-tag ref-tag-blue">Kid Friendly</span><span class="ref-tag ref-tag-green">Free</span>
+          <br><a href="https://www.khanacademy.org/computing/computers-and-internet/xcae6f4a7ff015e7d:the-internet/xcae6f4a7ff015e7d:quantum-computers/a/quantum-computing-transistors" target="_blank" rel="noopener">https://www.khanacademy.org/computing/computers-and-internet/xcae6f4a7ff015e7d:the-internet/xcae6f4a7ff015e7d:quantum-computers/a/quantum-computing-transistors</a>
+        </div>
+        <div class="ref-item">
+          <div class="ref-title">Quantum Entanglement Explained — TED-Ed</div>
+          <div class="ref-authors">TED-Ed / TED Talks Education — ed.ted.com</div>
+          <div class="ref-desc">TED-Ed's animated video explains quantum entanglement — the "spooky action at a distance" from the Entanglement tab — in a way anyone can understand. One of the most-watched quantum physics explainers made specifically for young audiences.</div>
+          <span class="ref-tag ref-tag-blue">Kid Friendly</span><span class="ref-tag ref-tag-purple">Entanglement</span>
+          <br><a href="https://ed.ted.com/lessons/quantum-entanglement-science-and-philosophy-josh-samani" target="_blank" rel="noopener">https://ed.ted.com/lessons/quantum-entanglement-science-and-philosophy-josh-samani</a>
+        </div>
+        <div class="ref-item">
+          <div class="ref-title">How Quantum Computers Work — Kurzgesagt (Animated)</div>
+          <div class="ref-authors">Kurzgesagt – In a Nutshell — YouTube</div>
+          <div class="ref-desc">Kurzgesagt makes beautifully animated science videos. Their quantum computing video explains superposition, entanglement, and quantum speedup using clear visuals. Over 10 million views — a great starting point before diving into the science.</div>
+          <span class="ref-tag ref-tag-blue">Kid Friendly</span><span class="ref-tag ref-tag-blue">Animation</span>
+          <br><a href="https://www.youtube.com/watch?v=JhHMJCUmq28" target="_blank" rel="noopener">https://www.youtube.com/watch?v=JhHMJCUmq28</a>
+        </div>
+        <div class="ref-item">
+          <div class="ref-title">DARPA — What We Do (Defense Advanced Research Projects Agency)</div>
+          <div class="ref-authors">DARPA — darpa.mil</div>
+          <div class="ref-desc">DARPA invented the internet in 1969 and now funds cutting-edge quantum computing research for US national security. Explore what DARPA does and how you could work there someday as a scientist or engineer. DARPA Family Day is exactly how that journey often starts!</div>
+          <span class="ref-tag ref-tag-blue">Kid Friendly</span><span class="ref-tag ref-tag-gold">DARPA</span>
+          <br><a href="https://www.darpa.mil/about" target="_blank" rel="noopener">https://www.darpa.mil/about</a>
+        </div>
+        <div class="ref-item">
+          <div class="ref-title">Q-12 Quantum Education Partnership — Activities for K-12 Students</div>
+          <div class="ref-authors">National Q-12 Education Partnership (NSF + DOE + IBM + Google + Microsoft) — quantumconsortium.org</div>
+          <div class="ref-desc">The US government's official quantum education initiative for K–12 students. Includes hands-on activities, classroom lesson plans, and career resources. Backed by the National Science Foundation, Department of Energy, and major tech companies building quantum computers today.</div>
+          <span class="ref-tag ref-tag-blue">Kid Friendly</span><span class="ref-tag ref-tag-green">Education</span>
+          <br><a href="https://www.quantumconsortium.org/q12-education" target="_blank" rel="noopener">https://www.quantumconsortium.org/q12-education</a>
+        </div>
+      </div>
+    </div>
+
+    <hr class="ref-divider-q">
+
+    <!-- ADVANCED SCIENTIFIC REFERENCES -->
+    <div class="ref-audience-q badge-advanced-q">⚛️ Ages 15+ &amp; Adults — Peer-Reviewed Science</div>
+
+    <div class="ref-section">
+      <div class="ref-section-title">🪙 Superposition, Measurement &amp; Qubits <span style="font-size:0.8rem;font-weight:400;color:#6060aa;">(Coin Flip Tab)</span></div>
+      <div class="ref-list">
+        <div class="ref-item">
+          <div class="ref-title">Quantenmechanik der Stoßvorgänge — The Born Rule</div>
+          <div class="ref-authors">Born, M. (1926) — Zeitschrift für Physik 37, 863–867. English review: Reviews of Modern Physics 52, 299 (1980)</div>
+          <div class="ref-desc">Max Born's foundational paper establishing the probability interpretation of the quantum wavefunction: P(outcome) = |⟨outcome|ψ⟩|². The mathematical rule underlying every "measurement collapses the superposition" statement in this playground. Born received the 1954 Nobel Prize in Physics for this contribution.</div>
           <span class="ref-tag ref-tag-blue">Born Rule</span><span class="ref-tag ref-tag-blue">Measurement</span>
           <br><a href="https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.52.299" target="_blank" rel="noopener">https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.52.299</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">Superconducting Qubit Review — Transmon &amp; Coherence Times</div>
-          <div class="ref-authors">Krantz, P. et al. (2019) — Applied Physics Reviews</div>
-          <div class="ref-desc">Comprehensive review of superconducting qubit types, Josephson junction physics, T1/T2 coherence times, and gate operations. Basis for the hardware tab's superconducting section.</div>
-          <span class="ref-tag ref-tag-blue">Qubits</span><span class="ref-tag ref-tag-purple">Hardware</span>
+          <div class="ref-title">A Single Quantum Cannot Be Cloned (No-Cloning Theorem)</div>
+          <div class="ref-authors">Wootters, W. K. &amp; Zurek, W. H. (1982) — Nature 299, 802–803</div>
+          <div class="ref-desc">Proves an unknown quantum state cannot be perfectly copied — a consequence of quantum linearity. This property underlies why QKD is secure: any eavesdropper must measure (and disturb) the quantum state, making interception detectable. Directly demonstrated in the Entanglement tab's spy mechanic.</div>
+          <span class="ref-tag ref-tag-blue">No-Cloning</span><span class="ref-tag ref-tag-green">QKD Security</span>
+          <br><a href="https://www.nature.com/articles/299802a0" target="_blank" rel="noopener">https://www.nature.com/articles/299802a0</a>
+        </div>
+        <div class="ref-item">
+          <div class="ref-title">A Quantum Engineer's Guide to Superconducting Qubits</div>
+          <div class="ref-authors">Krantz, P. et al. (2019) — Applied Physics Reviews 6, 021318</div>
+          <div class="ref-desc">Comprehensive review of superconducting qubit physics: transmon qubit Hamiltonian H = 4E_C(n−n_g)² − E_J cos(φ), Josephson junction fabrication, T1/T2 coherence times (100–500 μs on best devices, 2023), dilution refrigerator requirements (~15 mK), and gate error rates (~0.1% single-qubit, ~0.5% two-qubit). Technical basis for the Hardware tab's superconducting section.</div>
+          <span class="ref-tag ref-tag-blue">Superconducting</span><span class="ref-tag ref-tag-blue">Hardware</span>
           <br><a href="https://pubs.aip.org/aip/apr/article/6/2/021318/570326" target="_blank" rel="noopener">https://pubs.aip.org/aip/apr/article/6/2/021318/570326</a>
         </div>
       </div>
     </div>
 
-    <!-- ENTANGLEMENT -->
     <div class="ref-section">
       <div class="ref-section-title">⚛️ Entanglement &amp; Bell Inequalities <span style="font-size:0.8rem;font-weight:400;color:#6060aa;">(Entanglement Tab)</span></div>
       <div class="ref-list">
         <div class="ref-item">
           <div class="ref-title">On the Einstein-Podolsky-Rosen Paradox (Bell's Theorem)</div>
-          <div class="ref-authors">Bell, J. S. (1964) — Physics Physique Физика</div>
-          <div class="ref-desc">The original paper proving that no local hidden variable theory can reproduce quantum predictions. Establishes the Bell inequality S ≤ 2 for classical systems, with quantum mechanics allowing S ≤ 2√2.</div>
+          <div class="ref-authors">Bell, J. S. (1964) — Physics Physique Физика 1, 195–200</div>
+          <div class="ref-desc">Proves no local hidden variable theory can reproduce all quantum predictions. Establishes the CHSH inequality S ≤ 2 for classical correlations, with quantum mechanics allowing S ≤ 2√2 ≈ 2.83 (Tsirelson bound). The mathematical foundation for the eavesdropper detection mechanism shown in the Entanglement tab — spying disturbs correlations beyond the classical limit.</div>
           <span class="ref-tag ref-tag-purple">Bell Inequality</span><span class="ref-tag ref-tag-purple">Entanglement</span>
           <br><a href="https://cds.cern.ch/record/111654/files/vol1p195-200_001.pdf" target="_blank" rel="noopener">https://cds.cern.ch/record/111654/files/vol1p195-200_001.pdf</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">Experimental Tests of Bell's Inequalities Using Time-Varying Analyzers (Aspect Experiment)</div>
-          <div class="ref-authors">Aspect, A., Dalibard, J. &amp; Roger, G. (1982) — Physical Review Letters</div>
-          <div class="ref-desc">The landmark experiment that closed the locality loophole in Bell tests, proving quantum entanglement is real and non-local. Aspect shared the 2022 Nobel Prize in Physics for this work.</div>
-          <span class="ref-tag ref-tag-purple">Entanglement</span><span class="ref-tag ref-tag-gold">Nobel Prize 2022</span>
+          <div class="ref-title">Experimental Tests of Bell's Inequalities Using Time-Varying Analyzers</div>
+          <div class="ref-authors">Aspect, A., Dalibard, J. &amp; Roger, G. (1982) — Physical Review Letters 49, 1804</div>
+          <div class="ref-desc">Landmark experiment closing the locality loophole in Bell tests using photon pairs from an atomic cascade, with time-varying polarizer settings. Measured S = 2.404 ± 0.080 (classical limit: 2; quantum limit: 2.83). Aspect, Clauser, and Zeilinger shared the 2022 Nobel Prize in Physics for this body of work.</div>
+          <span class="ref-tag ref-tag-purple">Entanglement</span><span class="ref-tag ref-tag-gold">Nobel 2022</span>
           <br><a href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.49.1804" target="_blank" rel="noopener">https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.49.1804</a>
         </div>
         <div class="ref-item">
           <div class="ref-title">Loophole-Free Bell Inequality Violation Using Electron Spins Separated by 1.3 km</div>
-          <div class="ref-authors">Hensen, B. et al. (2015) — Nature</div>
-          <div class="ref-desc">The first experiment to simultaneously close both the locality and detection loopholes in a Bell test, definitively proving entanglement is not explained by hidden variables.</div>
-          <span class="ref-tag ref-tag-purple">Bell Test</span><span class="ref-tag ref-tag-green">QKD</span>
+          <div class="ref-authors">Hensen, B. et al. (2015) — Nature 526, 682–686</div>
+          <div class="ref-desc">First experiment simultaneously closing both locality and detection loopholes. Used NV-center electron spins at 1.3 km separation. Achieved S = 2.42 ± 0.20 with p &lt; 0.001, definitively ruling out local hidden variable theories. Enabled the distance slider in the Entanglement tab — entanglement works regardless of separation.</div>
+          <span class="ref-tag ref-tag-purple">Bell Test</span><span class="ref-tag ref-tag-green">Loophole Free</span>
           <br><a href="https://www.nature.com/articles/nature15759" target="_blank" rel="noopener">https://www.nature.com/articles/nature15759</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">Satellite-Based Entanglement Distribution Over 1200 km</div>
-          <div class="ref-authors">Yin, J. et al. (2017) — Science (Micius satellite)</div>
-          <div class="ref-desc">Chinese Micius satellite distributes entangled photon pairs over 1,200 km, demonstrating the feasibility of global quantum communication networks.</div>
-          <span class="ref-tag ref-tag-green">Quantum Network</span><span class="ref-tag ref-tag-purple">Entanglement</span>
+          <div class="ref-title">Satellite-Based Entanglement Distribution Over 1200 km (Micius)</div>
+          <div class="ref-authors">Yin, J. et al. (2017) — Science 356, 1140–1144</div>
+          <div class="ref-desc">China's Micius quantum science satellite distributes entangled photon pairs over 1,200 km between two ground stations, achieving Bell parameter S = 2.37 ± 0.09. Demonstrates feasibility of global quantum communication — directly motivates the "🚀 Mars" distance setting in the Entanglement tab.</div>
+          <span class="ref-tag ref-tag-green">Quantum Network</span><span class="ref-tag ref-tag-purple">Satellite QKD</span>
           <br><a href="https://www.science.org/doi/10.1126/science.aan3211" target="_blank" rel="noopener">https://www.science.org/doi/10.1126/science.aan3211</a>
         </div>
       </div>
     </div>
 
-    <!-- QUANTUM SEARCH & ALGORITHMS -->
     <div class="ref-section">
       <div class="ref-section-title">🏁 Quantum Algorithms <span style="font-size:0.8rem;font-weight:400;color:#6060aa;">(Race, Speed Test, Code Breaker Tabs)</span></div>
       <div class="ref-list">
         <div class="ref-item">
           <div class="ref-title">A Fast Quantum Mechanical Algorithm for Database Search (Grover's Algorithm)</div>
-          <div class="ref-authors">Grover, L. K. (1996) — Proceedings of the 28th ACM STOC</div>
-          <div class="ref-desc">The original paper presenting Grover's search algorithm, achieving O(√N) query complexity for unstructured search — the quantum advantage demonstrated in the Race tab.</div>
+          <div class="ref-authors">Grover, L. K. (1996) — Proceedings 28th ACM STOC, pp. 212–219</div>
+          <div class="ref-desc">Introduces O(√N) quantum search via amplitude amplification. Oracle O flips the phase of the target state; diffusion operator D = 2|s⟩⟨s|−I amplifies its amplitude. After O(√N) iterations, the target state is measured with near-certainty. The Quantum Race tab's maze demonstration directly illustrates this: quantum explores all N paths in √N iterations while classical explores N sequentially.</div>
           <span class="ref-tag ref-tag-blue">Grover</span><span class="ref-tag ref-tag-blue">Search</span>
           <br><a href="https://arxiv.org/abs/quant-ph/9605043" target="_blank" rel="noopener">https://arxiv.org/abs/quant-ph/9605043</a>
         </div>
         <div class="ref-item">
           <div class="ref-title">Polynomial-Time Algorithms for Prime Factorization and Discrete Logarithms on a Quantum Computer (Shor's Algorithm)</div>
-          <div class="ref-authors">Shor, P. W. (1994/1997) — SIAM Journal on Computing</div>
-          <div class="ref-desc">Shor's landmark algorithm for integer factorization in O((log N)³) time — the quantum threat to RSA encryption demonstrated in the Code Breaker and Speed Test tabs.</div>
+          <div class="ref-authors">Shor, P. W. (1994/1997) — SIAM Journal on Computing 26(5), 1484–1509</div>
+          <div class="ref-desc">Shor's O((log N)³) factoring algorithm using QFT-based period finding to reduce integer factorization to order-finding. RSA-2048 classical estimate: ~10¹³ years using General Number Field Sieve. Quantum estimate: ~8 hours on a fault-tolerant QC (4,096 logical qubits, ~10¹⁰ Toffoli gates). Directly demonstrated in the Code Breaker and Speed Test tabs.</div>
           <span class="ref-tag ref-tag-red">Shor</span><span class="ref-tag ref-tag-red">RSA Threat</span>
           <br><a href="https://arxiv.org/abs/quant-ph/9508027" target="_blank" rel="noopener">https://arxiv.org/abs/quant-ph/9508027</a>
         </div>
         <div class="ref-item">
           <div class="ref-title">Tight Bounds on Quantum Searching (BBBV Theorem — Grover Optimality)</div>
-          <div class="ref-authors">Bennett, C., Bernstein, E., Brassard, G. &amp; Vazirani, U. (1997) — SIAM Journal on Computing</div>
-          <div class="ref-desc">Proves that Grover's O(√N) is the optimal quantum algorithm for unstructured search — no quantum algorithm can do better.</div>
-          <span class="ref-tag ref-tag-blue">BBBV</span><span class="ref-tag ref-tag-blue">Optimality</span>
+          <div class="ref-authors">Bennett, C., Bernstein, E., Brassard, G. &amp; Vazirani, U. (1997) — SIAM Journal on Computing 26(5), 1510–1523</div>
+          <div class="ref-desc">Proves Grover's O(√N) is provably optimal for unstructured quantum search using a hybrid argument: any quantum algorithm requires Ω(√N) queries to find a marked item with constant success probability. The "quantum wins by √N" claim throughout the Race and Speed Test tabs is backed by this theorem.</div>
+          <span class="ref-tag ref-tag-blue">BBBV</span><span class="ref-tag ref-tag-blue">Lower Bound</span>
           <br><a href="https://arxiv.org/abs/quant-ph/9605034" target="_blank" rel="noopener">https://arxiv.org/abs/quant-ph/9605034</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">Quantum Approximate Optimization Algorithm (QAOA)</div>
-          <div class="ref-authors">Farhi, E., Goldstone, J. &amp; Gutmann, S. (2014) — arXiv</div>
-          <div class="ref-desc">Introduces QAOA for combinatorial optimization problems including Max-Cut and TSP — the basis for the route optimization scenario in the Speed Test tab.</div>
+          <div class="ref-title">A Quantum Approximate Optimization Algorithm (QAOA)</div>
+          <div class="ref-authors">Farhi, E., Goldstone, J. &amp; Gutmann, S. (2014) — arXiv:1411.4028</div>
+          <div class="ref-desc">Introduces QAOA for combinatorial optimization: alternating cost unitary e^(−iγC) and mixer unitary e^(−iβB) applied for p layers. Achieves approximation ratio &gt;0.6929 for Max-Cut at depth p=1 (vs classical 0.5). Basis for the route optimization and scheduling speedup scenarios in the Speed Test tab.</div>
           <span class="ref-tag ref-tag-purple">QAOA</span><span class="ref-tag ref-tag-gold">Optimization</span>
           <br><a href="https://arxiv.org/abs/1411.4028" target="_blank" rel="noopener">https://arxiv.org/abs/1411.4028</a>
         </div>
         <div class="ref-item">
           <div class="ref-title">Quantum Algorithm for Linear Systems of Equations (HHL Algorithm)</div>
-          <div class="ref-authors">Harrow, A., Hassidim, A. &amp; Lloyd, S. (2009) — Physical Review Letters</div>
-          <div class="ref-desc">The HHL algorithm solves linear systems Ax=b in O(log N · κ²) time vs classical O(N · κ) — the basis for quantum weather/climate simulation speedup shown in the Speed Test tab.</div>
+          <div class="ref-authors">Harrow, A., Hassidim, A. &amp; Lloyd, S. (2009) — Physical Review Letters 103, 150502</div>
+          <div class="ref-desc">HHL solves Ax=b in O(log N · κ²) vs classical O(N · κ) for sparse, well-conditioned systems with condition number κ. Applied to Navier-Stokes discretizations this enables quantum speedup for weather and climate modeling simulations. Key caveat: requires efficient QRAM for classical data loading — an active engineering challenge. Basis for the weather prediction scenario in Speed Test.</div>
           <span class="ref-tag ref-tag-blue">HHL</span><span class="ref-tag ref-tag-blue">Linear Systems</span>
           <br><a href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.103.150502" target="_blank" rel="noopener">https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.103.150502</a>
         </div>
       </div>
     </div>
 
-    <!-- POST-QUANTUM CRYPTOGRAPHY -->
     <div class="ref-section">
       <div class="ref-section-title">🔐 Post-Quantum Cryptography <span style="font-size:0.8rem;font-weight:400;color:#6060aa;">(Code Breaker Tab)</span></div>
       <div class="ref-list">
         <div class="ref-item">
           <div class="ref-title">FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard (ML-KEM / CRYSTALS-Kyber)</div>
-          <div class="ref-authors">NIST (2024) — Federal Information Processing Standard</div>
-          <div class="ref-desc">The official NIST standard for quantum-safe key encapsulation using lattice cryptography (Module-LWE). Provides AES-128/192/256 equivalent security levels resistant to both classical and quantum attacks.</div>
+          <div class="ref-authors">NIST (August 2024) — Federal Information Processing Standard 203</div>
+          <div class="ref-desc">Official NIST standard for quantum-safe key encapsulation using Module-LWE lattice problems. Security levels: Kyber-512 (AES-128 equivalent), Kyber-768 (AES-192), Kyber-1024 (AES-256). Security reduces to worst-case lattice SVP — believed hard for both classical and quantum computers. The "Generate Quantum-Safe Key" button in Code Breaker simulates a Kyber-1024 public key.</div>
           <span class="ref-tag ref-tag-green">PQC Standard</span><span class="ref-tag ref-tag-green">Kyber</span>
           <br><a href="https://csrc.nist.gov/pubs/fips/203/final" target="_blank" rel="noopener">https://csrc.nist.gov/pubs/fips/203/final</a>
         </div>
         <div class="ref-item">
           <div class="ref-title">FIPS 204: Module-Lattice-Based Digital Signature Standard (ML-DSA / CRYSTALS-Dilithium)</div>
-          <div class="ref-authors">NIST (2024) — Federal Information Processing Standard</div>
-          <div class="ref-desc">The official NIST standard for quantum-safe digital signatures based on Module-LWE and Module-SIS lattice problems.</div>
+          <div class="ref-authors">NIST (August 2024) — Federal Information Processing Standard 204</div>
+          <div class="ref-desc">Official NIST standard for quantum-safe digital signatures based on Module-LWE and Module-SIS hardness assumptions. Provides AES-128/192/256 equivalent security levels. Direct replacement for RSA and ECDSA in TLS, code signing, and authentication systems.</div>
           <span class="ref-tag ref-tag-green">PQC Standard</span><span class="ref-tag ref-tag-green">Dilithium</span>
           <br><a href="https://csrc.nist.gov/pubs/fips/204/final" target="_blank" rel="noopener">https://csrc.nist.gov/pubs/fips/204/final</a>
         </div>
         <div class="ref-item">
           <div class="ref-title">FIPS 205: Stateless Hash-Based Digital Signature Standard (SLH-DSA / SPHINCS+)</div>
-          <div class="ref-authors">NIST (2024) — Federal Information Processing Standard</div>
-          <div class="ref-desc">The official NIST standard for hash-based quantum-safe signatures — security based solely on hash function properties, the most conservative PQC approach.</div>
+          <div class="ref-authors">NIST (August 2024) — Federal Information Processing Standard 205</div>
+          <div class="ref-desc">Official NIST standard for hash-based quantum-safe signatures. Security relies solely on hash function collision resistance — the most conservative PQC assumption with no algebraic structure for quantum algorithms to exploit. Larger signatures than Dilithium but maximum security confidence.</div>
           <span class="ref-tag ref-tag-green">PQC Standard</span><span class="ref-tag ref-tag-green">SPHINCS+</span>
           <br><a href="https://csrc.nist.gov/pubs/fips/205/final" target="_blank" rel="noopener">https://csrc.nist.gov/pubs/fips/205/final</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">NIST Post-Quantum Cryptography Standardization Project — Overview</div>
-          <div class="ref-authors">NIST Computer Security Resource Center (2024)</div>
-          <div class="ref-desc">The official NIST PQC project page — the 7-year process that selected the algorithms now standardized as FIPS 203/204/205, plus the fourth standard FALCON (FIPS 206).</div>
+          <div class="ref-title">NIST Post-Quantum Cryptography Standardization — Project Overview (2016–2024)</div>
+          <div class="ref-authors">NIST Computer Security Resource Center</div>
+          <div class="ref-desc">The official NIST PQC project page documenting the complete 8-year public evaluation (2016–2024) selecting ML-KEM, ML-DSA, SLH-DSA, and FALCON (FIPS 206). Includes all submission packages, third-party cryptanalysis, and standardization rationale. The RSA vs Kyber comparison in the Code Breaker tab is grounded in this process.</div>
           <span class="ref-tag ref-tag-green">NIST PQC</span>
           <br><a href="https://csrc.nist.gov/projects/post-quantum-cryptography" target="_blank" rel="noopener">https://csrc.nist.gov/projects/post-quantum-cryptography</a>
         </div>
       </div>
     </div>
 
-    <!-- QUANTUM TELEPORTATION -->
     <div class="ref-section">
       <div class="ref-section-title">🎮 Quantum Teleportation <span style="font-size:0.8rem;font-weight:400;color:#6060aa;">(Teleporter Tab)</span></div>
       <div class="ref-list">
         <div class="ref-item">
           <div class="ref-title">Teleporting an Unknown Quantum State via Dual Classical and Einstein-Podolsky-Rosen Channels</div>
-          <div class="ref-authors">Bennett, C. H. et al. (1993) — Physical Review Letters</div>
-          <div class="ref-desc">The original theoretical paper proposing quantum teleportation using a Bell pair + 2 classical bits. The exact protocol simulated in the Teleporter tab.</div>
-          <span class="ref-tag ref-tag-purple">Teleportation</span><span class="ref-tag ref-tag-purple">Bell Pair</span>
+          <div class="ref-authors">Bennett, C. H., Brassard, G., Crépeau, C., Jozsa, R., Peres, A. &amp; Wootters, W. K. (1993) — Physical Review Letters 70, 1895</div>
+          <div class="ref-desc">Original quantum teleportation protocol: transfer |ψ⟩ = α|0⟩+β|1⟩ using 1 Bell pair + 2 classical bits. Alice applies CNOT then H; measures 4 outcomes (each prob 0.25); Bob applies I, X, Z, or XZ correction. State exactly reconstructed, original destroyed (no-cloning upheld). Resource cost: 1 ebit + 2 cbits per qubit. Exactly simulated in the Teleporter tab, step by step.</div>
+          <span class="ref-tag ref-tag-purple">Teleportation</span><span class="ref-tag ref-tag-purple">Protocol</span>
           <br><a href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.70.1895" target="_blank" rel="noopener">https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.70.1895</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">Experimental Quantum Teleportation (First Experimental Demonstration)</div>
-          <div class="ref-authors">Bouwmeester, D., Pan, J-W., Mattle, K., Eibl, M., Weinfurter, H. &amp; Zeilinger, A. (1997) — Nature</div>
-          <div class="ref-desc">First experimental realization of quantum teleportation using entangled photon pairs. Zeilinger shared the 2022 Nobel Prize in Physics for this and related work.</div>
-          <span class="ref-tag ref-tag-purple">Teleportation</span><span class="ref-tag ref-tag-gold">Nobel Prize 2022</span>
+          <div class="ref-title">Experimental Quantum Teleportation (First Demonstration)</div>
+          <div class="ref-authors">Bouwmeester, D., Pan, J-W., Mattle, K., Eibl, M., Weinfurter, H. &amp; Zeilinger, A. (1997) — Nature 390, 575–579</div>
+          <div class="ref-desc">First experimental realization of quantum teleportation using entangled photon pairs from parametric down-conversion, achieving ~75% fidelity. Zeilinger shared the 2022 Nobel Prize in Physics for this and related experiments. State-of-the-art fiber-based systems now exceed 99% fidelity over 100+ km links.</div>
+          <span class="ref-tag ref-tag-purple">Teleportation</span><span class="ref-tag ref-tag-gold">Nobel 2022</span>
           <br><a href="https://www.nature.com/articles/37539" target="_blank" rel="noopener">https://www.nature.com/articles/37539</a>
         </div>
       </div>
     </div>
 
-    <!-- QUANTUM HARDWARE -->
     <div class="ref-section">
       <div class="ref-section-title">⚙️ Quantum Hardware <span style="font-size:0.8rem;font-weight:400;color:#6060aa;">(Hardware Tab)</span></div>
       <div class="ref-list">
         <div class="ref-item">
           <div class="ref-title">Quantum Supremacy Using a Programmable Superconducting Processor (Google Sycamore)</div>
-          <div class="ref-authors">Arute, F. et al. (Google AI Quantum) (2019) — Nature</div>
-          <div class="ref-desc">Google's Sycamore processor completes a random circuit sampling task in 200 seconds that would take classical supercomputers ~10,000 years — first claimed quantum computational advantage.</div>
+          <div class="ref-authors">Arute, F. et al. (Google AI Quantum) (2019) — Nature 574, 505–510</div>
+          <div class="ref-desc">53-qubit Sycamore processor completes a random circuit sampling task in 200 seconds, compared to an estimated 10,000 years for the classical Summit supercomputer. First claimed quantum computational advantage (the estimate has since been revised by improved classical algorithms, but the hardware milestone stands). Basis for the Google Sycamore claim in the Hardware tab.</div>
           <span class="ref-tag ref-tag-blue">Superconducting</span><span class="ref-tag ref-tag-gold">Quantum Advantage</span>
           <br><a href="https://www.nature.com/articles/s41586-019-1666-5" target="_blank" rel="noopener">https://www.nature.com/articles/s41586-019-1666-5</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">High-Fidelity Trapped-Ion Qubit Operations with Scalable Photonic Modularity</div>
-          <div class="ref-authors">Duan, L-M. &amp; Monroe, C. (2010) — Reviews of Modern Physics</div>
-          <div class="ref-desc">Review of trapped-ion quantum computing including Mølmer-Sørensen gates, coherence times up to minutes, and all-to-all connectivity — the physics behind IonQ and Quantinuum systems.</div>
+          <div class="ref-title">Quantum Computing with Ions (Trapped Ion Review)</div>
+          <div class="ref-authors">Duan, L-M. &amp; Monroe, C. (2010) — Reviews of Modern Physics 82, 1209</div>
+          <div class="ref-desc">Comprehensive review of trapped-ion QC: hyperfine qubit encoding (Yb-171 at 12.6 GHz), Mølmer-Sørensen XX gates via shared phonon bus, all-to-all connectivity, T2 coherence times of seconds to minutes. Gate fidelity: &gt;99.9% single-qubit, &gt;99.5% two-qubit. All figures in the Hardware tab trapped-ion section derive from this and follow-on experimental work.</div>
           <span class="ref-tag ref-tag-purple">Trapped Ion</span><span class="ref-tag ref-tag-purple">Hardware</span>
           <br><a href="https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.82.1209" target="_blank" rel="noopener">https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.82.1209</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">Quantum Computing with Neutral Atoms (Rydberg Blockade &amp; Tweezer Arrays)</div>
-          <div class="ref-authors">Saffman, M., Walker, T. G. &amp; Mølmer, K. (2010) — Reviews of Modern Physics</div>
-          <div class="ref-desc">Comprehensive review of neutral atom quantum computing via Rydberg blockade interactions — the physics powering QuEra and Pasqal's massively scalable qubit arrays.</div>
+          <div class="ref-title">Quantum Information Processing with Neutral Atoms — Rydberg Blockade &amp; Tweezer Arrays</div>
+          <div class="ref-authors">Saffman, M., Walker, T. G. &amp; Mølmer, K. (2010) — Reviews of Modern Physics 82, 2313</div>
+          <div class="ref-desc">Reviews neutral atom QC via Rydberg blockade (V(R) = C₆/R⁶ van der Waals, ~MHz scale at R≈5μm). CZ gate π-pulse protocol achieves &gt;99.5% fidelity. Acousto-optic deflectors and spatial light modulators enable arbitrary 2D/3D tweezer arrays of 1,000+ atoms. Foundation for QuEra (Harvard spin-off) and Pasqal technology described in Hardware tab.</div>
           <span class="ref-tag ref-tag-green">Neutral Atom</span><span class="ref-tag ref-tag-green">Rydberg</span>
           <br><a href="https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.82.2313" target="_blank" rel="noopener">https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.82.2313</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">Logical Quantum Processor Based on Reconfigurable Atom Arrays (Harvard/QuEra 48 Logical Qubits)</div>
-          <div class="ref-authors">Bluvstein, D. et al. (2023) — Nature</div>
-          <div class="ref-desc">Harvard/QuEra demonstration of 48 error-corrected logical qubits from 280 physical neutral atoms — the current state of the art for fault-tolerant neutral atom quantum computing.</div>
-          <span class="ref-tag ref-tag-green">Neutral Atom</span><span class="ref-tag ref-tag-green">Error Correction</span>
+          <div class="ref-title">Logical Quantum Processor Based on Reconfigurable Atom Arrays (Harvard/QuEra 2023)</div>
+          <div class="ref-authors">Bluvstein, D. et al. (2023) — Nature 626, 58–65</div>
+          <div class="ref-desc">48 error-corrected logical qubits from 280 physical neutral atoms, with logical error rates below physical error rates — a key fault-tolerance milestone. Uses mid-circuit measurement and real-time feedforward corrections. Directly cited in the Hardware tab's neutral atom section for the "1000+ qubit arrays demonstrated" claim.</div>
+          <span class="ref-tag ref-tag-green">Neutral Atom</span><span class="ref-tag ref-tag-green">Fault Tolerant</span>
           <br><a href="https://www.nature.com/articles/s41586-023-06927-3" target="_blank" rel="noopener">https://www.nature.com/articles/s41586-023-06927-3</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">Topological Quantum Computing — Majorana Zero Modes (Microsoft)</div>
-          <div class="ref-authors">Nayak, C., Simon, S. H., Stern, A., Freedman, M. &amp; Das Sarma, S. (2008) — Reviews of Modern Physics</div>
-          <div class="ref-desc">Theoretical foundation for topological quantum computing using non-Abelian anyons (Majorana zero modes) — the physics underlying Microsoft's topological qubit program.</div>
+          <div class="ref-title">Non-Abelian Anyons and Topological Quantum Computation</div>
+          <div class="ref-authors">Nayak, C., Simon, S. H., Stern, A., Freedman, M. &amp; Das Sarma, S. (2008) — Reviews of Modern Physics 80, 1083</div>
+          <div class="ref-desc">Theoretical foundation for topological quantum computing using non-Abelian anyons (Majorana zero modes). Proves braiding operations implement topologically protected quantum gates — local perturbations cannot introduce errors because information is stored non-locally across spatially separated Majorana modes. Basis for Microsoft's topological qubit research program.</div>
           <span class="ref-tag ref-tag-red">Topological</span><span class="ref-tag ref-tag-red">Majorana</span>
           <br><a href="https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.80.1083" target="_blank" rel="noopener">https://journals.aps.org/rmp/abstract/10.1103/RevModPhys.80.1083</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">Fault-Tolerant Quantum Computation with High Threshold in Two Dimensions (Surface Code)</div>
-          <div class="ref-authors">Fowler, A. G., Martinis, J. M. et al. (2012) — Physical Review A</div>
-          <div class="ref-desc">The definitive paper on the surface code error correction scheme — the leading approach to fault-tolerant quantum computing, with a ~1% physical error threshold referenced throughout the Hardware tab.</div>
+          <div class="ref-title">Surface Codes: Towards Practical Large-Scale Quantum Computation</div>
+          <div class="ref-authors">Fowler, A. G., Martinis, J. M. et al. (2012) — Physical Review A 86, 032324</div>
+          <div class="ref-desc">Definitive reference for the surface code error correction scheme — fault-tolerance threshold ~1% physical error rate, ~1,000 physical qubits per logical qubit at p_phys = 0.1%. RSA-2048 via Shor's requires ~4,000 logical qubits → ~4 million physical qubits total. The "millions of physical qubits" claim in the Hardware tab derives from this resource estimation.</div>
           <span class="ref-tag ref-tag-blue">Error Correction</span><span class="ref-tag ref-tag-blue">Surface Code</span>
           <br><a href="https://journals.aps.org/pra/abstract/10.1103/PhysRevA.86.032324" target="_blank" rel="noopener">https://journals.aps.org/pra/abstract/10.1103/PhysRevA.86.032324</a>
         </div>
       </div>
     </div>
 
-    <!-- QUANTUM INTERNET & QKD -->
     <div class="ref-section">
       <div class="ref-section-title">🌐 Quantum Internet &amp; QKD <span style="font-size:0.8rem;font-weight:400;color:#6060aa;">(Quantum Future Tab)</span></div>
       <div class="ref-list">
         <div class="ref-item">
           <div class="ref-title">Quantum Cryptography: Public Key Distribution and Coin Tossing (BB84 Protocol)</div>
-          <div class="ref-authors">Bennett, C. H. &amp; Brassard, G. (1984/2014) — Theoretical Computer Science</div>
-          <div class="ref-desc">The original BB84 quantum key distribution protocol — using quantum mechanics to distribute cryptographic keys with information-theoretic security, immune to any computational attack.</div>
+          <div class="ref-authors">Bennett, C. H. &amp; Brassard, G. (1984, republished 2014) — Theoretical Computer Science 560, 7–11</div>
+          <div class="ref-desc">Original BB84 QKD protocol using 4 quantum states in 2 non-orthogonal bases. Security is information-theoretic (not computational) — based on no-cloning theorem and Heisenberg uncertainty. QBER threshold &gt;11% indicates eavesdropping and triggers key abort. China's 2,000 km QKD backbone network referenced in Quantum Future tab uses BB84 variants over trusted-node relays.</div>
           <span class="ref-tag ref-tag-green">QKD</span><span class="ref-tag ref-tag-green">BB84</span>
           <br><a href="https://www.sciencedirect.com/science/article/pii/S0304397514004241" target="_blank" rel="noopener">https://www.sciencedirect.com/science/article/pii/S0304397514004241</a>
         </div>
         <div class="ref-item">
           <div class="ref-title">Quantum Repeaters: The Role of Imperfect Local Operations in Quantum Communication</div>
-          <div class="ref-authors">Briegel, H-J., Dür, W., Cirac, J. I. &amp; Zoller, P. (1998) — Physical Review Letters</div>
-          <div class="ref-desc">Introduces quantum repeaters using entanglement swapping and purification to extend quantum communication over arbitrarily long distances — the backbone of the quantum internet architecture.</div>
+          <div class="ref-authors">Briegel, H-J., Dür, W., Cirac, J. I. &amp; Zoller, P. (1998) — Physical Review Letters 81, 5932</div>
+          <div class="ref-desc">Introduces quantum repeaters using entanglement purification and swapping to extend quantum communication beyond direct photon loss limit (~20 km in standard fiber, L_att). Achieves O(log N) resource overhead vs O(N) for direct transmission. The Quantum Internet section's description of "data teleported, not transmitted" is grounded in this repeater architecture.</div>
           <span class="ref-tag ref-tag-blue">Quantum Internet</span><span class="ref-tag ref-tag-blue">Repeaters</span>
           <br><a href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.81.5932" target="_blank" rel="noopener">https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.81.5932</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">A Quantum Internet (Vision Paper)</div>
-          <div class="ref-authors">Wehner, S., Elkouss, D. &amp; Hanson, R. (2018) — Science</div>
-          <div class="ref-desc">Defines the six development stages of the quantum internet — from QKD networks to fully quantum-connected devices — and maps current research against this roadmap.</div>
-          <span class="ref-tag ref-tag-blue">Quantum Internet</span>
+          <div class="ref-title">Quantum Internet: A Vision for the Road Ahead</div>
+          <div class="ref-authors">Wehner, S., Elkouss, D. &amp; Hanson, R. (2018) — Science 362, eaam9288</div>
+          <div class="ref-desc">Defines six quantum internet development stages from Stage 1 (trusted-node QKD) to Stage 6 (fully quantum-connected distributed computing). Chicago quantum network (124 km deployed fiber, 4 nodes, Argonne/UChicago/Fermilab) represents current Stage 1–2 capability — referenced in the Quantum Internet future card.</div>
+          <span class="ref-tag ref-tag-blue">Quantum Internet</span><span class="ref-tag ref-tag-blue">Roadmap</span>
           <br><a href="https://www.science.org/doi/10.1126/science.aam9288" target="_blank" rel="noopener">https://www.science.org/doi/10.1126/science.aam9288</a>
         </div>
       </div>
     </div>
 
-    <!-- QUANTUM SIMULATION & MEDICINE -->
     <div class="ref-section">
       <div class="ref-section-title">💊 Quantum Simulation &amp; Medicine <span style="font-size:0.8rem;font-weight:400;color:#6060aa;">(Quantum Future Tab)</span></div>
       <div class="ref-list">
         <div class="ref-item">
-          <div class="ref-title">A Variational Eigenvalue Solver on a Photonic Chip (VQE — Variational Quantum Eigensolver)</div>
-          <div class="ref-authors">Peruzzo, A. et al. (2014) — Nature Communications</div>
-          <div class="ref-desc">First experimental demonstration of VQE — a hybrid quantum-classical algorithm for finding molecular ground state energies. Basis for quantum drug discovery and materials science applications.</div>
+          <div class="ref-title">A Variational Eigenvalue Solver on a Photonic Chip (First VQE Demonstration)</div>
+          <div class="ref-authors">Peruzzo, A. et al. (2014) — Nature Communications 5, 4213</div>
+          <div class="ref-desc">First experimental VQE demonstration: finds HeH⁺ ground state energy using a photonic quantum processor. VQE minimizes ⟨ψ(θ)|H|ψ(θ)⟩ via hybrid quantum-classical optimization. Scales as O(N⁴) measurements vs exact diagonalization O(2^N) classically — making molecular simulation tractable on NISQ devices. Basis for quantum drug discovery claims in Quantum Future tab.</div>
           <span class="ref-tag ref-tag-red">VQE</span><span class="ref-tag ref-tag-red">Quantum Chemistry</span>
           <br><a href="https://www.nature.com/articles/ncomms5213" target="_blank" rel="noopener">https://www.nature.com/articles/ncomms5213</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">Quantum Simulation of Chemistry with Subchemical Accuracy (FeMoco / Nitrogenase)</div>
-          <div class="ref-authors">Reiher, M. et al. (2017) — Proceedings of the National Academy of Sciences</div>
-          <div class="ref-desc">Detailed resource estimation showing quantum computers could simulate the FeMoco nitrogenase catalyst (~54 qubits) — a key target for quantum-accelerated drug and fertilizer discovery.</div>
+          <div class="ref-title">Elucidating Reaction Mechanisms on Quantum Computers (FeMoco Nitrogenase Resource Estimation)</div>
+          <div class="ref-authors">Reiher, M., Wiebe, N., Svore, K. M., Wecker, D. &amp; Troyer, M. (2017) — PNAS 114(29), 7555–7560</div>
+          <div class="ref-desc">Detailed fault-tolerant resource estimation for simulating the FeMoco nitrogenase active site: ~111 logical qubits, ~1.5×10¹⁴ T-gates. The enzyme fixes atmospheric nitrogen for fertilizer production — currently consuming 1–2% of global energy. Quantum simulation could design more efficient catalysts. Directly cited in the Quantum Medicine future card (~54 qubit estimate refers to a minimal active space).</div>
           <span class="ref-tag ref-tag-red">Quantum Chemistry</span><span class="ref-tag ref-tag-red">FeMoco</span>
           <br><a href="https://www.pnas.org/doi/10.1073/pnas.1619152114" target="_blank" rel="noopener">https://www.pnas.org/doi/10.1073/pnas.1619152114</a>
         </div>
       </div>
     </div>
 
-    <!-- DARPA & NATIONAL SECURITY -->
     <div class="ref-section">
-      <div class="ref-section-title">🌐 DARPA &amp; National Security Context</div>
+      <div class="ref-section-title">🌐 DARPA &amp; National Security</div>
       <div class="ref-list">
         <div class="ref-item">
-          <div class="ref-title">DARPA Quantum Benchmarking Initiative</div>
+          <div class="ref-title">DARPA Quantum Benchmarking Initiative — US2QC Program</div>
           <div class="ref-authors">DARPA Defense Sciences Office (2023–present)</div>
-          <div class="ref-desc">DARPA's program to rigorously assess whether quantum computers provide practical utility over classical computers — including the US2QC program targeting cryptographically-relevant quantum computing timelines.</div>
+          <div class="ref-desc">DARPA's program to rigorously assess whether and when quantum computers will provide practical utility over classical systems. The US2QC (Underexplored Systems for Utility-Scale Quantum Computing) effort establishes rigorous metrics for fault-tolerant QC milestones — directly informing the "Which will win?" hardware comparison and the 2035–2040 timeline estimates in the Hardware tab.</div>
           <span class="ref-tag ref-tag-gold">DARPA</span>
           <br><a href="https://www.darpa.mil/program/quantum-benchmarking" target="_blank" rel="noopener">https://www.darpa.mil/program/quantum-benchmarking</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">NIST National Cybersecurity Center of Excellence — Migration to Post-Quantum Cryptography</div>
-          <div class="ref-authors">NIST NCCoE (2024)</div>
-          <div class="ref-desc">NIST's practical migration guidance for organizations transitioning to quantum-safe cryptography — including crypto-agility frameworks, inventory tools, and hybrid deployment strategies.</div>
+          <div class="ref-title">NIST NCCoE — Migration to Post-Quantum Cryptography (Crypto-Agility Guidance)</div>
+          <div class="ref-authors">NIST National Cybersecurity Center of Excellence (2024)</div>
+          <div class="ref-desc">Practical organizational guidance for transitioning to quantum-safe cryptography: crypto-agility frameworks, cryptographic inventory discovery tools, hybrid deployment (X25519Kyber768 in TLS 1.3), and prioritized migration timelines. Directly relevant to the PQC migration context in the Code Breaker tab's "wolfSSL FIPS 140-3 + liboqs" engineer-level description.</div>
           <span class="ref-tag ref-tag-green">PQC Migration</span><span class="ref-tag ref-tag-green">NIST</span>
           <br><a href="https://www.nccoe.nist.gov/crypto-agility-considerations-migrating-post-quantum-cryptographic-standards" target="_blank" rel="noopener">https://www.nccoe.nist.gov/crypto-agility-considerations-migrating-post-quantum-cryptographic-standards</a>
         </div>
         <div class="ref-item">
-          <div class="ref-title">IBM Quantum Roadmap — Toward 100,000 Qubits</div>
-          <div class="ref-authors">IBM Research (2023)</div>
-          <div class="ref-desc">IBM's public hardware roadmap from Falcon (27 qubits) through Condor (1121 qubits) to modular architectures targeting 100,000+ qubits by 2033 — directly referenced in the Hardware tab.</div>
+          <div class="ref-title">IBM Quantum Development Roadmap</div>
+          <div class="ref-authors">IBM Research Quantum (2023)</div>
+          <div class="ref-desc">IBM's public hardware roadmap: Falcon 27q (2019) → Eagle 127q → Osprey 433q → Condor 1,121q (2023) → modular architectures targeting 100,000+ qubits by 2033. The specific qubit counts, processor names, and timeline projections cited in the Hardware tab superconducting section are drawn directly from this roadmap.</div>
           <span class="ref-tag ref-tag-blue">IBM</span><span class="ref-tag ref-tag-blue">Roadmap</span>
           <br><a href="https://www.ibm.com/quantum/roadmap" target="_blank" rel="noopener">https://www.ibm.com/quantum/roadmap</a>
         </div>
@@ -2789,7 +2840,8 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
     </div>
 
     <div style="background:#12122a;border:1px solid #2a2a4a;border-radius:12px;padding:16px 20px;text-align:center;color:#8080aa;font-size:0.88rem;line-height:1.7;">
-      All scientific claims in this playground are sourced from peer-reviewed journals, official NIST standards, or DARPA program pages. Where technical content has been simplified for educational audiences, the underlying mathematics is preserved in the Engineer-level view of each tab.
+      All scientific claims in this playground are sourced from peer-reviewed journals (Nature, Physical Review Letters, Science, PNAS, SIAM), official NIST federal standards (FIPS), or DARPA program pages.
+      Where content has been simplified for younger audiences, the underlying mathematics is preserved in the Engineer-level view of each tab.
       <br><br>
       <span style="color:#00d4ff;font-weight:700;">Built by Tetrabolt LLC for DARPA Family Day 2026</span> — advancing science literacy for the next generation of quantum engineers.
     </div>
