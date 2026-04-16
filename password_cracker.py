@@ -653,6 +653,59 @@ for _n in _TOP_NAMES:
     COMMON_WORDS.add(_n)
 COMMON_PASSWORDS |= _name_combos
 
+# ─── Name+name combination pre-computation ──────────────────────────────────
+# "JasonMoore", "CarlosEmbury" etc. score VERY WEAK because real attackers
+# use targeted first+last name list attacks (~500k × 500k = 250B at 500GH/s ≈ 0.5s).
+# We pre-generate common first+last combos into COMMON_PASSWORDS so they are
+# caught at Phase 1 (instant) regardless of wordlist loading order.
+_FIRST_NAMES = [
+    "james","john","robert","michael","william","david","richard","joseph",
+    "thomas","charles","christopher","daniel","matthew","anthony","donald",
+    "mark","paul","steven","andrew","kenneth","joshua","george","kevin",
+    "brian","edward","ronald","timothy","jason","jeffrey","ryan","jacob",
+    "gary","nicholas","eric","jonathan","stephen","larry","justin","scott",
+    "brandon","benjamin","samuel","raymond","gregory","frank","alexander",
+    "patrick","jack","dennis","jerry","tyler","aaron","jose","adam",
+    "nathan","henry","zachary","peter","walter","ethan","jeremy",
+    "noah","liam","mason","logan","lucas","oliver","aiden","carlos",
+    "mary","patricia","jennifer","linda","barbara","elizabeth","susan",
+    "jessica","sarah","karen","lisa","nancy","betty","margaret","sandra",
+    "ashley","dorothy","kimberly","emily","donna","michelle","carol",
+    "amanda","melissa","deborah","stephanie","rebecca","sharon","laura",
+    "cynthia","amy","angela","anna","brenda","emma","nicole","helen",
+    "samantha","katherine","rachel","carolyn","janet","maria","heather",
+    "diane","julie","julia","grace","beverly","denise","marilyn","julie",
+]
+_LAST_NAMES = [
+    "smith","jones","williams","brown","davis","miller","wilson","moore",
+    "taylor","anderson","thompson","garcia","martinez","robinson","clark",
+    "rodriguez","lewis","lee","walker","hall","allen","young","hernandez",
+    "king","wright","lopez","hill","scott","green","adams","baker",
+    "gonzalez","nelson","carter","mitchell","perez","roberts","turner",
+    "phillips","campbell","parker","evans","edwards","collins","stewart",
+    "sanchez","morris","rogers","reed","cook","morgan","bell","murphy",
+    "bailey","rivera","cooper","richardson","cox","howard","ward","torres",
+    "peterson","gray","ramirez","watson","brooks","kelly","sanders","price",
+    "bennett","wood","barnes","ross","henderson","cole","jenkins","perry",
+    "powell","long","patterson","hughes","flores","washington","butler",
+    "simmons","foster","bryant","alexander","russell","griffin","diaz",
+    "hayes","myers","ford","hamilton","graham","sullivan","wallace","woods",
+    "west","jordan","owens","reynolds","fisher","ellis","harrison","gibson",
+    "mcdonald","cruz","marshall","ortiz","gomez","murray","freeman","wells",
+    "embury","webb","simpson","stevens","tucker","porter","hunter","hicks",
+]
+_name_name_combos = set()
+for _f in _FIRST_NAMES:
+    for _l in _LAST_NAMES:
+        combo = _f + _l
+        _name_name_combos.add(combo)           # jasonmoore
+        _name_name_combos.add(_f.capitalize() + _l.capitalize())  # JasonMoore
+        _name_name_combos.add(_f.capitalize() + _l)               # Jasonmoore
+        _name_name_combos.add(_f + _l.capitalize())               # jasonMoore
+COMMON_PASSWORDS |= _name_name_combos
+_pw_total = len(COMMON_PASSWORDS)
+print(f"[Name combos] Added {len(_name_name_combos):,} first+last combos → total passwords: {_pw_total:,}")
+
 DICTIONARY_SIZE   = max(DICTIONARY_SIZE, len(COMMON_WORDS))
 _pw_count  = len(COMMON_PASSWORDS)
 _wd_count  = len(COMMON_WORDS)
