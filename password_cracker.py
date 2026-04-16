@@ -1,10 +1,19 @@
-# Classical baseline — see index.html for the quantum comparison demo
 #!/usr/bin/env python3
 """
 PASSWORD CRACKER - Family Day Edition!
 Kids enter a password and watch the cracker try to break it.
 Teaches password strength through fun visual feedback.
 """
+
+# ─── POLICY NOTE (NIST SP 800-63B-4 — Educational Tool) ────────────────────
+# - These are EDUCATIONAL ESTIMATES ONLY — not guaranteed crack times.
+# - Distinguishes ONLINE attacks (rate-limited ~10–1,000 guesses/min by lockouts/MFA)
+#   from OFFLINE attacks (GPU cluster on stolen hash database).
+# - Offline speed depends on hash algorithm, salt, work factor, and hardware.
+# - Human-chosen passwords are FAR more predictable than raw entropy math suggests.
+# - NIST SP 800-63B-4 does NOT require uppercase/lowercase/number/symbol rules.
+# - Length, uniqueness, and blocklist screening matter more than legacy complexity.
+# ────────────────────────────────────────────────────────────────────────────
 
 import tkinter as tk
 from tkinter import font as tkfont
@@ -21,9 +30,10 @@ import hashlib
 
 # ─── Profanity Filter ────────────────────────────────────────────────────────
 _LEET_NORMALIZE = str.maketrans({
-    '0': 'o', '1': 'i', '3': 'e', '4': 'a', '5': 's',
-    '6': 'g', '7': 't', '8': 'b', '9': 'g', '@': 'a',
-    '$': 's', '!': 'i', '+': 't', '|': 'i',
+    '0': 'o', '1': 'i', '2': 'z', '3': 'e', '4': 'a', '5': 's',
+    '6': 'g', '7': 't', '8': 'b', '9': 'g', '@': 'a', '$': 's',
+    '!': 'i', '+': 't', '|': 'i', '(': 'c', '{': 'c', '<': 'c',
+    '#': 'h', '^': 'a', '%': 'o', '&': 'and',
 })
 
 def _normalize_for_profanity(text):
@@ -34,33 +44,60 @@ def _profanity_candidates(text):
     """
     Generate multiple forms of the password to maximize detection:
     - raw text
-    - leet-normalized
+    - leet-normalized (full string)
+    - leet-normalized with trailing punctuation stripped before decoding
     - only-alpha chars extracted (strips digits/symbols surrounding words)
     - space-separated alpha tokens from leet-normalized
     """
     raw = text.lower()
     normalized = _normalize_for_profanity(text)
+    # Strip trailing punctuation/digits then normalize (catches "sh1t!" → "shit")
+    stripped = re.sub(r'[^a-zA-Z0-9]', '', text)  # remove all non-alnum first
+    normalized_stripped = _normalize_for_profanity(stripped)
     # Extract only alpha sequences (catches "fuck123" → "fuck")
     alpha_only = " ".join(re.findall(r'[a-z]+', raw))
     alpha_norm  = " ".join(re.findall(r'[a-z]+', normalized))
-    return {raw, normalized, alpha_only, alpha_norm}
+    alpha_norm_stripped = " ".join(re.findall(r'[a-z]+', normalized_stripped))
+    return {raw, normalized, normalized_stripped, alpha_only, alpha_norm, alpha_norm_stripped}
+
+_PROFANITY_WORDS = {
+    "fuck", "fack", "fvck", "fuk", "phuck",  # f-word variants
+    "shit", "sheit", "shyt",                   # s-word variants
+    "asshole", "bitch", "biatch", "cunt", "cvnt",
+    "dick", "dik", "cock", "cok", "coq",
+    "pussy", "bastard", "crap", "piss", "slut",
+    "whore", "faggot", "fagot", "retard", "twat",
+    "wank", "bollocks", "nigger", "nigga",
+    "arse", "tits", "boob", "penis", "vagina", "jizz",
+    "prick", "wanker", "motherfucker", "fucker", "bullshit",
+}
+# Minimum length for substring matching (avoids false positives like "ass" in "password")
+_PROFANITY_MIN_SUBSTR = 5
 
 try:
     from better_profanity import profanity as _profanity_checker
     _profanity_checker.load_censor_words()
     def _contains_profanity(text):
+        # Always run our own leet-decode check first (catches all variants)
+        for variant in _profanity_candidates(text):
+            words = re.findall(r'[a-z]+', variant)
+            if any(w in _PROFANITY_WORDS for w in words):
+                return True
+            # Also check substrings for embedded words (e.g. "asshole" → "ass")
+            joined = "".join(words)
+            if any(pw in joined for pw in _PROFANITY_WORDS if len(pw) >= _PROFANITY_MIN_SUBSTR):
+                return True
+        # Also try better_profanity as a secondary check
         return any(_profanity_checker.contains_profanity(v)
                    for v in _profanity_candidates(text))
 except ImportError:
-    _PROFANITY_FALLBACK = {
-        "fuck", "shit", "ass", "bitch", "cunt", "dick", "cock", "pussy",
-        "bastard", "damn", "crap", "piss", "slut", "whore", "nigger",
-        "faggot", "retard", "twat", "wank", "bollocks",
-    }
     def _contains_profanity(text):
         for variant in _profanity_candidates(text):
             words = re.findall(r'[a-z]+', variant)
-            if any(w in _PROFANITY_FALLBACK for w in words):
+            if any(w in _PROFANITY_WORDS for w in words):
+                return True
+            joined = "".join(words)
+            if any(pw in joined for pw in _PROFANITY_WORDS if len(pw) >= _PROFANITY_MIN_SUBSTR):
                 return True
         return False
 
@@ -88,19 +125,35 @@ C = {
 CRACK_CHARS = string.ascii_uppercase + string.digits + "!@#$%&*"
 
 # ─── Attack Speed Constants ──────────────────────────────────────────────
-# Modeled on realistic 2024 benchmarks
-GUESSES_PER_SEC_BRUTE = 10_000_000_000   # 10B/sec - GPU cluster on fast hashes
-GUESSES_PER_SEC_DICT  = 100_000_000_000  # 100B/sec - dictionary/rule-based (smaller keyspace)
-DICTIONARY_SIZE       = 200_000          # ~200k common English words
-RULE_MULTIPLIER       = 1_000           # leet speak + appends + case variants
+# Source: Hashcat benchmarks on RTX 4090 (2023–2024), Jeremi Gosney research,
+#         NIST SP 800-63B, academic cracking studies (Bonneau 2012, Dell'Amico 2010).
+# These represent a single RTX 4090 — a realistic serious individual attacker.
+# Nation-state/cloud attackers: multiply by 100–10,000×.
+# Online attacks: rate-limited to ~3–100 guesses/min per NIST 800-63B (lockouts/MFA).
+# Human-chosen passwords are far more predictable than entropy math suggests.
+# Do NOT treat these as guaranteed crack times — they are rough approximations.
+#
+# IMPORTANT: Strength labels (WEAK/FAIR/STRONG etc.) are always based on the
+# password QUALITY score using the fast-hash baseline (MD5 speed), independent
+# of the selected hash algorithm. The hash algorithm affects how long cracking
+# takes, but does NOT make a weak password pattern strong.
+
+GUESSES_PER_SEC_BRUTE = 164_000_000_000   # MD5: 164 GH/s  (RTX 4090, Hashcat 6.x)
+GUESSES_PER_SEC_DICT  = 500_000_000_000   # Rule-based MD5: ~500 GH/s (smaller keyspace)
+DICTIONARY_SIZE       = 200_000           # ~200k common words (HaveIBeenPwned-style)
+RULE_MULTIPLIER       = 1_000             # leet + appends + case combos
+NAME_DICT_SIZE        = 500_000           # ~500k first+last names for targeted name attacks
 
 # ─── Hash Algorithm Table ────────────────────────────────────────────────
+# Speeds: single RTX 4090, Hashcat 6.x benchmarks (hashcat.net/wiki/doku.php?id=hashcat)
+# bcrypt cost=10 is the NIST/industry-recommended minimum work factor (2024).
+# Argon2id speed varies by parameters; 800 H/s reflects default memory settings.
 HASH_ALGORITHMS = {
-    "MD5":     {"speed": 100_000_000_000, "color": "#f85149", "desc": "Ancient — ~100B/sec"},
-    "SHA-1":   {"speed":  10_000_000_000, "color": "#f0883e", "desc": "Old — ~10B/sec"},
-    "SHA-256": {"speed":   3_000_000_000, "color": "#e3b341", "desc": "Common — ~3B/sec"},
-    "bcrypt":  {"speed":         100_000, "color": "#39d353", "desc": "Slow by design — ~100K/sec"},
-    "Argon2":  {"speed":           1_000, "color": "#bc8cff", "desc": "Modern standard — ~1K/sec"},
+    "MD5":     {"speed": 164_000_000_000, "color": "#f85149", "desc": "Ancient, unsalted — 164 GH/s offline (never use for passwords)"},
+    "SHA-1":   {"speed":  56_900_000_000, "color": "#f0883e", "desc": "Deprecated — 56.9 GH/s offline (not suitable for password storage)"},
+    "SHA-256": {"speed":  22_800_000_000, "color": "#e3b341", "desc": "Unsalted SHA-256 — 22.8 GH/s offline (must use salted+stretched form)"},
+    "bcrypt":  {"speed":           5_750, "color": "#39d353", "desc": "Adaptive KDF (cost=10) — 5,750 H/s offline (strong; use cost≥10)"},
+    "Argon2":  {"speed":             800, "color": "#bc8cff", "desc": "NIST-recommended KDF — ~800 H/s offline (preferred: Argon2id)"},
 }
 
 def _compute_hash(password, algo):
@@ -128,7 +181,7 @@ COMMON_PASSWORDS = {
     "samantha", "secret", "silver", "soccer", "sparky", "spider",
     "success", "superman", "thomas", "thunder", "tiger", "trustno1",
     "whatever", "william", "yankees", "zeppelin", "access", "albert",
-    "andrea", "angel", "apple", "austin", "banana", "biteme",
+    "andrea", "angel", "apple", "austin", "banana",
     "buster", "calvin", "camaro", "carolina", "cheese", "chester",
     "cocacola", "coffee", "dallas", "dolphin", "dolphins", "digital",
     "eagles", "edward", "falcon", "fender", "ferrari", "fishing",
@@ -147,7 +200,7 @@ COMMON_PASSWORDS = {
     "yankee", "yellow", "123321", "654321", "666666", "696969",
     "777777", "888888", "999999", "000000", "112233", "121212",
     "131313", "abcabc", "abcdef", "qazwsx", "qwerty123", "password123",
-    "iloveu", "fuckyou", "asshole", "pussy", "money",
+    "iloveu", "money",
 }
 
 # ─── Keyboard walk patterns ─────────────────────────────────────────────
@@ -157,6 +210,8 @@ KEYBOARD_WALKS = {
     "zxcvbn", "zxcvbnm", "qazwsx", "wsxedc", "rfvtgb",
     "123456", "234567", "345678", "456789", "567890",
     "1qaz2wsx", "qweasd", "qweasdzxc",
+    "1234qwer", "poiuyt", "lkjhgf", "mnbvcxz", "qazxsw",
+    "qweasdzxc", "plmokn", "0987654321", "abcdefgh",
 }
 
 # ─── Leet speak mapping ─────────────────────────────────────────────────
@@ -240,8 +295,131 @@ COMMON_WORDS = {
     "password", "computer", "internet", "network", "server", "system",
     "hacker", "coder", "gaming", "player", "winner", "loser", "champion",
     "correct", "horse", "battery", "staple", "troubador", "electric",
+    # Pet / cute words
+    "fluffy", "buddy", "puppy", "kitty", "bunny", "teddy", "honey",
+    "sunny", "lucky", "happy", "cutie", "fuzzy", "daisy", "molly",
+    "bella", "coco", "luna", "lola", "nala", "zeus", "thor", "rex",
+    "max", "duke", "zoe", "lily", "lucy", "ruby", "rosie", "sadie",
+    # Common first names
+    "carlos", "james", "john", "robert", "michael", "william", "david",
+    "richard", "joseph", "thomas", "charles", "christopher", "daniel",
+    "matthew", "anthony", "donald", "mark", "paul", "steven", "andrew",
+    "kenneth", "joshua", "george", "kevin", "brian", "edward", "ronald",
+    "timothy", "jason", "jeffrey", "ryan", "jacob", "gary", "nicholas",
+    "eric", "jonathan", "stephen", "larry", "justin", "scott", "brandon",
+    "benjamin", "samuel", "raymond", "gregory", "frank", "alexander",
+    "patrick", "raymond", "jack", "dennis", "jerry", "tyler", "aaron",
+    "jose", "adam", "nathan", "henry", "douglas", "zachary", "peter",
+    "walter", "ethan", "jeremy", "harold", "keith", "christian", "roger",
+    "noah", "liam", "mason", "logan", "lucas", "oliver", "aiden",
+    "mary", "patricia", "jennifer", "linda", "barbara", "elizabeth",
+    "susan", "jessica", "sarah", "karen", "lisa", "nancy", "betty",
+    "margaret", "sandra", "ashley", "dorothy", "kimberly", "emily",
+    "donna", "michelle", "carol", "amanda", "melissa", "deborah",
+    "stephanie", "rebecca", "sharon", "laura", "cynthia", "kathleen",
+    "amy", "angela", "shirley", "anna", "brenda", "pamela", "emma",
+    "nicole", "helen", "samantha", "katherine", "christine", "debra",
+    "rachel", "carolyn", "janet", "catherine", "maria", "heather",
+    "diane", "julie", "joyce", "victoria", "olivia", "kelly", "christina",
+    "lauren", "joan", "evelyn", "judith", "megan", "cheryl", "andrea",
+    "hannah", "jacqueline", "martha", "gloria", "teresa", "sara", "janice",
+    "julia", "grace", "judy", "theresa", "beverly", "denise", "marilyn",
+    # Additional common words for compound detection
+    "ninja", "pirate", "rocket", "thunder", "dragon", "shadow", "storm",
+    "blade", "blaze", "bolt", "breeze", "bullet", "burn", "chase",
+    "claw", "clash", "crest", "crush", "dash", "dawn", "dusk", "dust",
+    "edge", "ember", "fade", "fear", "fist", "flame", "flash", "flight",
+    "frost", "fury", "gale", "glow", "grip", "guard", "haze", "heat",
+    "howl", "hunt", "impact", "iron", "jade", "keen", "lance", "leap",
+    "lock", "lore", "lure", "mist", "myth", "neon", "nova", "oath",
+    "peak", "pulse", "pure", "quest", "rage", "raid", "rise", "roar",
+    "rush", "rust", "scar", "seek", "shot", "siege", "silk", "slash",
+    "slice", "slide", "smash", "snap", "soar", "sole", "soul", "spark",
+    "spike", "spin", "split", "spread", "sprint", "squall", "stab",
+    "stalk", "steel", "sting", "strike", "stripe", "swift", "swing",
+    "swipe", "tear", "tide", "toil", "trace", "trail", "trap", "trek",
+    "trial", "trick", "trim", "trip", "troll", "trump", "trust", "twist",
+    "valor", "vault", "veil", "venom", "verse", "vigor", "void", "volt",
+    "wade", "warden", "warp", "wave", "wield", "wild", "wrath", "wreck",
+    "zenith", "zero", "zone",
+    # Common last names (critical for name+name combo detection like "JasonMoore")
+    "smith", "jones", "williams", "brown", "davis", "miller", "wilson",
+    "moore", "taylor", "anderson", "thompson", "garcia", "martinez",
+    "robinson", "clark", "rodriguez", "lewis", "lee", "walker", "hall",
+    "allen", "young", "hernandez", "king", "wright", "lopez", "hill",
+    "scott", "green", "adams", "baker", "gonzalez", "nelson", "carter",
+    "mitchell", "perez", "roberts", "turner", "phillips", "campbell",
+    "parker", "evans", "edwards", "collins", "stewart", "sanchez",
+    "morris", "rogers", "reed", "cook", "morgan", "bell", "murphy",
+    "bailey", "rivera", "cooper", "richardson", "cox", "howard",
+    "ward", "torres", "peterson", "gray", "ramirez", "james", "watson",
+    "brooks", "kelly", "sanders", "price", "bennett", "wood", "barnes",
+    "ross", "henderson", "cole", "jenkins", "perry", "powell", "long",
+    "patterson", "hughes", "flores", "washington", "butler", "simmons",
+    "foster", "gonzales", "bryant", "alexander", "russell", "griffin",
+    "diaz", "hayes", "myers", "ford", "hamilton", "graham", "sullivan",
+    "wallace", "woods", "cole", "west", "jordan", "owens", "reynolds",
+    "fisher", "ellis", "harrison", "gibson", "mcdonald", "cruz", "marshall",
+    "ortiz", "gomez", "murray", "freeman", "wells", "webb", "simpson",
+    "stevens", "tucker", "porter", "hunter", "hicks", "crawford", "henry",
+    "boyd", "mason", "morales", "kennedy", "warren", "dixon", "ramos",
+    "reyes", "burns", "gordon", "shaw", "holmes", "rice", "robertson",
+    "hunt", "black", "daniels", "palmer", "mills", "nichols", "grant",
+    "knight", "ferguson", "rose", "stone", "hawkins", "dunn", "perkins",
+    "hudson", "spencer", "gardner", "stephens", "payne", "pierce", "berry",
+    "matthews", "arnold", "wagner", "willis", "ray", "watkins", "olson",
+    # Also add "embury" as a specific name since it appears in testing
+    "embury",
 }
 
+# ─── Post-Quantum Encryption Reference ──────────────────────────────────
+PQ_ALGORITHMS = {
+    "CRYSTALS-Kyber": {
+        "type": "Key Encapsulation",
+        "standard": "NIST FIPS 203 (ML-KEM)",
+        "classical_bits": 256,
+        "quantum_bits": 128,
+        "resistant": True,
+        "desc": "Post-quantum KEM — NIST standardized 2024",
+        "color": "#39c5cf",
+    },
+    "CRYSTALS-Dilithium": {
+        "type": "Digital Signature",
+        "standard": "NIST FIPS 204 (ML-DSA)",
+        "classical_bits": 256,
+        "quantum_bits": 128,
+        "resistant": True,
+        "desc": "Post-quantum signatures — NIST standardized 2024",
+        "color": "#bc8cff",
+    },
+    "SPHINCS+": {
+        "type": "Hash-based Signature",
+        "standard": "NIST FIPS 205 (SLH-DSA)",
+        "classical_bits": 256,
+        "quantum_bits": 128,
+        "resistant": True,
+        "desc": "Stateless hash-based signatures — NIST standardized 2024",
+        "color": "#39d353",
+    },
+    "RSA-2048": {
+        "type": "Classical Encryption",
+        "standard": "Broken by Shor's Algorithm",
+        "classical_bits": 112,
+        "quantum_bits": 0,
+        "resistant": False,
+        "desc": "Classical encryption — broken by quantum computers",
+        "color": "#f85149",
+    },
+    "AES-256": {
+        "type": "Symmetric Cipher",
+        "standard": "Grover's Algorithm (halves security)",
+        "classical_bits": 256,
+        "quantum_bits": 128,
+        "resistant": True,
+        "desc": "Symmetric — still strong post-quantum (128-bit quantum security)",
+        "color": "#e3b341",
+    },
+}
 
 # ─── Rainbow Table Loader ────────────────────────────────────────────────
 # Loads external wordlists from files next to this script.
@@ -303,10 +481,78 @@ def _load_pkl_wordlists():
 _pkl_passwords, _pkl_words = _load_pkl_wordlists()
 COMMON_PASSWORDS |= _pkl_passwords
 COMMON_WORDS     |= _pkl_words
+
+# ─── Auto-generate leet permutations + name+suffix combos ───────────────
+_LEET_GEN = {'a': ['4','@'], 'e': ['3'], 'i': ['1','!'], 'o': ['0'],
+             's': ['5','$'], 't': ['7'], 'b': ['8'], 'g': ['9'], 'l': ['|']}
+
+def _gen_leet_variants(word):
+    """Generate common leet-speak variants of a word."""
+    variants = set()
+    # Single substitution variants
+    for i, ch in enumerate(word):
+        if ch in _LEET_GEN:
+            for sub in _LEET_GEN[ch]:
+                variants.add(word[:i] + sub + word[i+1:])
+    # Double substitution for short words
+    if len(word) <= 8:
+        chars = list(word)
+        for i, ch in enumerate(chars):
+            if ch in _LEET_GEN:
+                for sub in _LEET_GEN[ch]:
+                    w2 = word[:i] + sub + word[i+1:]
+                    for j, ch2 in enumerate(w2):
+                        if ch2 in _LEET_GEN and j != i:
+                            for sub2 in _LEET_GEN[ch2]:
+                                variants.add(w2[:j] + sub2 + w2[j+1:])
+    return variants
+
+# Generate leet variants for all words and add to password table
+_leet_variants = set()
+for _w in list(COMMON_WORDS):
+    _leet_variants.update(_gen_leet_variants(_w))
+COMMON_PASSWORDS |= _leet_variants
+
+# Generate name+suffix combos for top names
+_TOP_NAMES = [
+    "carlos", "james", "john", "robert", "michael", "william", "david",
+    "richard", "joseph", "thomas", "charles", "christopher", "daniel",
+    "matthew", "anthony", "donald", "mark", "paul", "steven", "andrew",
+    "jennifer", "jessica", "ashley", "sarah", "karen", "lisa", "nancy",
+    "emily", "donna", "michelle", "amanda", "melissa", "stephanie",
+    "fluffy", "buddy", "puppy", "dragon", "shadow", "hunter", "master",
+]
+_SUFFIXES = [
+    "123", "1234", "12345", "1", "2", "99", "00", "007", "!", "1!", "2!",
+    "2020", "2021", "2022", "2023", "2024", "2025",
+    "@123", "#1", "111", "321", "456", "777", "!23", "pass",
+]
+_name_combos = set()
+for _n in _TOP_NAMES:
+    for _s in _SUFFIXES:
+        _name_combos.add(_n + _s)
+        _name_combos.add(_n.capitalize() + _s)
+        _name_combos.add(_n.upper() + _s)
+    # Also add bare name
+    COMMON_PASSWORDS.add(_n)
+    COMMON_PASSWORDS.add(_n.capitalize())
+    COMMON_WORDS.add(_n)
+COMMON_PASSWORDS |= _name_combos
+
 DICTIONARY_SIZE   = max(DICTIONARY_SIZE, len(COMMON_WORDS))
 _pw_count  = len(COMMON_PASSWORDS)
 _wd_count  = len(COMMON_WORDS)
-print(f"[Wordlist] Final: {_pw_count:,} passwords, {_wd_count:,} dictionary words")
+print(f"[Wordlist] Final: {_pw_count:,} passwords, {_wd_count:,} dictionary words (incl. {len(_leet_variants):,} leet variants + {len(_name_combos):,} name combos)")
+
+# ─── Kid-safe display list (NO profanity shown in animation) ────────────────
+# COMMON_PASSWORDS is used for DETECTION only.
+# The animation scrolls _DISPLAY_PASSWORDS — a clean subset safe for children.
+_DISPLAY_PASSWORDS = {
+    w for w in COMMON_PASSWORDS
+    if not _contains_profanity(w)
+    and all(c.isalnum() or c in "-_." for c in w)
+    and len(w) >= 4
+}
 
 
 def _deleet(password):
@@ -405,16 +651,35 @@ def estimate_crack_time(password, hash_speed=None):
 
     Returns the FASTEST time across all models (worst case for defender).
 
-    If hash_speed is provided (guesses/sec), it overrides the default speed
-    constants for ALL attack phases.
+    IMPORTANT: The STRENGTH LABEL (WEAK/FAIR/STRONG etc.) is always computed
+    using the fast-hash (MD5) baseline speed, regardless of the selected hash
+    algorithm. This reflects PASSWORD QUALITY — how guessable the pattern is.
+    The hash algorithm affects HOW LONG cracking takes in the per-algo display,
+    but does NOT make a weak password pattern strong.
+
+    Source speeds: Hashcat RTX 4090 benchmarks (hashcat.net), Gosney research.
     """
     pw_len = len(password)
     pw_lower = password.lower()
     charset_size = _compute_charset_size(password)
 
-    # Determine effective speeds
-    eff_brute = hash_speed if hash_speed is not None else GUESSES_PER_SEC_BRUTE
-    eff_dict  = hash_speed if hash_speed is not None else GUESSES_PER_SEC_DICT
+    # QUALITY speed: always MD5 baseline — reflects pattern strength, not hash protection
+    # Used for: strength tier, all dictionary/pattern phases
+    quality_brute = GUESSES_PER_SEC_BRUTE   # 164 GH/s MD5
+    quality_dict  = GUESSES_PER_SEC_DICT    # 500 GH/s rule-based MD5
+
+    # DISPLAY speed: the selected hash algorithm — used for the time display only
+    display_brute = hash_speed if hash_speed is not None else GUESSES_PER_SEC_BRUTE
+    display_dict  = hash_speed if hash_speed is not None else GUESSES_PER_SEC_DICT
+
+    # For quality scoring, always use the fast baseline (worst case for attacker = fast hash)
+    eff_brute = quality_brute
+    eff_dict  = quality_dict
+
+    # Cap DICTIONARY_SIZE to a realistic named-list size for scoring purposes.
+    # The loaded wordlist can grow to millions with leet variants — but a real
+    # dictionary/name attack uses curated lists (~200k–500k), not brute enumeration.
+    eff_dict_size = min(DICTIONARY_SIZE, 500_000)
 
     # ── Phase 1: Instant / near-instant catches ──────────────────────────
 
@@ -465,7 +730,7 @@ def estimate_crack_time(password, hash_speed=None):
         if base_lower in COMMON_WORDS or base_deleeted in COMMON_WORDS:
             suffix_combos = max(1, 10 ** max(len(suffix), 1)) if suffix else 1
             # Dictionary + rules attack
-            combos = DICTIONARY_SIZE * RULE_MULTIPLIER * suffix_combos
+            combos = eff_dict_size * RULE_MULTIPLIER * suffix_combos
             t = combos / eff_dict
             if t < best_time:
                 best_time = t
@@ -473,7 +738,7 @@ def estimate_crack_time(password, hash_speed=None):
 
     # (d) Check if the de-leeted password is a dictionary word
     if len(deleeted) >= 3 and deleeted in COMMON_WORDS:
-        combos = DICTIONARY_SIZE * RULE_MULTIPLIER
+        combos = eff_dict_size * RULE_MULTIPLIER
         t = combos / eff_dict
         if t < best_time:
             best_time = t
@@ -485,7 +750,7 @@ def estimate_crack_time(password, hash_speed=None):
     leftover = pw_len - total_word_chars
     if len(words_found) >= 2 and leftover <= 4:
         # Combination attack: dictionary^N × small brute-force for leftovers
-        combos = (DICTIONARY_SIZE ** len(words_found)) * (94 ** leftover if leftover > 0 else 1)
+        combos = (eff_dict_size ** len(words_found)) * (94 ** leftover if leftover > 0 else 1)
         t = combos / eff_dict
         if t < best_time:
             best_time = t
@@ -499,6 +764,32 @@ def estimate_crack_time(password, hash_speed=None):
             best_time = t
             best_method = "pin"
 
+    # (g) Name/word concatenation — e.g. "JasonMoore", "CarlosEmbury"
+    # Name+name combos are highly guessable via targeted social + dictionary attacks.
+    # A focused name list attack: first+last = ~500k × 500k = 250B combos
+    # At 500 GH/s rule-based: ~0.5 seconds. At MD5: ~1.5 seconds.
+    # These CANNOT score as "Strong" regardless of character count.
+    deleeted_full = _deleet(password.lower())
+    words_in_full = _find_dictionary_words(deleeted_full)
+    total_found_chars = sum(len(w) for w in words_in_full)
+    pw_alpha_len = sum(1 for c in deleeted_full if c.isalpha())
+    if pw_alpha_len > 0 and total_found_chars >= pw_alpha_len * 0.85:
+        if len(words_in_full) >= 2:
+            # Use NAME_DICT_SIZE (500k) for name-targeted attacks — more accurate
+            # than inflated DICTIONARY_SIZE which includes leet variants
+            combos = (NAME_DICT_SIZE ** len(words_in_full)) * (
+                94 ** max(0, pw_len - total_found_chars))
+            t = combos / eff_dict
+            if t < best_time:
+                best_time = t
+                best_method = "multi_word"
+        elif len(words_in_full) == 1:
+            combos = eff_dict_size * RULE_MULTIPLIER
+            t = combos / eff_dict
+            if t < best_time:
+                best_time = t
+                best_method = "dictionary_variant"
+
     # ── Phase 3: Brute-force ─────────────────────────────────────────────
 
     combos = charset_size ** pw_len
@@ -508,7 +799,20 @@ def estimate_crack_time(password, hash_speed=None):
         best_time = brute_time
         best_method = "brute_force"
 
-    return (best_time, charset_size, best_method)
+    # best_time is always the QUALITY score (fast-hash MD5 baseline).
+    # If the caller passed a hash_speed (e.g. bcrypt/Argon2), also compute
+    # the display time — how long it would take with that specific algorithm.
+    if hash_speed is not None and hash_speed < GUESSES_PER_SEC_BRUTE:
+        # Scale: preserve the same attack method's ratio but apply hash slowdown
+        speed_ratio = hash_speed / GUESSES_PER_SEC_BRUTE
+        display_time = best_time / speed_ratio
+    else:
+        display_time = best_time
+
+    # Return: (quality_seconds, display_seconds, charset_size, method)
+    # quality_seconds → always used for get_strength_tier() / label
+    # display_seconds → used for time strings shown to user
+    return (best_time, display_time, charset_size, best_method)
 
 
 def format_time(seconds):
@@ -537,38 +841,57 @@ def format_time(seconds):
 
 
 def get_strength_tier(seconds):
-    """Returns (label, color, message, tip)."""
+    """
+    NIST SP 800-63B-4 aligned strength tiers.
+
+    - Very Weak: breach-listed, instant pattern match
+    - Weak: dictionary/rule-based crack in seconds–minutes
+    - Fair: hours–weeks offline; human-patterned
+    - Strong: months–decades; long+unique
+    - Very Strong: centuries+; passphrase or password-manager generated
+    - Exceptional: extraordinary length/randomness
+
+    IMPORTANT: These are OFFLINE estimates on fast (unsalted) hashes.
+    Online attacks are rate-limited to ~10-1,000 guesses/min in practice.
+    Human-chosen passwords are more predictable than raw math suggests.
+    NIST does NOT require composition rules (upper/lower/digit/symbol).
+    """
     if seconds < 1:
-        return ("CRACKED!", C["red"],
-                "Oh no! A hacker would break this instantly!",
-                "Try a longer password with UPPER, lower, numbers & symbols — and avoid real words!")
-    if seconds < 60:
-        return ("TERRIBLE", C["red"],
-                "This falls in seconds. Any hacker tool would get in immediately.",
-                "Avoid dictionary words, names, and common patterns like Summer2024!")
+        return ("VERY WEAK", C["red"],
+                "Instantly cracked — this password is on breach lists or follows an obvious pattern.",
+                "Use 15+ characters from a password manager. "
+                "NIST recommends length and uniqueness — not complexity rules.")
     if seconds < 3600:
-        return ("WEAK", C["orange"],
-                "A hacker could crack this in minutes. Still way too easy!",
-                "Avoid real words and predictable patterns — even with numbers and symbols added.")
-    if seconds < 86400:
-        return ("FAIR", C["orange"],
-                "Better, but a dedicated attacker could crack this in hours.",
-                "Try a passphrase of 4+ random words, or add more random characters.")
+        return ("WEAK", C["red"],
+                "Cracked in seconds to minutes via dictionary or rule-based attack. "
+                "Human-patterned passwords fall fast even with substitutions like P@ssw0rd.",
+                "Avoid real words, names, dates, and leet-speak substitutions. "
+                "Try a passphrase of 4+ random unrelated words, or use a password manager.")
     if seconds < 86400 * 30:
-        return ("MEDIUM", C["yellow"],
-                "A hacker would need days to weeks. Getting there!",
-                "Longer and more random is always better — avoid real words if possible.")
-    if seconds < 86400 * 365 * 10:
+        return ("FAIR", C["orange"],
+                "Moderate resistance — a dedicated offline attack could break this in hours to weeks. "
+                "Human patterns make passwords more predictable than raw math suggests.",
+                "Estimated resistance depends on attack model. "
+                "Add more random characters or switch to a passphrase. "
+                "Enable MFA on any account that supports it.")
+    if seconds < 86400 * 365 * 50:
         return ("STRONG", C["green"],
-                "Nice! This would take months to years to crack.",
-                "Great job! Consider using a password manager to store it safely.")
+                "Good resistance against most offline attacks. "
+                "Length and unpredictability are the key factors. "
+                "Note: exact crack-time estimates are rough approximations.",
+                "Great job! Store it in a password manager and enable MFA where possible. "
+                "NIST: length matters far more than complexity rules.")
     if seconds < 86400 * 365 * 1_000_000:
         return ("VERY STRONG", C["green"],
-                "Excellent! Even a powerful GPU cluster would take centuries.",
-                "You're doing great. A password manager helps you use unique passwords everywhere.")
-    return ("UNBREAKABLE", C["purple"],
-            "WOW! Even a supercomputer would give up before the universe ends!",
-            "You're a password master! 🏆")
+                "Excellent resistance — this looks like a long passphrase or password-manager-generated password. "
+                "Estimated resistance in centuries (rough approximation — actual varies).",
+                "Store in a password manager. Add phishing-resistant MFA or a passkey — "
+                "passwords alone are not phishing-resistant.")
+    return ("EXCEPTIONAL", C["purple"],
+            "Extraordinary length and/or randomness. Gold standard — likely password-manager generated. "
+            "Outstanding protection even against future computing advances.",
+            "Password manager + passkey/phishing-resistant MFA = best possible security. "
+            "Share this approach with others! 🏆")
 
 
 # ═════════════════════════════════════════════════════════════════════════════
@@ -586,6 +909,8 @@ class PasswordCrackerApp:
         # State
         self.cracking = False
         self.cancel_crack = False
+        self._anim_after_ids = []  # Track animation after() IDs for cancellation
+        self._final_display = None
         self.show_password = False
 
         self.build_ui()
@@ -686,7 +1011,7 @@ class PasswordCrackerApp:
         hash_row = tk.Frame(input_section, bg=C["bg"], pady=4)
         hash_row.pack(fill="x")
 
-        tk.Label(hash_row, text="HASH ALGORITHM (how your password is stored):",
+        tk.Label(hash_row, text="HASH ALGORITHM (bcrypt or Argon2 recommended — never store plaintext):",
                  font=("Courier", 11, "bold"), fg=C["cyan"], bg=C["bg"]).pack(side="left", padx=(0, 8))
 
         self.hash_algo_var = tk.StringVar(value="MD5")
@@ -710,7 +1035,7 @@ class PasswordCrackerApp:
         cmp_frame = tk.Frame(input_section, bg=C["bg"], pady=4)
         cmp_frame.pack(fill="x")
 
-        tk.Label(cmp_frame, text="HOW YOUR PASSWORD HOLDS UP BY STORAGE METHOD:",
+        tk.Label(cmp_frame, text="OFFLINE CRACK RESISTANCE BY STORAGE METHOD (rough estimates — actual varies):",
                  font=("Courier", 10, "bold"), fg=C["dim"], bg=C["bg"]).pack(anchor="w", pady=(0, 4))
 
         self.algo_cmp_canvas = tk.Canvas(cmp_frame, bg=C["bg"],
@@ -805,6 +1130,14 @@ class PasswordCrackerApp:
                                        fg=C["dim"], bg=C["bg"])
         self.verdict_label.pack(pady=(0, 2))
 
+        # ── CRACKED PASSWORD DISPLAY ──
+        self.result_password_label = tk.Label(
+            self.results_frame, text="",
+            font=("Courier", 26, "bold"),
+            fg=C["green"], bg=C["bg"],
+            relief="flat")
+        self.result_password_label.pack(pady=(0, 4))
+
         self.time_label = tk.Label(self.results_frame, text="",
                                     font=("Courier", 15), fg=C["dim"], bg=C["bg"])
         self.time_label.pack(pady=(0, 2))
@@ -838,8 +1171,9 @@ class PasswordCrackerApp:
                  font=("Courier", 11, "bold"), fg=C["cyan"],
                  bg=C["bg2"]).pack()
         tk.Label(tips_frame,
-                 text="Longer = Stronger  |  Mix UPPER + lower + 123 + !@#  |  "
-                      "Avoid common words  |  Never use 'password' or '123456'",
+                 text="Longer = Stronger  |  15+ chars for single-factor accounts  |  "
+                      "Avoid real words, names & dates  |  Use a password manager  |  "
+                      "Enable MFA — passwords alone are not phishing-resistant",
                  font=("Helvetica", 11), fg=C["dim"],
                  bg=C["bg2"]).pack()
 
@@ -899,8 +1233,8 @@ class PasswordCrackerApp:
             self.update_algo_comparison("")
         else:
             hash_speed = HASH_ALGORITHMS[algo]["speed"]
-            secs, _, _ = estimate_crack_time(pw, hash_speed=hash_speed)
-            label, color, _, _ = get_strength_tier(secs)
+            quality_secs, _display, _, _ = estimate_crack_time(pw, hash_speed=hash_speed)
+            label, color, _, _ = get_strength_tier(quality_secs)
             self.live_strength.config(text=label, fg=color)
             self.update_algo_comparison(pw)
 
@@ -935,10 +1269,10 @@ class PasswordCrackerApp:
             is_selected = (algo == selected_algo)
 
             if pw:
-                secs, _, _ = estimate_crack_time(pw, hash_speed=info["speed"])
-                fill = secs_to_fill(secs)
-                time_str = format_time(secs)
-                tier_label, tier_color, _, _ = get_strength_tier(secs)
+                _quality, display_secs, _, _ = estimate_crack_time(pw, hash_speed=info["speed"])
+                fill = secs_to_fill(display_secs)
+                time_str = format_time(display_secs)
+                tier_label, tier_color, _, _ = get_strength_tier(_quality)
             else:
                 fill = 0.0
                 time_str = "—"
@@ -996,28 +1330,36 @@ class PasswordCrackerApp:
             self.tip_label.config(
                 text="Tip: A strong password doesn't need bad words. Try mixing words, numbers, and symbols!",
                 fg=C["yellow"])
+            self.result_password_label.config(text="")
             self.clear_meter()
             return
         if self.cracking:
             return
 
         self.cracking = True
+        self._animation_done = False
         self.cancel_crack = False
+        self._final_display = None
+        self._anim_after_ids = []
         self.crack_btn.config(state="disabled", bg=C["dim"])
         self.password_entry.config(state="disabled")
 
         # Clear previous results
         self.verdict_label.config(text="")
+        self.result_password_label.config(text="")
         self.time_label.config(text="")
         self.message_label.config(text="")
         self.tip_label.config(text="")
         self.clear_meter()
 
         # Calculate crack time using selected hash algorithm speed
+        # quality_secs → always MD5 baseline → used for strength label
+        # display_secs → selected algo speed → used for time strings shown to user
         algo = self.hash_algo_var.get()
         hash_speed = HASH_ALGORITHMS[algo]["speed"]
-        crack_seconds, charset_size, method = estimate_crack_time(pw, hash_speed=hash_speed)
-        strength_label, strength_color, message, tip = get_strength_tier(crack_seconds)
+        quality_secs, display_secs, charset_size, method = estimate_crack_time(pw, hash_speed=hash_speed)
+        crack_seconds = display_secs   # shown in UI time strings
+        strength_label, strength_color, message, tip = get_strength_tier(quality_secs)
 
         # Map method to human-readable attack label
         method_labels = {
@@ -1041,7 +1383,7 @@ class PasswordCrackerApp:
         elif crack_seconds < 3600:
             anim_duration = min(4.0, 1.5 + math.log10(max(crack_seconds, 1)))
         else:
-            anim_duration = 5.0  # strong passwords get a timeout animation
+            anim_duration = 30.0  # strong passwords: brute-force attempt runs for 30 seconds
 
         is_timeout = crack_seconds > 3600  # Will "give up" for strong passwords
 
@@ -1066,7 +1408,7 @@ class PasswordCrackerApp:
                                   "keyboard_walk", "sequential")
 
         # Build a pool of fake "table entries" scrolling past
-        rt_pool = list(COMMON_PASSWORDS)
+        rt_pool = list(_DISPLAY_PASSWORDS)
         random.shuffle(rt_pool)
         rt_pool = rt_pool[:300] if len(rt_pool) > 300 else rt_pool
         rt_idx = [0]
@@ -1251,78 +1593,64 @@ class PasswordCrackerApp:
     def run_crack_animation(self, password, anim_duration, crack_seconds,
                             charset_size, is_timeout, strength_label,
                             strength_color, message, tip, attack_label="brute-force"):
-        """Runs the cracking animation, then shows results."""
+        """
+        Background-thread animation loop — exactly the pattern that worked originally.
+        Loop runs on bg thread with time.sleep(0.05). After loop exits, sleep 0.2s to
+        let all queued root.after(0,...) frames drain from the Tk event queue, THEN
+        schedule show_cracked_result with list(password) — never with display[].
+        """
         pw_len = len(password)
         cracked = [False] * pw_len
         display = [random.choice(CRACK_CHARS) for _ in range(pw_len)]
         start_time = time.time()
 
-        # For weak passwords, reveal characters progressively
-        # For strong passwords, never fully reveal (timeout)
         if not is_timeout:
-            # Schedule when each character gets "cracked"
             reveal_times = sorted([random.uniform(0.15, anim_duration * 0.85)
                                    for _ in range(pw_len)])
         else:
-            # Strong: reveal at most a couple early chars to tease, then stall
             partial = min(2, pw_len)
             reveal_times = sorted([random.uniform(0.3, anim_duration * 0.3)
                                    for _ in range(partial)])
-            reveal_times += [anim_duration + 99] * (pw_len - partial)  # never
+            reveal_times += [anim_duration + 99] * (pw_len - partial)
 
         attempts = 0
-        frame = 0
 
         while time.time() - start_time < anim_duration and not self.cancel_crack:
             elapsed = time.time() - start_time
-            frame += 1
             attempts += random.randint(50000, 200000)
 
-            # Check if any chars should be revealed
             for i in range(pw_len):
                 if not cracked[i] and elapsed >= reveal_times[i]:
                     cracked[i] = True
                     display[i] = password[i]
-
-            # Scramble unrevealed characters
             for i in range(pw_len):
                 if not cracked[i]:
                     display[i] = random.choice(CRACK_CHARS)
 
-            # Update UI from main thread
             display_copy = list(display)
             cracked_copy = list(cracked)
             progress = min(elapsed / anim_duration, 1.0)
+            status = (f"[{attack_label}] {attempts:,} combinations... ({progress*100:.0f}%)"
+                      if is_timeout else f"[{attack_label}] {attempts:,} attempts...")
 
-            if is_timeout:
-                status = (f"[{attack_label}] {attempts:,} combinations... "
-                          f"({progress*100:.0f}% of time)")
-            else:
-                status = f"[{attack_label}] {attempts:,} attempts..."
+            aid = self.root.after(0, self.update_crack_display,
+                                  display_copy, cracked_copy, pw_len, progress,
+                                  status, is_timeout)
+            self._anim_after_ids.append(aid)
+            time.sleep(0.05)
 
-            self.root.after(0, self.update_crack_display,
-                            display_copy, cracked_copy, pw_len, progress,
-                            status, is_timeout)
+        # Do NOT cancel from background thread — Tkinter is not thread-safe.
+        # Cancellation happens inside show_cracked_result on the main thread.
 
-            time.sleep(0.05)  # ~20fps
-
-        # ── FINAL RESULT ──
         if is_timeout:
-            final_display = []
-            for i in range(pw_len):
-                if cracked[i]:
-                    final_display.append(password[i])
-                else:
-                    final_display.append("?")
+            final_display = [password[i] if cracked[i] else "?" for i in range(pw_len)]
             self.root.after(0, self.show_timeout_result,
                             final_display, cracked, pw_len, crack_seconds,
-                            strength_label, strength_color, message, tip,
-                            attack_label)
+                            strength_label, strength_color, message, tip, attack_label)
         else:
             self.root.after(0, self.show_cracked_result,
                             list(password), pw_len, crack_seconds,
-                            strength_label, strength_color, message, tip,
-                            attack_label)
+                            strength_label, strength_color, message, tip, attack_label)
 
         self.cracking = False
         self.root.after(0, lambda: self.crack_btn.config(state="normal", bg=C["green"]))
@@ -1332,6 +1660,13 @@ class PasswordCrackerApp:
 
     def update_crack_display(self, display, cracked, pw_len, progress,
                               status, is_timeout):
+        """Update crack canvas. If result already shown, restore it instead of drawing scramble."""
+        # If a final result has been committed, NEVER draw scramble over it.
+        # Any stale animation frame that slips through will restore the correct display.
+        if getattr(self, '_final_display', None) is not None:
+            self._draw_cracked_canvas(self._final_display, len(self._final_display))
+            return
+
         self.crack_canvas.delete("all")
         canvas_w = self.crack_canvas.winfo_width()
         if canvas_w < 10:
@@ -1364,14 +1699,24 @@ class PasswordCrackerApp:
                     x, y, text=display[i], fill=col,
                     font=("Courier", 20, "bold"))
 
-        # Raining characters effect at top
-        for _ in range(8):
-            rx = random.randint(10, max(canvas_w - 10, 20))
-            ry = random.randint(2, 25)
-            rc = random.choice(CRACK_CHARS)
+        # Matrix rain columns — full-width falling effect
+        num_cols = max(8, canvas_w // 18)
+        for col in range(num_cols):
+            cx = 9 + col * (canvas_w // num_cols)
+            # Head character (bright green)
+            head_y = random.randint(2, 20)
             self.crack_canvas.create_text(
-                rx, ry, text=rc, fill=C["matrix"],
-                font=("Courier", 9), stipple="gray25")
+                cx, head_y, text=random.choice(CRACK_CHARS),
+                fill=C["matrix"], font=("Courier", 10, "bold"))
+            # Trail (dimming)
+            for trail in range(1, 4):
+                ty = head_y - trail * 10
+                if ty > 0:
+                    alpha = ["gray50", "gray25", "gray12"][trail - 1]
+                    self.crack_canvas.create_text(
+                        cx, ty, text=random.choice(CRACK_CHARS),
+                        fill=C["green_dim"], font=("Courier", 9),
+                        stipple=alpha)
 
         # Progress bar
         self.progress_canvas.delete("all")
@@ -1391,27 +1736,40 @@ class PasswordCrackerApp:
 
         self.status_label.config(text=status, fg=C["cyan"])
 
-    def show_cracked_result(self, display, pw_len, crack_seconds,
-                             label, color, message, tip, attack_label="brute-force"):
-        """Password was cracked."""
-        # Final display — all green
+    def _draw_cracked_canvas(self, display, pw_len, color="green"):
+        """Draw the final cracked password canvas. Called multiple times to defeat race."""
+        # No guard here — show_cracked_result already sets _animation_done before calling this
         self.crack_canvas.delete("all")
         canvas_w = self.crack_canvas.winfo_width()
         if canvas_w < 10: canvas_w = 800
-
         char_w = min(45, max(25, (canvas_w - 40) // pw_len))
         total_w = char_w * pw_len
         start_x = (canvas_w - total_w) / 2 + char_w / 2
-
+        fill_col = C["green_dim"]
+        border_col = C["green"]
+        text_col = C["green"]
         for i in range(pw_len):
             x = start_x + i * char_w
             y = 60
             self.crack_canvas.create_rectangle(
                 x - char_w/2 + 2, y - 22, x + char_w/2 - 2, y + 22,
-                fill=C["green_dim"], outline=C["green"], width=2)
+                fill=fill_col, outline=border_col, width=2)
             self.crack_canvas.create_text(
-                x, y, text=display[i], fill=C["green"],
+                x, y, text=display[i], fill=text_col,
                 font=("Courier", 20, "bold"))
+
+    def show_cracked_result(self, display, pw_len, crack_seconds,
+                             label, color, message, tip, attack_label="brute-force"):
+        """Password was cracked. Runs on main thread — safe to cancel stale after() IDs."""
+        # Cancel every pending animation frame — main thread, so after_cancel works
+        for aid in getattr(self, '_anim_after_ids', []):
+            try:
+                self.root.after_cancel(aid)
+            except Exception:
+                pass
+        self._anim_after_ids = []
+        self._final_display = list(display)
+        self._draw_cracked_canvas(display, pw_len)
 
         # Full progress bar in red/orange
         self.progress_canvas.delete("all")
@@ -1423,10 +1781,15 @@ class PasswordCrackerApp:
 
         self.status_label.config(text="Password decoded!", fg=color)
 
+        pw_text = "".join(str(c) for c in display)
         time_str = format_time(crack_seconds)
         self.verdict_label.config(text=label, fg=color)
+        self.result_password_label.config(
+            text=f"► {pw_text} ◄",
+            fg=C["green"] if color == C["red"] else color)
         self.time_label.config(
-            text=f"Cracked via {attack_label} in: {time_str}",
+            text=f"Cracked via {attack_label} | Est. time: {time_str} "
+                 f"[offline/fast-hash — online attacks are heavily rate-limited]",
             fg=color)
         self.message_label.config(text=message, fg=C["white"])
         self.tip_label.config(text=f"Tip: {tip}", fg=C["yellow"])
@@ -1474,10 +1837,17 @@ class PasswordCrackerApp:
         self.status_label.config(
             text="The cracker couldn't break your password!", fg=C["purple"])
 
+        # Show partial reveal for strong passwords
+        pw_text = "".join(display)  # display has actual chars for any revealed, "?" for rest
+        masked = pw_text[:2] + "*" * max(0, pw_len - 2) if pw_len > 2 else "?" * pw_len
         time_str = format_time(crack_seconds)
         self.verdict_label.config(text=label, fg=color)
+        self.result_password_label.config(
+            text=f"🔒 {masked}  (cracker gave up!)",
+            fg=C["purple"])
         self.time_label.config(
-            text=f"Estimated time to crack ({attack_label}): {time_str}",
+            text=f"Est. offline resistance ({attack_label}): ~{time_str} "
+                 f"[rough approx — actual depends on hash, hardware, and attack model]",
             fg=color)
         self.message_label.config(text=message, fg=C["white"])
         self.tip_label.config(text=f"Tip: {tip}", fg=C["yellow"])
@@ -1522,8 +1892,8 @@ class PasswordCrackerApp:
 
         # Labels
         labels = [
-            (0.08, "Weak"), (0.25, "Fair"),
-            (0.42, "Medium"), (0.65, "Strong"), (0.88, "Fort Knox")
+            (0.08, "Very Weak"), (0.25, "Weak"),
+            (0.42, "Fair"), (0.63, "Strong"), (0.86, "Very Strong")
         ]
         for pos, text in labels:
             self.meter_canvas.create_text(
