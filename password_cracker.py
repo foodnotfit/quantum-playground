@@ -5,15 +5,129 @@ Kids enter a password and watch the cracker try to break it.
 Teaches password strength through fun visual feedback.
 """
 
-# ─── POLICY NOTE (NIST SP 800-63B-4 — Educational Tool) ────────────────────
-# - These are EDUCATIONAL ESTIMATES ONLY — not guaranteed crack times.
-# - Distinguishes ONLINE attacks (rate-limited ~10–1,000 guesses/min by lockouts/MFA)
-#   from OFFLINE attacks (GPU cluster on stolen hash database).
-# - Offline speed depends on hash algorithm, salt, work factor, and hardware.
-# - Human-chosen passwords are FAR more predictable than raw entropy math suggests.
-# - NIST SP 800-63B-4 does NOT require uppercase/lowercase/number/symbol rules.
-# - Length, uniqueness, and blocklist screening matter more than legacy complexity.
-# ────────────────────────────────────────────────────────────────────────────
+# ═══════════════════════════════════════════════════════════════════════════════
+# METHODOLOGY, REFERENCES, AND POLICY NOTE
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# This tool provides EDUCATIONAL ESTIMATES ONLY. It is not a real password
+# auditing tool and must not be used to make security decisions in production.
+#
+# ── CRACKING SPEED BENCHMARKS ───────────────────────────────────────────────
+# All hash rates are based on a single NVIDIA RTX 4090 GPU running Hashcat 6.x.
+# These represent a realistic serious individual attacker, not nation-state scale.
+# Nation-state or cloud attackers: multiply by 100–10,000×.
+#
+# Source: Hashcat official benchmark wiki and community results
+#   https://hashcat.net/wiki/doku.php?id=hashcat
+#   https://hashcat.net/benchmark/
+#
+# Benchmark values used in this application:
+#   MD5         164 GH/s   (mode 0)
+#   SHA-1        56.9 GH/s  (mode 100)
+#   SHA-256      22.8 GH/s  (mode 1400)
+#   bcrypt/cost=10  5,750 H/s  (mode 3200)
+#   Argon2id       ~800 H/s  (mode 13400, default memory params)
+#   NTLM          350 GH/s   (mode 1000) — faster than MD5; common in Windows breaches
+#
+# Additional cross-reference:
+#   Hive Systems Password Table (visual crack-time reference by charset + length):
+#   https://www.hivesystems.com/blog/are-your-passwords-in-the-green
+#
+#   Specops GPU hash-cracking analysis (bcrypt/modern hardware impact):
+#   https://specopssoft.com/blog/bcrypt-is-new-gen-hardware-and-ai-making-password-hacking-faster/
+#   https://specopssoft.com/blog/hashing-algorithm-cracking-bcrypt-passwords/
+#
+# ── CRACKING TIME FORMULA ───────────────────────────────────────────────────
+# Based on standard brute-force probability model:
+#
+#   keyspace          = charset_size ^ password_length
+#   expected_attempts = keyspace / 2         (average case: found at midpoint)
+#   crack_time        = expected_attempts / hashes_per_second
+#
+# Dictionary and rule-based attacks use a reduced effective keyspace:
+#   effective_keyspace = wordlist_size × rule_multiplier × suffix_variants
+#   crack_time         = effective_keyspace / rule_based_hashes_per_second
+#
+# Name+name concatenation attacks use a targeted name list:
+#   effective_keyspace = name_list_size ^ word_count   (e.g. 500k × 500k = 250B)
+#   crack_time         = 250B / rule_based_hashes_per_second ≈ 0.5 seconds
+#
+# The FASTEST time across all attack models is returned (worst case for defender).
+#
+# References:
+#   Wikipedia — Password Strength (entropy and keyspace models):
+#   https://en.wikipedia.org/wiki/Password_strength
+#
+#   Wikipedia — Brute-force attack:
+#   https://en.wikipedia.org/wiki/Brute-force_attack
+#
+# ── STRENGTH CLASSIFICATION ─────────────────────────────────────────────────
+# Strength labels (VERY WEAK / WEAK / FAIR / STRONG / VERY STRONG / EXCEPTIONAL)
+# are computed using the MD5 baseline speed (164 GH/s) regardless of the selected
+# hash algorithm. This reflects PASSWORD QUALITY — how guessable the pattern is.
+#
+# The selected hash algorithm controls the DISPLAY TIME shown to the user,
+# which represents how long cracking would take with that specific storage method.
+# A weak password pattern remains weak even when protected by bcrypt or Argon2.
+#
+# ── ATTACK TYPE MODELING ────────────────────────────────────────────────────
+# This application models the following attack types (applied in priority order):
+#
+#   1. Credential stuffing    — exact match against breach password databases
+#   2. Pattern attacks        — repeated chars, keyboard walks, sequential runs
+#   3. Leet-speak variants    — de-leet normalized matches (P@ssw0rd → password)
+#   4. Dictionary + rules     — wordlist × leet + appends + case mutations
+#   5. Multi-word compound    — word^N combinatorics (monkeybanana, soccerball)
+#   6. Name concatenation     — first+last name list^N (JasonMoore, CarlosEmbury)
+#   7. Numeric/PIN brute      — 10^length keyspace
+#   8. Full character brute   — charset^length keyspace
+#
+#   RAINBOW TABLES: Largely obsolete for properly salted modern password storage.
+#   Salted hashes (bcrypt, Argon2id, PBKDF2) defeat precomputed rainbow tables.
+#   Unsalted MD5/SHA-1/SHA-256 remain vulnerable to rainbow table attacks.
+#   Reference: OWASP Password Storage Cheat Sheet:
+#   https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+#
+#   ONLINE ATTACKS: Rate-limited by lockouts, throttling, MFA, and detection.
+#   NIST SP 800-63B permits no more than 100 failed attempts before lockout.
+#   Effective online rate: ~3–100 guesses/minute in practice, not GH/s.
+#
+#   OFFLINE ATTACKS: Assume stolen hash database — no rate limiting.
+#   Primary risk model. All speed benchmarks above apply to offline attacks only.
+#
+# ── NIST SP 800-63B-4 ALIGNMENT ─────────────────────────────────────────────
+# Source: https://pages.nist.gov/800-63-3/sp800-63b.html
+#
+#   - Minimum 15 characters for single-factor authenticators
+#   - Minimum 8 characters when used as part of MFA
+#   - Maximum length: at least 64 characters (do not silently truncate)
+#   - Accept all printing ASCII + spaces; prefer Unicode support
+#   - Do NOT require composition rules (upper/lower/digit/symbol)
+#   - Do NOT require periodic rotation unless evidence of compromise
+#   - Screen passwords against breach/common/dictionary/context-specific blocklists
+#   - Allow password managers and paste/autofill
+#   - Preferred storage: Argon2id; acceptable: bcrypt (cost≥10), PBKDF2-HMAC-SHA-256
+#   - Never store plaintext or reversible-encrypted passwords
+#   - Human-chosen passwords are far more predictable than entropy math alone suggests
+#
+# ── RECOMMENDED STORAGE (VERIFIER SIDE) ─────────────────────────────────────
+# Per OWASP and NIST:
+#   PREFERRED:   Argon2id (m=19MB, t=2, p=1) — resists GPU + memory attacks
+#   ACCEPTABLE:  bcrypt cost≥10, scrypt (N=32768, r=8, p=1)
+#   FIPS-BOUND:  PBKDF2-HMAC-SHA-256, iterations≥600,000
+#   NEVER USE:   MD5, SHA-1, SHA-256 (unsalted) for password storage
+#
+# ── DOCUMENTED ASSUMPTIONS ──────────────────────────────────────────────────
+# [ASSUMPTION] Single RTX 4090 attacker — conservative, realistic for individuals.
+# [ASSUMPTION] Dictionary size ~500k entries (curated, HaveIBeenPwned-style lists).
+# [ASSUMPTION] Rule multiplier 1,000× covers common leet/append/case mutations.
+# [ASSUMPTION] Name list 500k first+last names for targeted concatenation attacks.
+# [ASSUMPTION] Argon2id speed ~800 H/s reflects default memory-hard parameters;
+#              actual speed varies significantly with memory/time cost settings.
+# [ASSUMPTION] Human-chosen passwords are modeled as 100–1,000× more guessable
+#              than their raw charset^length entropy implies (pattern bias).
+#
+# ═══════════════════════════════════════════════════════════════════════════════
 
 import tkinter as tk
 from tkinter import font as tkfont
