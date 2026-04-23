@@ -465,7 +465,8 @@ footer {
   gap: 12px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 28px;
+  margin-top: 16px;
+  margin-bottom: 40px;
 }
 
 .coins-row {
@@ -473,7 +474,8 @@ footer {
   gap: 24px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 28px;
+  margin-top: 20px;
+  margin-bottom: 40px;
   min-height: 180px;
   align-items: center;
 }
@@ -541,17 +543,20 @@ footer {
 }
 .coin-barrier.revealed { transform: translateY(-110%) rotateX(80deg); opacity: 0; pointer-events: none; }
 .coin-barrier-label {
-  text-align: center; font-size: 0.85rem; font-weight: 700; color: #8b5cf6;
-  margin-top: 6px; min-height: 20px; transition: color 0.3s;
+  text-align: center; font-size: 0.85rem; font-weight: 700; color: #c4b5fd;
+  margin-top: 10px; min-height: 24px; transition: color 0.3s;
+  background: rgba(10, 10, 30, 0.85); padding: 4px 10px; border-radius: 8px;
+  border: 1px solid rgba(139,92,246,0.35); letter-spacing: 0.5px;
 }
-.coin-barrier-label.measured { color: #fbbf24; }
+.coin-barrier-label.measured { color: #fbbf24; border-color: rgba(251,191,36,0.4); }
 
 .coin-tally {
   text-align: center;
   font-size: 1.4rem;
   font-weight: 700;
   color: #e0e0ff;
-  margin-bottom: 20px;
+  margin-top: 16px;
+  margin-bottom: 28px;
 }
 
 .coin-tally span.heads { color: #00d4ff; }
@@ -1743,9 +1748,134 @@ footer {
 .pair-particle.compromised { animation: none; filter: grayscale(0.5); }
 .explorer-only { display: flex; }
 body.scientist .explorer-only, body.engineer .explorer-only { display: none !important; }
+
+/* ===== TIMER BUTTON & DISPLAY ===== */
+.btn-timer {
+  background: linear-gradient(135deg, #1a0a3a, #2a1560);
+  border: 2px solid #8b5cf6;
+  color: #c4b5fd;
+  min-height: 40px;
+  padding: 6px 16px;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+.btn-timer:hover { filter: brightness(1.2); border-color: #a78bfa; }
+.btn-timer.running { background: linear-gradient(135deg, #2a0a0a, #4a1010); border-color: #ef4444; color: #fca5a5; }
+
+.timer-display {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #00d4ff;
+  font-family: monospace;
+  letter-spacing: 3px;
+  background: #06060f;
+  border: 2px solid #1a3a5a;
+  border-radius: 10px;
+  padding: 4px 14px;
+  min-width: 88px;
+  text-align: center;
+  display: none;
+  box-shadow: 0 0 12px rgba(0,212,255,0.2);
+}
+.timer-display.visible { display: block; }
+
+/* ===== TAB 2 RESET BAR — column layout ===== */
+.tab2-reset-bar {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+.tab2-timer-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ===== GLOBAL TIMER BAR ===== */
+#global-timer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: #060610;
+  border-bottom: 2px solid #1a1a3a;
+  flex-wrap: wrap;
+}
+#global-timer-bar .global-timer-label {
+  font-size: 0.88rem;
+  color: #6060aa;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* ===== THANK YOU OVERLAY ===== */
+#thankyou-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(4, 4, 18, 0.97);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+#thankyou-overlay.visible {
+  display: flex;
+  animation: fadeInOverlay 0.7s ease;
+}
+@keyframes fadeInOverlay {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.thankyou-box {
+  padding: 52px 44px;
+  max-width: 620px;
+  width: 90%;
+  background: linear-gradient(135deg, #0d0d2b, #12123a);
+  border: 3px solid #8b5cf6;
+  border-radius: 28px;
+  box-shadow: 0 0 80px rgba(139,92,246,0.45), 0 0 140px rgba(0,212,255,0.1);
+}
+.thankyou-emoji { font-size: 4.5rem; margin-bottom: 18px; display: block; }
+.thankyou-heading {
+  font-size: clamp(1.7rem, 5vw, 2.5rem);
+  font-weight: 900;
+  margin-bottom: 18px;
+  background: linear-gradient(90deg, #00d4ff 0%, #8b5cf6 60%, #00d4ff 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s linear infinite;
+  line-height: 1.2;
+}
+.thankyou-sub {
+  font-size: 1.1rem;
+  color: #a0a0cc;
+  line-height: 1.7;
+  margin-bottom: 36px;
+}
 </style>
 </head>
 <body>
+
+<!-- ===== THANK YOU OVERLAY ===== -->
+<div id="thankyou-overlay">
+  <div class="thankyou-box">
+    <span class="thankyou-emoji">⚛️</span>
+    <div class="thankyou-heading">Thanks for learning about Quantum!</div>
+    <p class="thankyou-sub">You explored the strange and fascinating world of quantum computing.<br>Keep questioning reality!</p>
+    <button class="btn btn-purple" onclick="dismissThankyou()" style="font-size:1.2rem;min-height:58px;padding:14px 36px;">Start Over 🔄</button>
+  </div>
+</div>
 
 <!-- ===== HEADER ===== -->
 <div id="header">
@@ -1776,6 +1906,13 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
   <button class="tab-btn" data-tab="9">🌍 Quantum Future</button>
   <button class="tab-btn" data-tab="10">⚙️ Hardware</button>
   <button class="tab-btn" data-tab="11">📚 References</button>
+</div>
+
+<!-- ===== GLOBAL TIMER BAR ===== -->
+<div id="global-timer-bar">
+  <span class="global-timer-label">⏱ Optional Session Timer:</span>
+  <div class="timer-display" id="timer-display-global"></div>
+  <button class="btn-timer" id="timer-btn-global" onclick="toggleTimer()">⏱ Start 5 Min Timer</button>
 </div>
 
 <!-- ===== TAB CONTENT ===== -->
@@ -1837,7 +1974,13 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
   <!-- TAB 2 — COIN FLIP -->
   <div id="tab2" class="tab-panel">
     <h2>🪙 Quantum Coin Flip</h2>
-    <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(2)">🔄 Reset</button></div>
+    <div class="tab-reset-bar tab2-reset-bar">
+      <button class="btn btn-gray btn-sm" onclick="resetTab(2)">🔄 Reset</button>
+      <div class="tab2-timer-row">
+        <div class="timer-display" id="timer-display-tab2"></div>
+        <button class="btn-timer" id="timer-btn-tab2" onclick="toggleTimer()">⏱ Start 5 Min Timer</button>
+      </div>
+    </div>
     <div class="coin-controls">
       <button class="btn btn-gray" onclick="removeCoin()">－ Remove</button>
       <button class="btn btn-purple" onclick="prepareQubits()">🔮 Prepare Qubit</button>
@@ -4451,6 +4594,81 @@ function toggleFutureCard(header) {
       el.classList.toggle('active', el.dataset.level === currentLevel);
     });
   }
+}
+
+/* =====================================================
+   5-MINUTE TIMER
+   ===================================================== */
+let _timerInterval = null;
+let _timerSecondsLeft = 300;
+
+function toggleTimer() {
+  if (_timerInterval) {
+    stopTimer();
+  } else {
+    startTimer();
+  }
+}
+
+function startTimer() {
+  _timerSecondsLeft = 300;
+  updateTimerDisplays(_timerSecondsLeft);
+  setTimerDisplaysVisible(true);
+  setTimerBtnsRunning(true);
+  _timerInterval = setInterval(function() {
+    _timerSecondsLeft--;
+    updateTimerDisplays(_timerSecondsLeft);
+    if (_timerSecondsLeft <= 0) {
+      stopTimer();
+      setTimerDisplaysVisible(false);
+      showThankyou();
+    }
+  }, 1000);
+}
+
+function stopTimer() {
+  clearInterval(_timerInterval);
+  _timerInterval = null;
+  setTimerDisplaysVisible(false);
+  setTimerBtnsRunning(false);
+}
+
+function updateTimerDisplays(secs) {
+  const mm = String(Math.floor(secs / 60)).padStart(2, '0');
+  const ss = String(secs % 60).padStart(2, '0');
+  const text = mm + ':' + ss;
+  ['timer-display-tab2', 'timer-display-global'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  });
+}
+
+function setTimerDisplaysVisible(visible) {
+  ['timer-display-tab2', 'timer-display-global'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('visible', visible);
+  });
+}
+
+function setTimerBtnsRunning(running) {
+  ['timer-btn-tab2', 'timer-btn-global'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle('running', running);
+    el.textContent = running ? '⏹ Cancel Timer' : '⏱ Start 5 Min Timer';
+  });
+}
+
+function showThankyou() {
+  document.getElementById('thankyou-overlay').classList.add('visible');
+}
+
+function dismissThankyou() {
+  document.getElementById('thankyou-overlay').classList.remove('visible');
+  // Switch to tab 1 and reset all
+  switchTab('1');
+  for (let i = 1; i <= 11; i++) { try { resetTab(i); } catch(e) {} }
+  window.scrollTo(0, 0);
 }
 
 /* =====================================================
