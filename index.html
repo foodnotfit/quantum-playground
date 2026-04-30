@@ -140,6 +140,19 @@ body {
 }
 .level-btn.active[data-level="engineer"] small { color: #6d28d9; }
 
+.level-btn.active[data-level="darpa-pm"] {
+  background: linear-gradient(135deg, #2a1a08, #1a1005);
+  color: #fbbf24;
+  border-color: #fbbf24;
+  box-shadow: 0 0 18px rgba(251,191,36,0.4);
+}
+.level-btn.active[data-level="darpa-pm"] small { color: #d97706; }
+.level-btn[data-level="darpa-pm"] { position: relative; }
+.level-btn[data-level="darpa-pm"]::before {
+  content: "🎖"; position: absolute; top: -10px; right: -8px;
+  font-size: 0.95rem; filter: drop-shadow(0 0 4px rgba(251,191,36,0.6));
+}
+
 /* ===== TABS ===== */
 #tab-bar {
   display: flex;
@@ -333,35 +346,41 @@ footer {
   background: linear-gradient(135deg, #0d1a2a, #0a0a1a);
   border: 2px solid #1a3a5a;
   border-radius: 16px;
-  padding: 20px 24px;
-  margin-top: 28px;
+  padding: 22px 26px;
+  margin-top: 32px;
   font-size: 1rem;
-  line-height: 1.7;
+  line-height: 1.75;
   color: #b0c0e0;
 }
 
 .explanation-box h3 {
   color: #00d4ff;
-  margin-bottom: 8px;
-  font-size: 1.1rem;
+  margin-bottom: 12px;
+  font-size: 1.15rem;
+  line-height: 1.3;
 }
+.explanation-box p { margin: 0; }
+.explanation-box .level-text + .level-text { margin-top: 0; }
 
 .key-concepts-box {
   background: linear-gradient(135deg, #0d2a1a, #0a0a1a);
   border: 2px solid #1a5a3a;
   border-radius: 16px;
-  padding: 20px 24px;
-  margin-top: 16px;
+  padding: 22px 26px;
+  margin-top: 22px;
   font-size: 1rem;
-  line-height: 1.7;
+  line-height: 1.75;
   color: #b0c0e0;
 }
 
 .key-concepts-box h3 {
   color: #10b981;
-  margin-bottom: 8px;
-  font-size: 1.1rem;
+  margin-bottom: 12px;
+  font-size: 1.15rem;
+  line-height: 1.3;
 }
+.key-concepts-box p { margin: 0; }
+.key-concepts-box strong { display: inline-block; margin-right: 4px; }
 
 /* ===== TAB 1 — HOW TO PLAY ===== */
 #tab1 .welcome-title {
@@ -471,13 +490,14 @@ footer {
 
 .coins-row {
   display: flex;
-  gap: 24px;
+  gap: 32px;
   justify-content: center;
   flex-wrap: wrap;
-  margin-top: 20px;
-  margin-bottom: 40px;
-  min-height: 180px;
-  align-items: center;
+  margin-top: 28px;
+  margin-bottom: 56px;            /* roomier gap between coins and the tally */
+  min-height: 220px;              /* coin + label fit comfortably */
+  align-items: flex-start;
+  padding: 8px 4px 24px;
 }
 
 .coin {
@@ -526,26 +546,38 @@ footer {
 }
 
 .coin-wrapper { position: relative; display: inline-block; }
+/* Inner ring stays attached to the coin only — NOT to the label below.
+   Sized explicitly to the coin so it never overlaps the descriptor label. */
+.coin-stage {
+  position: relative;
+  width: 150px;
+  height: 150px;
+}
 .coin-barrier {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
   background: transparent;
   border: 6px solid #8b5cf6;
   border-radius: 50%;
   display: flex; align-items: flex-start; justify-content: center;
-  padding-top: 6px;
-  font-size: 1.2rem; font-weight: 900; color: #c4b5fd;
+  padding-top: 8px;
+  font-size: 0.95rem; font-weight: 900; color: #c4b5fd;
   z-index: 5;
   transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s;
   transform-origin: top center;
   box-shadow: 0 0 24px rgba(139,92,246,0.7), inset 0 0 30px rgba(139,92,246,0.08);
   pointer-events: none;
   letter-spacing: 1px;
+  white-space: nowrap;
 }
 .coin-barrier.revealed { transform: translateY(-110%) rotateX(80deg); opacity: 0; pointer-events: none; }
 .coin-barrier-label {
-  text-align: center; font-size: 0.85rem; font-weight: 700; color: #c4b5fd;
-  margin-top: 10px; min-height: 24px; transition: color 0.3s;
-  background: rgba(10, 10, 30, 0.85); padding: 4px 10px; border-radius: 8px;
+  text-align: center; font-size: 0.88rem; font-weight: 700; color: #c4b5fd;
+  margin-top: 18px;        /* clear gap below the coin/barrier ring */
+  min-height: 26px;
+  max-width: 220px;        /* keep label visually centered under the coin */
+  line-height: 1.45;
+  transition: color 0.3s;
+  background: rgba(10, 10, 30, 0.85); padding: 6px 12px; border-radius: 8px;
   border: 1px solid rgba(139,92,246,0.35); letter-spacing: 0.5px;
 }
 .coin-barrier-label.measured { color: #fbbf24; border-color: rgba(251,191,36,0.4); }
@@ -555,8 +587,8 @@ footer {
   font-size: 1.4rem;
   font-weight: 700;
   color: #e0e0ff;
-  margin-top: 16px;
-  margin-bottom: 28px;
+  margin-top: 28px;
+  margin-bottom: 36px;
 }
 
 .coin-tally span.heads { color: #00d4ff; }
@@ -1863,17 +1895,245 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
   line-height: 1.7;
   margin-bottom: 36px;
 }
+
+/* ===== SPLASH SCREEN ===== */
+#splash-screen {
+  position: fixed; inset: 0; z-index: 10000;
+  background: radial-gradient(ellipse at center, #12123a 0%, #04041a 70%);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 32px; overflow: hidden;
+}
+#splash-screen.hidden { display: none; }
+#splash-stars { position: absolute; inset: 0; z-index: 0; }
+#splash-content {
+  position: relative; z-index: 1; max-width: 820px;
+  animation: splashFadeIn 0.7s ease;
+}
+@keyframes splashFadeIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+#splash-badge {
+  display: inline-block;
+  background: rgba(139,92,246,0.15);
+  color: #c4b5fd; border: 2px solid #8b5cf6;
+  border-radius: 999px; padding: 6px 18px;
+  font-weight: 800; font-size: 0.85rem;
+  letter-spacing: 2px; margin-bottom: 18px; text-transform: uppercase;
+}
+#splash-title {
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
+  font-weight: 900; line-height: 1.05;
+  background: linear-gradient(90deg,#00d4ff,#8b5cf6,#fbbf24,#10b981,#00d4ff);
+  background-size: 300% auto;
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; animation: gradientShift 4s linear infinite;
+  margin-bottom: 14px; letter-spacing: 2px;
+}
+#splash-subtitle {
+  font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+  color: #e0e0ff; font-weight: 700; margin-bottom: 16px;
+}
+#splash-challenge {
+  font-size: 1.05rem; color: #a0a0cc; line-height: 1.7;
+  margin: 0 auto 28px; max-width: 640px;
+}
+#splash-challenge strong { color: #fbbf24; }
+.splash-bullets {
+  display: flex; justify-content: center; gap: 10px;
+  flex-wrap: wrap; margin-bottom: 28px;
+}
+.splash-bullet {
+  background: #12122a; border: 1px solid #2a2a4a; border-radius: 10px;
+  padding: 10px 14px; font-size: 0.85rem; color: #a0a0cc;
+  display: flex; align-items: center; gap: 6px;
+}
+.splash-bullet b { color: #e0e0ff; }
+#splash-continue {
+  font-size: 1.4rem; font-weight: 900;
+  padding: 18px 48px; border-radius: 14px;
+  background: linear-gradient(135deg, #8b5cf6, #00d4ff);
+  color: #fff; border: none; cursor: pointer;
+  letter-spacing: 2px;
+  box-shadow: 0 6px 22px rgba(139,92,246,0.45);
+  transition: all 0.2s;
+}
+#splash-continue:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(139,92,246,0.6);
+  filter: brightness(1.1);
+}
+#splash-continue:active { transform: translateY(-1px); }
+#splash-timer-note {
+  margin-top: 18px; color: #8080aa; font-size: 0.85rem;
+}
+#splash-timer-note b { color: #fbbf24; }
+
+/* ===== SESSION BAR (replaces global-timer-bar's manual button) ===== */
+#session-timer-pill {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 8px 14px; background: #04041a;
+  border: 2px solid #8b5cf6; border-radius: 10px;
+  font-family: monospace; font-weight: 800;
+  font-size: 1.3rem; color: #c4b5fd;
+  letter-spacing: 3px; min-width: 120px; justify-content: center;
+  text-shadow: 0 0 10px rgba(139,92,246,0.4);
+}
+#session-timer-pill.warning {
+  border-color: #fbbf24; color: #fbbf24;
+  text-shadow: 0 0 10px rgba(251,191,36,0.4);
+}
+#session-timer-pill.critical {
+  border-color: #ef4444; color: #fca5a5;
+  text-shadow: 0 0 10px rgba(239,68,68,0.5);
+  animation: pulseRed 1s infinite;
+}
+@keyframes pulseRed {
+  0%,100% { opacity: 1; }
+  50%     { opacity: 0.6; }
+}
+.btn-splash-reset {
+  background: #1a1a3a; color: #c0c0e0;
+  border: 2px solid #2a2a4a; border-radius: 10px;
+  padding: 8px 16px; font-weight: 700; cursor: pointer;
+  font-size: 0.9rem; transition: all 0.2s;
+}
+.btn-splash-reset:hover {
+  border-color: #ef4444; color: #fca5a5;
+}
+
+/* ===== QUIZ HINT + RESULTS REVIEW ===== */
+.quiz-hint-row { margin-top: 12px; text-align: center; }
+.quiz-hint-btn {
+  background: #1a1a3a; border: 2px solid #fbbf24; color: #fbbf24;
+  border-radius: 10px; padding: 8px 16px; font-weight: 700;
+  font-size: 0.9rem; cursor: pointer; transition: all 0.2s;
+}
+.quiz-hint-btn:hover { background: #2a2010; }
+.quiz-hint-btn:disabled { opacity: 0.6; cursor: default; }
+.quiz-hint-text {
+  display: none; margin-top: 10px;
+  background: linear-gradient(135deg, #2a2010, #1a1505);
+  border: 1px solid #fbbf24; border-radius: 10px;
+  padding: 10px 14px; color: #fde68a; font-size: 0.92rem;
+  line-height: 1.55; text-align: left;
+}
+.quiz-hint-text.visible { display: block; animation: slideIn 0.3s ease; }
+.quiz-question-ref {
+  display: inline-block; margin-top: 8px;
+  font-size: 0.82rem; color: #00d4ff;
+  text-decoration: none; font-weight: 700;
+  border-bottom: 1px dashed #00d4ff;
+}
+.quiz-question-ref:hover { color: #67e8f9; }
+
+/* Results review per question */
+.quiz-review-list {
+  margin-top: 24px; text-align: left;
+  background: #0d0d22; border: 1px solid #2a2a4a;
+  border-radius: 14px; padding: 20px;
+}
+.quiz-review-title {
+  font-size: 1.1rem; font-weight: 800;
+  color: #fbbf24; margin-bottom: 14px; text-align: center;
+}
+.quiz-review-item {
+  background: #12122a; border: 1px solid #2a2a4a;
+  border-radius: 10px; padding: 14px; margin-bottom: 10px;
+}
+.quiz-review-item.correct  { border-color: #10b981; }
+.quiz-review-item.wrong    { border-color: #ef4444; }
+.quiz-review-q {
+  font-weight: 700; color: #e0e0ff; margin-bottom: 6px; font-size: 0.95rem;
+}
+.quiz-review-status {
+  display: inline-block; padding: 2px 8px;
+  border-radius: 6px; font-size: 0.75rem; font-weight: 700;
+  margin-left: 8px;
+}
+.quiz-review-status.correct { background: rgba(16,185,129,0.2); color: #10b981; border: 1px solid #10b981; }
+.quiz-review-status.wrong   { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid #ef4444; }
+.quiz-review-answer {
+  font-size: 0.85rem; color: #a0a0cc; margin: 4px 0;
+}
+.quiz-review-answer b { color: #10b981; }
+.quiz-review-hint {
+  font-size: 0.85rem; color: #fde68a;
+  margin-top: 6px; line-height: 1.5;
+}
+.quiz-review-ref {
+  display: inline-block; margin-top: 6px;
+  font-size: 0.82rem; color: #00d4ff;
+  text-decoration: none; font-weight: 700;
+}
+.quiz-review-ref:hover { text-decoration: underline; }
+
+/* All-tests grid for Tab 1 */
+.all-tests-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px; margin: 18px 0;
+}
+.test-card-mini {
+  background: #12122a; border: 2px solid #2a2a4a;
+  border-radius: 14px; padding: 16px; cursor: pointer;
+  transition: all 0.2s; text-align: left;
+}
+.test-card-mini:hover {
+  border-color: #8b5cf6; transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(139,92,246,0.25);
+}
+.test-card-mini .num {
+  display: inline-block; background: #2a2a4a; color: #c4b5fd;
+  font-weight: 800; font-size: 0.78rem;
+  padding: 2px 8px; border-radius: 6px; margin-bottom: 6px;
+}
+.test-card-mini .emoji { font-size: 2rem; display: block; margin-bottom: 4px; }
+.test-card-mini .title {
+  font-weight: 800; color: #e0e0ff; font-size: 1.05rem; margin-bottom: 4px;
+}
+.test-card-mini .sub {
+  font-size: 0.82rem; color: #a0a0cc; line-height: 1.45;
+}
+.test-card-mini.final {
+  border-color: #fbbf24;
+  background: linear-gradient(135deg, #2a2010, #12122a);
+}
+.test-card-mini.final:hover { border-color: #fde68a; }
+.test-card-mini.final .num { background: #fbbf24; color: #1a1a3a; }
 </style>
 </head>
 <body>
 
-<!-- ===== THANK YOU OVERLAY ===== -->
+<!-- ===== SPLASH SCREEN ===== -->
+<div id="splash-screen">
+  <canvas id="splash-stars"></canvas>
+  <div id="splash-content">
+    <div id="splash-badge">⚛️ DARPA Family Day 2026</div>
+    <h1 id="splash-title">⚛️ QUANTUM PLAYGROUND</h1>
+    <div id="splash-subtitle">Welcome, future quantum scientist!</div>
+    <p id="splash-challenge">
+      Quantum computers can be in <strong>two places at once</strong>, link particles across the universe, and crack codes that would take normal computers <strong>longer than the age of the universe</strong>. Ready to see how? Try every test, then take the quiz to graduate as a Quantum Scientist!
+    </p>
+    <div class="splash-bullets">
+      <div class="splash-bullet">🪙 <b>9 hands-on tests</b></div>
+      <div class="splash-bullet">🧠 <b>Final quiz</b></div>
+      <div class="splash-bullet">🏆 <b>Earn your badge</b></div>
+    </div>
+    <button id="splash-continue" onclick="startSession()">CONTINUE →</button>
+    <div id="splash-timer-note">You'll have <b>5 minutes</b> to play — re-run any test as many times as you want!</div>
+  </div>
+</div>
+
+<!-- ===== THANK YOU OVERLAY (shown when 5-min timer expires) ===== -->
 <div id="thankyou-overlay">
   <div class="thankyou-box">
     <span class="thankyou-emoji">⚛️</span>
     <div class="thankyou-heading">Thanks for learning about Quantum!</div>
-    <p class="thankyou-sub">You explored the strange and fascinating world of quantum computing.<br>Keep questioning reality!</p>
-    <button class="btn btn-purple" onclick="dismissThankyou()" style="font-size:1.2rem;min-height:58px;padding:14px 36px;">Start Over 🔄</button>
+    <p class="thankyou-sub">You explored superposition, entanglement, teleportation, and the science of post-quantum cryptography.<br>Keep questioning reality!</p>
+    <div style="background:#04041a;border:1px solid #2a2a4a;border-radius:10px;padding:10px 18px;display:inline-block;color:#c4b5fd;font-weight:700;font-size:0.9rem;margin-bottom:24px">⚛️ DARPA Family Day 2026</div><br>
+    <button class="btn btn-purple" onclick="dismissThankyou()" style="font-size:1.2rem;min-height:58px;padding:14px 36px;">🏠 Back to Splash</button>
   </div>
 </div>
 
@@ -1890,29 +2150,30 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
 <div id="level-bar">
   <button class="level-btn active" data-level="explorer">🌟 Explorer <span>ages 6–10</span></button>
   <button class="level-btn" data-level="scientist">🔬 Scientist <span>ages 11–14</span></button>
-  <button class="level-btn" data-level="engineer">⚛️ Engineer <span>ages 15+</span></button>
+  <button class="level-btn" data-level="engineer">⚛️ Engineer <span>ages 15–18</span></button>
+  <button class="level-btn" data-level="darpa-pm">🎖 DARPA PM <span>adult / expert</span></button>
 </div>
 
-<!-- ===== TAB BAR ===== -->
+<!-- ===== TAB BAR (Quiz moved to the end as the graduation test) ===== -->
 <div id="tab-bar">
   <button class="tab-btn active" data-tab="1">📖 How To Play</button>
   <button class="tab-btn" data-tab="2">🪙 Coin Flip</button>
   <button class="tab-btn" data-tab="3">⚛️ Entanglement</button>
   <button class="tab-btn" data-tab="4">🏁 Quantum Race</button>
   <button class="tab-btn" data-tab="5">🔐 Code Breaker</button>
-  <button class="tab-btn" id="tab6-btn" data-tab="6">🧠 Quantum Quiz</button>
   <button class="tab-btn" data-tab="7">🎮 Teleporter</button>
   <button class="tab-btn" data-tab="8">🏎️ Speed Test</button>
   <button class="tab-btn" data-tab="9">🌍 Quantum Future</button>
   <button class="tab-btn" data-tab="10">⚙️ Hardware</button>
   <button class="tab-btn" data-tab="11">📚 References</button>
+  <button class="tab-btn" id="tab6-btn" data-tab="6">🧠 Final Quiz</button>
 </div>
 
-<!-- ===== GLOBAL TIMER BAR ===== -->
+<!-- ===== SESSION BAR (auto-running 5-min timer + Reset to Splash) ===== -->
 <div id="global-timer-bar">
-  <span class="global-timer-label">⏱ Optional Session Timer:</span>
-  <div class="timer-display" id="timer-display-global"></div>
-  <button class="btn-timer" id="timer-btn-global" onclick="toggleTimer()">⏱ Start 5 Min Timer</button>
+  <span class="global-timer-label">⏱ Session Time Left:</span>
+  <div id="session-timer-pill">05:00</div>
+  <button class="btn-splash-reset" onclick="resetToSplash()">🏠 Reset to Splash</button>
 </div>
 
 <!-- ===== TAB CONTENT ===== -->
@@ -1924,63 +2185,104 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
     <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(1)">🔄 Reset</button></div>
     <p class="welcome-subtitle">Learn real quantum science through games!</p>
 
-    <div class="game-cards">
-      <div class="game-card" onclick="switchTab('2')">
-        <span class="card-emoji">🪙</span>
-        <div class="card-title">Coin Flip</div>
-        <div class="card-action">Flip a quantum coin!</div>
-        <div class="card-learn">See how things can be in TWO states at once!</div>
+    <p class="welcome-subtitle" style="font-size:0.95rem;color:#a0a0cc;margin-bottom:8px">Try every test, then take the <b style="color:#fbbf24">Final Quiz</b> to graduate as a Quantum Scientist! 🎓</p>
+
+    <div class="all-tests-grid">
+      <div class="test-card-mini" onclick="switchTab('2')">
+        <span class="num">TEST 1</span><span class="emoji">🪙</span>
+        <div class="title">Coin Flip</div>
+        <div class="sub">Flip quantum coins and see how something can be in TWO states at once — superposition!</div>
       </div>
-      <div class="game-card" onclick="switchTab('3')">
-        <span class="card-emoji">⚛️</span>
-        <div class="card-title">Entanglement</div>
-        <div class="card-action">Link two particles!</div>
-        <div class="card-learn">Watch them stay connected across the universe!</div>
+      <div class="test-card-mini" onclick="switchTab('3')">
+        <span class="num">TEST 2</span><span class="emoji">⚛️</span>
+        <div class="title">Entanglement</div>
+        <div class="sub">Link two particles. Measure one and the other instantly matches — even across the universe.</div>
       </div>
-      <div class="game-card" onclick="switchTab('4')">
-        <span class="card-emoji">🏁</span>
-        <div class="card-title">Quantum Race</div>
-        <div class="card-action">Race through a maze!</div>
-        <div class="card-learn">Quantum explores ALL paths at once!</div>
+      <div class="test-card-mini" onclick="switchTab('4')">
+        <span class="num">TEST 3</span><span class="emoji">🏁</span>
+        <div class="title">Quantum Race</div>
+        <div class="sub">Race a classical computer through a maze. Quantum explores every path at once.</div>
       </div>
-      <div class="game-card" onclick="switchTab('5')">
-        <span class="card-emoji">🔐</span>
-        <div class="card-title">Code Breaker</div>
-        <div class="card-action">Crack a secret code!</div>
-        <div class="card-learn">See why we need new quantum-safe locks!</div>
+      <div class="test-card-mini" onclick="switchTab('5')">
+        <span class="num">TEST 4</span><span class="emoji">🔐</span>
+        <div class="title">Code Breaker</div>
+        <div class="sub">Watch quantum crack a normal code in seconds — and see the new quantum-safe lock.</div>
+      </div>
+      <div class="test-card-mini" onclick="switchTab('7')">
+        <span class="num">TEST 5</span><span class="emoji">🎮</span>
+        <div class="title">Teleporter</div>
+        <div class="sub">Send Alice's secret to Bob without moving the particle — real quantum teleportation!</div>
+      </div>
+      <div class="test-card-mini" onclick="switchTab('8')">
+        <span class="num">TEST 6</span><span class="emoji">🏎️</span>
+        <div class="title">Speed Test</div>
+        <div class="sub">Pit quantum vs classical on real algorithm challenges and see the speedup live.</div>
+      </div>
+      <div class="test-card-mini" onclick="switchTab('9')">
+        <span class="num">TEST 7</span><span class="emoji">🌍</span>
+        <div class="title">Quantum Future</div>
+        <div class="sub">Discover how quantum will change medicine, climate, AI, and national security.</div>
+      </div>
+      <div class="test-card-mini" onclick="switchTab('10')">
+        <span class="num">TEST 8</span><span class="emoji">⚙️</span>
+        <div class="title">Hardware</div>
+        <div class="sub">Peek inside a real quantum computer — superconducting, trapped ion, photonic, neutral atom.</div>
+      </div>
+      <div class="test-card-mini" onclick="switchTab('11')">
+        <span class="num">TEST 9</span><span class="emoji">📚</span>
+        <div class="title">References</div>
+        <div class="sub">Curated kid-friendly and scientific sources to keep learning after Family Day.</div>
+      </div>
+      <div class="test-card-mini final" onclick="switchTab('6')">
+        <span class="num">FINAL</span><span class="emoji">🧠</span>
+        <div class="title">Quantum Quiz 🎓</div>
+        <div class="sub">Graduation test — 10 questions with hints. Earn your Quantum badge and learn more from each answer!</div>
       </div>
     </div>
 
     <div class="lets-play-wrap">
-      <button class="btn btn-purple" onclick="switchTab('2')">Let's Play! →</button>
+      <button class="btn btn-purple" onclick="switchTab('2')">Start with Test 1 →</button>
     </div>
 
     <p class="encouragement">You're thinking like a quantum scientist! 🧠</p>
 
     <div class="explanation-box">
       <h3>🔬 What is Quantum Computing?</h3>
+      <!-- Explorer (6–10): pure analogy, no symbols. Per Piaget concrete-operational stage. -->
       <div class="level-text active" data-level="explorer">
-        <p>Normal computers use BITS — tiny switches that are either ON (1) or OFF (0). Quantum computers use QUBITS — special switches that can be ON, OFF, or BOTH at the same time! This superpower lets quantum computers solve problems that would take normal computers longer than the age of the universe!</p>
+        <p>Normal computers use BITS — tiny switches that are either ON (1) or OFF (0). Quantum computers use QUBITS — special switches that can be ON, OFF, or BOTH at the same time! This superpower lets quantum computers solve some puzzles that would take normal computers longer than the age of the universe!</p>
       </div>
+      <!-- Scientist (11–14): conceptual, probability talk OK, NO bra-ket / Hilbert space (per NSF Q12 + NGSS MS-PS4 + Brown et al. 2023 K-12 review) -->
       <div class="level-text" data-level="scientist">
-        <p>Classical computers process information as binary bits (0 or 1). Quantum computers use qubits that exploit superposition (existing in multiple states simultaneously), entanglement (correlated multi-particle states), and interference (amplifying correct answers). This gives exponential speedup for certain problem classes: factoring (Shor's algorithm — finds the prime factors of large numbers, threatening RSA encryption), search (Grover's algorithm — searches an unsorted list in √N steps instead of N, a quadratic speedup), simulation (VQE (Variational Quantum Eigensolver — a hybrid quantum-classical algorithm that finds the lowest energy state of a molecule)/QPE).</p>
+        <p>Regular computers store information in <b>bits</b> — each bit is a 0 or a 1. Quantum computers use <b>qubits</b>, which can be 0, 1, or a mix of both at once (called <b>superposition</b>). They can also be linked together so that measuring one tells you about the other instantly — <b>entanglement</b>. These two ideas let quantum computers explore many possible answers at the same time, which makes them faster at a few special problems like factoring huge numbers or searching unsorted lists.</p>
       </div>
+      <!-- Engineer (15–18 / high school): visual matrices and named gates OK, Big-O hand-wave OK; bra-ket and complexity-class formalism reserved for DARPA PM. -->
       <div class="level-text" data-level="engineer">
-        <p>Classical Turing model: sequential bit operations on {0,1}^n. Quantum model: unitary evolution on 2^n-dimensional Hilbert space C^(2^n). Key resources: superposition (H gate), entanglement (CNOT (Controlled-NOT gate — flips the second qubit only if the first qubit is 1)), interference (phase kickback (a quantum technique where a qubit's phase is changed based on the result of a computation on another qubit — key to many quantum algorithms)). Complexity classes: BQP (Bounded-error Quantum Polynomial time — the class of problems a quantum computer can solve efficiently) &#x2283; BPP. Major open question: BQP vs NP. Applications proven quantum-superior: factoring (Shor's algorithm, exponential), search (Grover's algorithm, quadratic), simulation (Lloyd, exponential for quantum systems).</p>
+        <p>Classical computers manipulate bits using logic gates (AND, OR, NOT). Quantum computers use <b>quantum gates</b> — reversible operations on qubits represented as 2×2 (or 2ⁿ × 2ⁿ) matrices. The key gates: <b>Hadamard (H)</b> creates superposition, <b>Pauli-X</b> is the quantum NOT, and <b>CNOT</b> creates entanglement between two qubits. Two famous results: <b>Shor's algorithm</b> factors large numbers fast (which would break today's RSA encryption), and <b>Grover's algorithm</b> searches unsorted data in roughly √N steps instead of N.</p>
       </div>
+      <!-- DARPA PM (adult / specialist): full formalism OK — Hilbert space, complexity classes, fault-tolerance overhead. -->
+      <div class="level-text" data-level="darpa-pm">
+        <p>Quantum computation evolves an n-qubit state |ψ⟩ ∈ ℂ^(2ⁿ) under unitary operators U ∈ SU(2ⁿ), with measurement governed by Born's rule. Resource asymmetries: superposition (H), entanglement (CNOT), interference (phase kickback). <b>BQP ⊇ BPP</b>; <b>BQP vs NP</b> remains open. Cryptographic implications: Shor (1994) gives O((log N)³) factoring → polynomial-time RSA breakage; Grover (1996) gives provably-optimal Ω(√N) search lower bound. Fault-tolerant cost dominated by magic-state distillation for non-Clifford T-gates under surface-code error correction; Gidney & Ekerå (2019) estimate ~20M physical qubits to break RSA-2048. NIST PQC migration (FIPS 203/204/205, Aug 2024) replaces RSA/ECC for federal systems.</p>
+      </div>
+    </div>
+
+    <!-- Difficulty-tier guide -->
+    <div class="explanation-box" style="margin-top:18px;border-color:#fbbf24;background:linear-gradient(135deg,#1a1505,#0d0d22)">
+      <h3 style="color:#fbbf24">🎚 Pick Your Level</h3>
+      <p style="color:#a0a0cc;font-size:0.92rem;line-height:1.65">
+        Use the level bar at the top to set your difficulty. Each tier was calibrated against published K-12 and undergraduate STEM curricula (NSF Q12, NGSS, IBM Quantum K-12):<br><br>
+        <b style="color:#fbbf24">🌟 Explorer (6–10):</b> Pure analogies — magic coins, best-friend particles. No math.<br>
+        <b style="color:#00d4ff">🔬 Scientist (11–14):</b> Probability and concept-level explanations. Bell tests as outcomes, not as inequality math.<br>
+        <b style="color:#8b5cf6">⚛️ Engineer (15–18):</b> High-school math — matrices, simple algorithms, RSA intuition. Named gates (H, X, CNOT).<br>
+        <b style="color:#fbbf24">🎖 DARPA PM (adult):</b> Graduate-level — bra-ket notation, complexity classes (BQP/BPP), CHSH/Tsirelson bounds, FIPS 203 parameter sets, magic-state distillation.
+      </p>
     </div>
   </div>
 
   <!-- TAB 2 — COIN FLIP -->
   <div id="tab2" class="tab-panel">
     <h2>🪙 Quantum Coin Flip</h2>
-    <div class="tab-reset-bar tab2-reset-bar">
-      <button class="btn btn-gray btn-sm" onclick="resetTab(2)">🔄 Reset</button>
-      <div class="tab2-timer-row">
-        <div class="timer-display" id="timer-display-tab2"></div>
-        <button class="btn-timer" id="timer-btn-tab2" onclick="toggleTimer()">⏱ Start 5 Min Timer</button>
-      </div>
-    </div>
+    <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(2)">🔄 Reset</button></div>
     <div class="coin-controls">
       <button class="btn btn-gray" onclick="removeCoin()">－ Remove</button>
       <button class="btn btn-purple" onclick="prepareQubits()">🔮 Prepare Qubit</button>
@@ -2002,22 +2304,28 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         <p>A quantum coin is MAGIC — it is heads AND tails at the same time until you look! Scientists call this SUPERPOSITION! ✨</p>
       </div>
       <div class="level-text" data-level="scientist">
-        <p>A qubit exists in superposition of |0⟩ and |1⟩ simultaneously. Measuring it collapses the wave function to one definite state. Probability is |α|² where state is α|0⟩ + β|1⟩ — where α and β are probability amplitudes — their squares tell you the chance of measuring 0 or 1.</p>
+        <p>A qubit can be in two states at once — both 0 AND 1 at the same time. This is called <strong>superposition</strong>. The moment you measure it, the qubit picks ONE definite answer (either 0 or 1) and the superposition disappears. The chances of getting each outcome are baked into the qubit's quantum state.</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p>Qubit |ψ⟩ = α|0⟩ + β|1⟩ — where α and β are probability amplitudes — their squares tell you the chance of measuring 0 or 1, |α|²+|β|²=1 — meaning the total probability always equals 100%. Hadamard gate H|0⟩=(|0⟩+|1⟩)/√2 — meaning: the Hadamard gate puts a qubit into an equal mix of 0 and 1. Measurement collapses to |0⟩ with probability |α|²=0.5.</p>
+        <p>A qubit holds a quantum state that's a blend of |0⟩ and |1⟩ at the same time — that's superposition. The Hadamard gate (H) is the standard way to create an equal 50/50 superposition starting from |0⟩. Measurement collapses the qubit to a single classical bit: 0 or 1, each with the probability set by the qubit's state.</p>
+      </div>
+      <div class="level-text" data-level="darpa-pm">
+        <p>Qubit |ψ⟩ = α|0⟩ + β|1⟩ with |α|² + |β|² = 1. Hadamard gate H|0⟩ = (|0⟩+|1⟩)/√2 yields the |+⟩ eigenstate of σₓ. Projective measurement in the computational basis returns outcome i with probability |⟨i|ψ⟩|² (Born's rule). Post-measurement state is the corresponding eigenstate; coherence is destroyed.</p>
       </div>
     </div>
     <div class="key-concepts-box">
       <h3>📖 Key Concepts</h3>
       <div class="level-text active" data-level="explorer">
-        <p>🪙 <strong>SUPERPOSITION</strong>: Being in two states at once! Like a coin spinning in the air — it&#39;s both heads AND tails until it lands. 👁️ <strong>MEASUREMENT</strong>: The act of looking at a qubit. The moment you look, it picks one state! 🔮 <strong>QUBIT</strong>: A quantum bit — the basic building block of a quantum computer.</p>
+        <p>🪙 <strong>SUPERPOSITION</strong>: Being in two states at once! Like a coin spinning in the air — it's both heads AND tails until it lands. 👁️ <strong>MEASUREMENT</strong>: The act of looking at a qubit. The moment you look, it picks one state! 🔮 <strong>QUBIT</strong>: A quantum bit — the basic building block of a quantum computer.</p>
       </div>
       <div class="level-text" data-level="scientist">
-        <p><strong>SUPERPOSITION</strong>: A qubit |ψ⟩ = α|0⟩ + β|1⟩ — where α and β are probability amplitudes — their squares tell you the chance of measuring 0 or 1 — where |α|² + |β|² = 1 — meaning the total probability always equals 100%. The coefficients α and β are probability amplitudes. <strong>MEASUREMENT</strong>: Projects the state onto the computational basis, collapsing to |0⟩ with prob |α|² or |1⟩ with prob |β|². <strong>HADAMARD GATE</strong>: H = (1/√2)[[1,1],[1,-1]] — creates equal superposition from |0⟩: H|0⟩ = |+⟩ = (|0⟩+|1⟩)/√2 — meaning: the Hadamard gate puts a qubit into an equal mix of 0 and 1. <strong>WAVE FUNCTION COLLAPSE</strong>: Post-measurement state is definite — information about the superposition is destroyed.</p>
+        <p><strong>SUPERPOSITION</strong>: A qubit can hold both 0 and 1 at the same time, with a probability for each outcome.<br><br><strong>MEASUREMENT</strong>: When you check the qubit, it 'collapses' to one definite value — 0 or 1.<br><br><strong>HADAMARD GATE</strong>: A quantum gate that puts a qubit into an equal 50/50 mix of 0 and 1.<br><br><strong>WAVE FUNCTION COLLAPSE</strong>: After measurement the qubit is in a definite state, and the original superposition information is gone.</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p><strong>STATE VECTOR</strong>: |ψ⟩ ∈ C² with |α|²+|β|²=1 — meaning the total probability always equals 100% — (normalization). <strong>BLOCH SPHERE</strong>: Pure qubit states as points on S² — poles are |0⟩,|1⟩; equator is equal superposition (the Bloch sphere is a geometric way to visualize all possible states of a single qubit). <strong>BORN RULE</strong>: P(outcome i) = |⟨i|ψ⟩|² (Max Born's rule: the probability of a measurement outcome equals the square of the quantum amplitude). <strong>DENSITY MATRIX</strong>: ρ = |ψ⟩⟨ψ| for pure states. <strong>DECOHERENCE</strong>: Interaction with environment collapses superposition — key engineering challenge. T1 (relaxation), T2 (dephasing) times: IBM superconducting qubits achieve T1~100-500μs.</p>
+        <p><strong>STATE</strong>: A qubit's state can be thought of as a 2D vector that combines the two basis states |0⟩ and |1⟩, with a normalization rule that the probabilities add to 1.<br><br><strong>BLOCH SPHERE</strong>: A geometric picture of every possible single-qubit state — the poles are |0⟩ and |1⟩, and the equator is equal superposition.<br><br><strong>HADAMARD (H) GATE</strong>: Maps |0⟩ to (|0⟩+|1⟩)/√2 — the canonical way to create superposition.<br><br><strong>DECOHERENCE</strong>: Real qubits leak their quantum state into the environment. Keeping a qubit "alive" long enough to compute is the central engineering challenge.</p>
+      </div>
+      <div class="level-text" data-level="darpa-pm">
+        <p><strong>STATE VECTOR</strong>: |ψ⟩ ∈ ℂ² with |α|²+|β|²=1 (L²-normalization).<br><br><strong>BLOCH SPHERE</strong>: SU(2)/U(1) parametrization of pure single-qubit states as points on S²; mixed states fill the interior (Bloch ball).<br><br><strong>BORN RULE</strong>: P(outcome i) = |⟨i|ψ⟩|² — Max Born (1926).<br><br><strong>DENSITY MATRIX</strong>: ρ = |ψ⟩⟨ψ| for pure states; Tr(ρ²) = 1 ⇔ pure.<br><br><strong>DECOHERENCE</strong>: Open-system dynamics described by Lindblad master equation; characteristic times T1 (energy relaxation) and T2 (dephasing). Modern superconducting transmon qubits: T1, T2 ~ 100–500 μs (IBM Heron, Google Willow).</p>
       </div>
     </div>
   </div>
@@ -2056,25 +2364,45 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
     <div class="explanation-box">
       <h3>🧠 What's happening?</h3>
       <div class="level-text active" data-level="explorer">
-        <p>When two particles become best friends forever, touching one INSTANTLY tells its friend — even from across the UNIVERSE! Einstein was amazed! 🌌</p>
+        <p>When two particles become best friends forever, touching one INSTANTLY tells its friend — even from across the UNIVERSE! 🌌<br><br>Einstein called this "spooky action at a distance" because he thought it was IMPOSSIBLE — but real experiments have shown it's true!</p>
       </div>
       <div class="level-text" data-level="scientist">
-        <p>Multiple entangled pairs demonstrate quantum correlation at scale. Each pair shares a Bell state (a maximally entangled 2-qubit state — the strongest form of quantum correlation possible). When entangled, measuring (clicking) either particle instantly determines its partner. An eavesdropper performing a measurement disturbs the state — introducing detectable errors. Bell inequality violations prove the correlations are quantum, not classical.</p>
+        <p><b>Step 1 — What you're seeing:</b> Each pair of particles below is <em>entangled</em>. Imagine two coins so tightly linked that whenever you flip one, the other lands the same way — even if it's on the other side of the planet.<br><br>
+        <b>Step 2 — Why that's amazing:</b> The particles don't send a signal. There's no wire, no radio. They just <em>share one quantum state</em> together. The only way you find out what state they're in is to measure one — and the partner instantly matches.<br><br>
+        <b>Step 3 — Why it matters:</b> If a spy tries to peek at the connection, the act of looking <em>changes</em> the particles. We can detect spies just by checking how often the partners disagree. That's the foundation of quantum-secure communication.</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p>N entangled Bell pairs form the resource for quantum networking. CHSH (Clauser-Horne-Shimony-Holt — the experiment that proved quantum entanglement is real, not a hidden variable) S = |E(a,b)-E(a,b')+E(a',b)+E(a',b')| &lt;= 2 — the maximum correlation possible with classical physics — classically, quantum allows S &lt;= 2*sqrt(2) — the maximum correlation possible under quantum mechanics (~2.83). Eavesdropping via intercept-resend introduces ~25% QBER (Quantum Bit Error Rate — the percentage of bits that are wrong, used to detect eavesdroppers) — detectable above noise threshold. Basis of BB84 (the first quantum key distribution protocol — uses 4 quantum states in 2 bases to share unbreakable keys) and E91 (Ekert's QKD protocol using entangled pairs — any eavesdropper disturbs the Bell inequality, revealing the spy) QKD (Quantum Key Distribution — using quantum physics to share secret keys that cannot be intercepted) protocols. Multi-pair entanglement enables quantum key distribution at scale.</p>
+        <p><b>The setup.</b> Each pair below shares a special two-qubit quantum state called a <b>Bell pair</b>. When you measure one qubit you get a random 0 or 1, but the partner ALWAYS matches (or always opposes, depending on the Bell state). This perfect correlation is what "entanglement" means.<br><br>
+        <b>Why it isn't just classical correlation.</b> Classical physics can produce correlated coins (just print "H" on both). What it CAN'T do is reproduce the correlations you see when measuring entangled particles in DIFFERENT directions — those violate a famous test called the <b>Bell inequality</b>.<br><br>
+        <b>The cybersecurity payoff.</b> Because measurement disturbs entanglement, any eavesdropper raises the error rate of a quantum channel. This is the core idea behind <b>Quantum Key Distribution (QKD)</b> — protocols like BB84 (1984) and E91 (1991) use this property to share encryption keys with security guaranteed by physics, not by math.</p>
+      </div>
+      <div class="level-text" data-level="darpa-pm">
+        <p>Each pair shares a Bell state, e.g. |Φ⁺⟩ = (|00⟩+|11⟩)/√2. The four Bell states form an orthonormal basis of ℂ²⊗ℂ². <b>CHSH inequality:</b> S = |E(a,b)−E(a,b′)+E(a′,b)+E(a′,b′)| ≤ 2 for any local-realistic theory; quantum mechanics achieves the Tsirelson bound S = 2√2 ≈ 2.828 for optimal measurement angles, definitively ruling out local hidden-variable theories (Bell 1964; Aspect 1982; Hensen et al. Delft 2015 closed both locality and detection loopholes simultaneously). <b>QKD security:</b> Intercept-resend attacks raise QBER to ~25% in BB84, far above the ~11% asymptotic security threshold — eavesdropping is detectable. E91 reduces security to monogamy of entanglement: any third-party correlation degrades CHSH below 2√2.</p>
       </div>
     </div>
     <div class="key-concepts-box">
       <h3>📖 Key Concepts</h3>
       <div class="level-text active" data-level="explorer">
-        <p>🔗 <strong>ENTANGLEMENT</strong>: A special connection between two particles — like a magic walkie-talkie that works across the universe instantly! 👻 <strong>SPOOKY ACTION</strong>: Einstein&#39;s nickname for entanglement — he thought it was impossible, but it&#39;s REAL! 🔑 <strong>QUANTUM KEY DISTRIBUTION (QKD)</strong>: Using entanglement to send secret messages that CANNOT be spied on!</p>
+        <p>🔗 <strong>ENTANGLEMENT</strong>: A special connection between two particles — like a magic walkie-talkie that works across the universe instantly!<br><br>👻 <strong>SPOOKY ACTION</strong>: Einstein's nickname for entanglement — he thought it was impossible, but it's REAL!<br><br>🔑 <strong>QUANTUM KEY DISTRIBUTION (QKD)</strong>: Using entanglement to send secret messages that CANNOT be spied on!</p>
       </div>
       <div class="level-text" data-level="scientist">
-        <p><strong>BELL STATE</strong>: A maximally entangled 2-qubit state (a Bell state is the strongest possible quantum entanglement between two qubits). The four Bell states are: |Φ⁺⟩=(|00⟩+|11⟩)/√2, |Φ⁻⟩=(|00⟩-|11⟩)/√2, |Ψ⁺⟩=(|01⟩+|10⟩)/√2, |Ψ⁻⟩=(|01⟩-|10⟩)/√2. <strong>BELL INEQUALITY</strong>: Classical bound S≤2 — the maximum correlation possible with classical physics — quantum allows S≤2√2 — the maximum correlation possible under quantum mechanics (~2.83) — ≈2.83 (Tsirelson bound). <strong>NO-CLONING THEOREM</strong>: An unknown quantum state cannot be copied — makes eavesdropping detectable. <strong>BB84 PROTOCOL</strong>: First QKD (Quantum Key Distribution — using quantum physics to share secret keys that cannot be intercepted) protocol (Bennett &amp; Brassard, 1984) — uses 4 quantum states in 2 non-orthogonal bases.</p>
+        <p><strong>BELL PAIR</strong>: Two qubits linked so tightly that measuring one instantly tells you about the other. Whatever the first one shows, the partner matches.<br><br>
+        <strong>BELL TEST</strong>: An experiment that compares quantum correlations against the strongest possible "classical" explanation. If quantum wins, no hidden variables can explain the result. The 2022 Nobel Prize in Physics went to scientists who ran these tests.<br><br>
+        <strong>NO-CLONING THEOREM</strong>: A quantum state can't be copied — so any spy who tries to peek must measure, and measuring leaves fingerprints.<br><br>
+        <strong>QKD (BB84)</strong>: The original quantum-key-sharing protocol, invented in 1984 by Bennett & Brassard. It uses single qubits (no entanglement needed) and the no-cloning rule to guarantee security.</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p><strong>CHSH INEQUALITY</strong> (Clauser-Horne-Shimony-Holt — the experiment that proved quantum entanglement is real, not a hidden variable): S=|E(a,b)-E(a,b')+E(a',b)+E(a',b')|≤2 — the maximum correlation possible with classical physics — classically. Quantum: S=2√2 — the maximum correlation possible under quantum mechanics (~2.83) — for optimal measurement angles. <strong>BELL TEST LOOPHOLES</strong>: locality loophole (closed by Delft 2015), detection loophole (closed by NIST (National Institute of Standards and Technology — the US government agency that sets cryptography standards) 2015), both closed simultaneously (Vienna 2015). <strong>ENTANGLEMENT ENTROPY</strong>: S(ρ_A)=-Tr(ρ_A log ρ_A), S=1 for Bell states. <strong>QUANTUM NETWORK</strong>: Entanglement swapping (connecting two particles that have never interacted, by measuring two other particles that were each entangled with one of them) via Bell state measurement enables long-distance entanglement. Quantum repeater beating direct transmission with O(log N) resource overhead.</p>
+        <p><strong>BELL STATES</strong>: There are exactly four maximally-entangled 2-qubit states. They form a basis — every entangled 2-qubit state can be built out of them.<br><br>
+        <strong>BELL INEQUALITY</strong>: A bound on how strongly two classical variables can be correlated. Quantum mechanics breaks this bound when measured at certain angles, which is the experimental proof entanglement is real.<br><br>
+        <strong>QUANTUM NETWORK</strong>: A network where entanglement is the resource. <em>Entanglement swapping</em> — measuring two qubits that were each entangled with a different distant qubit — extends entanglement across the network without sending the original photons.<br><br>
+        <strong>QKD PROTOCOLS</strong>: BB84 (1984, no entanglement needed), E91 (1991, uses entanglement directly). Both rely on measurement disturbance to detect eavesdroppers.</p>
+      </div>
+      <div class="level-text" data-level="darpa-pm">
+        <p><strong>BELL BASIS</strong>: {|Φ⁺⟩, |Φ⁻⟩, |Ψ⁺⟩, |Ψ⁻⟩} = orthonormal basis of ℂ²⊗ℂ² generated by H ⊗ I followed by CNOT.<br><br>
+        <strong>CHSH</strong>: S = |E(a,b)−E(a,b′)+E(a′,b)+E(a′,b′)| ≤ 2 (LR) ≤ 2√2 (QM, Tsirelson). Loopholes: locality (Delft 2015), detection (NIST 2015), simultaneous closure (Vienna 2015).<br><br>
+        <strong>ENTANGLEMENT ENTROPY</strong>: S(ρ_A) = −Tr(ρ_A log ρ_A); S = 1 ebit for any Bell state.<br><br>
+        <strong>QUANTUM REPEATERS</strong>: Briegel-Dür-Cirac-Zoller (1998) protocol; entanglement swapping + purification + memory; resource scaling polylog(L) in distance L beats direct-fiber 10^(−αL/10) photon loss.<br><br>
+        <strong>QKD STACK</strong>: BB84 (prepare-and-measure, no-cloning security), E91 (entanglement-based, monogamy security), MDI-QKD (measurement-device-independent), TF-QKD (twin-field, beats PLOB rate-loss bound).</p>
       </div>
     </div>
   </div>
@@ -2120,25 +2448,49 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
     <div class="explanation-box">
       <h3>🧠 What's happening?</h3>
       <div class="level-text active" data-level="explorer">
-        <p>A <strong>classical computer</strong> is like ONE explorer trying every path one at a time — so slow! A <strong>quantum computer</strong> is like having THOUSANDS of explorers trying ALL paths at the SAME time! ⚡ The moment any explorer finds the exit, done!</p>
+        <p>A <strong>classical computer</strong> is like ONE explorer trying every path one at a time — so slow! 🐢<br><br>A <strong>quantum computer</strong> is like having THOUSANDS of explorers trying ALL paths at the SAME time! ⚡<br><br>The moment any explorer finds the exit — done!</p>
       </div>
       <div class="level-text" data-level="scientist">
-        <p>Classical search tries paths sequentially: <strong>O(N)</strong> — meaning classical computers must check every item one by one — operations. <strong>Grover's algorithm</strong> (searches an unsorted list in √N steps instead of N — a quadratic speedup) exploits quantum superposition to search all paths in parallel, achieving a quadratic speedup: <strong>O(√N)</strong> — meaning quantum only needs the square root of the steps a classical computer needs. For N=1,000,000 paths: classical needs 1,000,000 steps; quantum needs only ~1,000.</p>
+        <p><b>The setup.</b> Imagine a maze with 1,000,000 paths. Only one path leads to the prize.<br><br>
+        <b>The classical way.</b> Try the paths one at a time. On average, you'll need to check half a million paths before you find the right one.<br><br>
+        <b>The quantum way (Grover's algorithm).</b> Use superposition to "look at" all the paths at once, then use a quantum trick called <em>amplification</em> to make the right path stand out. You only need about √1,000,000 ≈ 1,000 steps!<br><br>
+        <b>The takeaway.</b> Quantum doesn't make every problem faster — but for searching unsorted things, it gives a <em>quadratic</em> speedup (the square root of the work).</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p><strong>Grover's algorithm</strong> (searches an unsorted list in √N steps instead of N — a quadratic speedup) uses amplitude amplification (a quantum technique that increases the probability of correct answers and decreases wrong ones — like turning up the volume on the right answer): apply oracle O and diffusion operator D repeatedly for O(√N) — meaning quantum only needs the square root of the steps a classical computer needs — iterations, each flipping the phase of the target state. After √N iterations, the target amplitude is O(1) and measurement succeeds with high probability. Quadratic speedup is provably optimal for unstructured search (BBBV theorem).</p>
+        <p><b>Grover's algorithm</b> searches an unsorted list of N items in roughly √N steps instead of N — a quadratic speedup. The procedure repeats two operations:<br><br>
+        <b>1. Oracle.</b> A quantum subroutine that "marks" the answer by flipping its sign.<br>
+        <b>2. Diffusion.</b> A quantum operation that boosts the marked answer's probability while shrinking everyone else's.<br><br>
+        After about √N rounds, the marked answer is much more likely than any other, so measuring almost always returns the right one. This is provably the best speedup any quantum algorithm can give for unstructured search (BBBV theorem, 1997).</p>
+      </div>
+      <div class="level-text" data-level="darpa-pm">
+        <p>Grover's algorithm: T = ⌊π/(4·θ)⌋ rotations, where sin θ = √(M/N) for M marked items in N total. Each iteration is U_s · U_f, where U_f = I − 2|w⟩⟨w| (phase oracle) and U_s = 2|s⟩⟨s| − I (diffusion about the uniform superposition |s⟩ = (1/√N)Σ|x⟩). State trajectory is a 2D rotation in span{|w⟩, |w^⊥⟩}; success amplitude maximized at T iterations. Optimality: BBBV (Bennett-Bernstein-Brassard-Vazirani 1997) gives Ω(√N) lower bound on any quantum oracle algorithm. Generalization: amplitude amplification (Brassard-Høyer-Mosca-Tapp 2002) achieves O(1/√p) speedup for any algorithm with success probability p.</p>
       </div>
     </div>
     <div class="key-concepts-box">
       <h3>📖 Key Concepts</h3>
       <div class="level-text active" data-level="explorer">
-        <p>⚡ <strong>QUANTUM PARALLELISM</strong>: Trying ALL answers at the same time! Like having a million helpers each trying a different path through the maze. 🏎️ <strong>SPEEDUP</strong>: How much faster quantum is than classical. For mazes, quantum is √N times faster! 🌊 <strong>INTERFERENCE</strong>: Quantum waves that cancel out wrong answers and amplify the right one!</p>
+        <p>⚡ <strong>QUANTUM PARALLELISM</strong>: Trying ALL answers at the same time! Like having a million helpers each trying a different path through the maze.<br><br>
+        🏎️ <strong>SPEEDUP</strong>: How much faster quantum is than classical. For mazes, quantum is √N times faster!<br><br>
+        🌊 <strong>INTERFERENCE</strong>: Quantum waves that cancel out wrong answers and amplify the right one!</p>
       </div>
       <div class="level-text" data-level="scientist">
-        <p><strong>GROVER'S ALGORITHM</strong>: Quantum search algorithm achieving O(√N) — meaning quantum only needs the square root of the steps a classical computer needs — query complexity vs classical O(N) — meaning classical computers must check every item one by one. Uses <strong>AMPLITUDE AMPLIFICATION</strong> (a quantum technique that increases the probability of correct answers and decreases wrong ones — like turning up the volume on the right answer): the oracle O marks the target state by flipping its phase, then the diffusion operator D=2|s⟩⟨s|-I amplifies its amplitude. After O(√N) iterations, measurement gives the target with high probability. <strong>QUANTUM ORACLE</strong>: A unitary O_f: |x⟩|y⟩ → |x⟩|y⊕f(x)⟩ that marks solutions to a search problem. <strong>BBBV THEOREM</strong>: Proves Grover's O(√N) is optimal for unstructured quantum search.</p>
+        <p><strong>GROVER'S ALGORITHM</strong>: A quantum recipe to find a needle in a haystack of N items in roughly √N steps instead of N.<br><br>
+        <strong>AMPLIFICATION</strong>: The "magic" step. Quantum waves can add up (constructive interference) or cancel out (destructive). Grover's algorithm uses this to make the right answer's wave bigger and the wrong answers' waves smaller — round after round.<br><br>
+        <strong>ORACLE</strong>: A black box that tells the algorithm "yes, this is the answer" or "no, keep looking" — without revealing where the answer is. Real implementations build the oracle from quantum gates that match the problem.<br><br>
+        <strong>OPTIMAL</strong>: Computer scientists proved (1997) that no quantum algorithm can search unsorted data faster than √N — Grover's is the best possible.</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p><strong>AMPLITUDE AMPLIFICATION</strong> (a quantum technique that increases the probability of correct answers and decreases wrong ones — like turning up the volume on the right answer): Generalization of Grover's. If A prepares initial state with success prob p, amplification achieves success in O(1/√p) applications. <strong>PHASE KICKBACK</strong> (a quantum technique where a qubit's phase is changed based on the result of a computation on another qubit — key to many quantum algorithms): Oracle encodes solution into phase: O_f|x⟩|−⟩ = (−1)^f(x)|x⟩|−⟩. <strong>DIFFUSION OPERATOR</strong>: D=H^⊗n (2|0⟩⟨0|-I) H^⊗n = 2|s⟩⟨s|-I where |s⟩=(1/√N)Σ|x⟩. <strong>QUANTUM WALK</strong>: Alternative to Grover's for structured search problems — achieves O(√N) — meaning quantum only needs the square root of the steps a classical computer needs — on hypercube. Applications: element distinctness O(N^(2/3)), triangle finding O(N^(5/4)).</p>
+        <p><strong>QUERY COMPLEXITY</strong>: The number of times Grover's needs to ask the oracle. Classical = N. Grover = √N. For N = 10⁶: 1,000,000 vs 1,000 calls.<br><br>
+        <strong>AMPLITUDE AMPLIFICATION</strong>: The general technique behind Grover's. If you have any quantum subroutine that succeeds with probability p, amplitude amplification boosts that to near-certainty in about 1/√p tries.<br><br>
+        <strong>PHASE KICKBACK</strong>: The trick the oracle uses — it puts a "−1" sign in front of the right answer (a phase flip), instead of writing the answer to a register. That phase becomes the marker we amplify.<br><br>
+        <strong>QUANTUM WALK</strong>: A different family of quantum algorithms. For some <em>structured</em> problems (like checking whether a list has duplicates) quantum walks beat plain Grover.</p>
+      </div>
+      <div class="level-text" data-level="darpa-pm">
+        <p><strong>QUERY COMPLEXITY</strong>: Grover Θ(√N); BBBV Ω(√N) lower bound on bounded-error quantum query algorithms for OR.<br><br>
+        <strong>AMPLITUDE AMPLIFICATION</strong>: Brassard-Høyer-Mosca-Tapp (2002). For algorithm A with success amplitude a, A·Q with Q = −AS₀A⁻¹S_χ rotates the state by 2θ each iteration. T_opt ≈ π/(4θ) gives O(1/a) → O(1/√p).<br><br>
+        <strong>PHASE KICKBACK</strong>: O_f|x⟩|−⟩ = (−1)^f(x)|x⟩|−⟩; standard reduction from bit-oracle to phase-oracle.<br><br>
+        <strong>DIFFUSION OPERATOR</strong>: D = H^⊗n (2|0⟩⟨0|−I) H^⊗n = 2|s⟩⟨s|−I, where |s⟩ = H^⊗n|0⟩^⊗n. Reflection about the uniform superposition.<br><br>
+        <strong>QUANTUM WALKS</strong>: Element distinctness Θ(N^(2/3)) (Ambainis 2004); triangle finding O(N^(5/4)) (Magniez et al. 2007); spatial search on √N × √N grid in Θ(√N log N).</p>
       </div>
     </div>
   </div>
@@ -2212,9 +2564,22 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
       </div>
       <div class="safe-title">🛡️ But what about quantum-safe encryption?</div>
       <div class="safe-text">
-        <div class="level-text active" data-level="explorer">Quantum computers can try ALL passwords at the SAME time! 😱 But scientists are building NEW super-locks that even quantum computers can't break! Your data will stay safe! 🔒</div>
-        <div class="level-text" data-level="scientist">Standard RSA encryption relies on the difficulty of factoring large numbers — a problem <strong>Shor's algorithm</strong> (finds the prime factors of large numbers — threatening RSA encryption) solves exponentially faster than any classical computer. RSA-2048 would fall in hours on a large quantum computer. In 2024, <strong>NIST (National Institute of Standards and Technology — the US government agency that sets cryptography standards) approved post-quantum standards</strong>: CRYSTALS-Kyber, Dilithium, and SPHINCS+ — designed to resist quantum attacks.</div>
-        <div class="level-text" data-level="engineer">Shor's algorithm (finds the prime factors of large numbers — threatening RSA encryption) period-finds using QFT (Quantum Fourier Transform — a quantum version of the mathematical tool used to find repeating patterns) in O((log N)³) — meaning the time grows slowly even for enormous numbers N — vs classical O(e^(log N)^(1/3)) for RSA factoring. RSA-2048 requires ~4000 logical qubits. <strong>NIST (National Institute of Standards and Technology — the US government agency that sets cryptography standards) FIPS 203</strong> (FIPS — Federal Information Processing Standard — official US government security certification — ML-KEM/Kyber), <strong>FIPS 204</strong> (ML-DSA/Dilithium), <strong>FIPS 205</strong> (SLH-DSA/SPHINCS+). wolfSSL (an open-source embedded TLS library with FIPS 140-3 certification) provides liboqs integration for PQC (Post-Quantum Cryptography — encryption designed to resist attacks from quantum computers) migration in production systems today.</div>
+        <div class="level-text active" data-level="explorer">Quantum computers can try ALL passwords at the SAME time! 😱<br><br>But scientists are building NEW super-locks that even quantum computers can't break! Your data will stay safe! 🔒</div>
+        <div class="level-text" data-level="scientist">
+          <p><b>The problem.</b> Today's RSA encryption keeps your bank, your email, and your messaging apps secret. Its security depends on factoring HUGE numbers being slow — too slow even for the fastest computers on Earth.</p>
+          <p><b>Shor's algorithm</b> (1994) is a quantum recipe that factors those numbers FAST. A future quantum computer running Shor's could break RSA-2048 in HOURS, not millions of years.</p>
+          <p><b>The fix:</b> "post-quantum cryptography" (PQC) — new math problems that are hard even for quantum computers. In <b>August 2024</b>, NIST officially approved the first three PQC standards: <em>Kyber</em> (for key sharing), <em>Dilithium</em>, and <em>SPHINCS+</em> (for digital signatures).</p>
+        </div>
+        <div class="level-text" data-level="engineer">
+          <p><b>Why RSA breaks.</b> RSA security comes from the hardness of factoring N = p·q where p,q are large primes. Classical algorithms (GNFS) take sub-exponential time — far too long. Shor's algorithm uses the <em>Quantum Fourier Transform</em> to find the period of a^x mod N, which gives the factors directly.</p>
+          <p><b>Resource cost.</b> Breaking RSA-2048 needs roughly 4,000 perfect ("logical") qubits. With error correction, that's millions of physical qubits. Today's hardware: ~1,000 noisy qubits. The threat is real — but years away.</p>
+          <p><b>Today's defense.</b> NIST's August 2024 PQC standards: <b>FIPS 203 (ML-KEM/Kyber)</b> for key exchange, <b>FIPS 204 (ML-DSA/Dilithium)</b> and <b>FIPS 205 (SLH-DSA/SPHINCS+)</b> for digital signatures. These are based on lattice problems and hash-based math that are believed quantum-hard. Major TLS libraries (wolfSSL, OpenSSL) already ship hybrid modes that combine classical + PQC keys for safe migration.</p>
+        </div>
+        <div class="level-text" data-level="darpa-pm">
+          <p><b>Algorithm.</b> Shor's reduces factoring N to period-finding for f(x) = a^x mod N via the QFT over Z_N. Gate complexity O((log N)³) vs GNFS L_N[1/3, (64/9)^(1/3)] sub-exponential. Recent improvements (Regev 2023, Ekerå-Håstad windowed approach) reduce constants further.</p>
+          <p><b>Resource estimates.</b> Gidney & Ekerå (2019): RSA-2048 in ~8 hours on ~20M physical qubits at distance d ≈ 25 surface code, ~10¹⁰ Toffoli gates. Magic-state distillation dominates non-Clifford cost.</p>
+          <p><b>NIST PQC suite (Aug 2024).</b> FIPS 203 ML-KEM (Module-LWE, parameter sets 512/768/1024 = NIST levels 1/3/5; ring Z_q[X]/(X²⁵⁶+1), q=3329). FIPS 204 ML-DSA (Module-LWE+SIS). FIPS 205 SLH-DSA (Stateless hash-based, FORS+XMSS variants). Hybrid TLS 1.3 deployment via X25519+ML-KEM-768 codepoint (RFC draft).</p>
+        </div>
       </div>
       <div class="safe-card">Your data stays safe — even from quantum computers. ✅</div>
 
@@ -2240,21 +2605,38 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
     <div class="key-concepts-box">
       <h3>📖 Key Concepts</h3>
       <div class="level-text active" data-level="explorer">
-        <p>🔐 <strong>ENCRYPTION</strong>: Scrambling a message so only the right person can read it. Like a secret code! 🔑 <strong>RSA</strong>: The lock that protects your bank account, emails, and websites — quantum computers can CRACK it! 🛡️ <strong>POST-QUANTUM CRYPTOGRAPHY (PQC)</strong>: NEW locks being built RIGHT NOW that quantum computers cannot break! Companies and agencies are deploying these RIGHT NOW to protect critical systems!</p>
+        <p>🔐 <strong>ENCRYPTION</strong>: Scrambling a message so only the right person can read it. Like a secret code!<br><br>
+        🔑 <strong>RSA</strong>: The lock that protects your bank account, emails, and websites today — quantum computers will be able to CRACK it!<br><br>
+        🛡️ <strong>POST-QUANTUM CRYPTOGRAPHY</strong>: NEW locks being built RIGHT NOW that quantum computers cannot break! Companies are starting to use them today.</p>
       </div>
       <div class="level-text" data-level="scientist">
-        <p><strong>RSA ENCRYPTION</strong>: Security based on integer factoring hardness. 2048-bit RSA: product of two ~617-digit primes. <strong>SHOR'S ALGORITHM</strong> (finds the prime factors of large numbers — threatening RSA encryption): Quantum period-finding reduces factoring to O((log N)³) — meaning the time grows slowly even for enormous numbers N — exponential speedup over best classical O(exp((log N)^(1/3))). <strong>NIST (National Institute of Standards and Technology — the US government agency that sets cryptography standards) PQC (Post-Quantum Cryptography — encryption designed to resist attacks from quantum computers) STANDARDS (2024)</strong>: FIPS (Federal Information Processing Standard — official US government security certification) 203 = ML-KEM (CRYSTALS-Kyber) for key encapsulation. FIPS 204 = ML-DSA (CRYSTALS-Dilithium) for digital signatures. FIPS 205 = SLH-DSA (SPHINCS+) for hash-based signatures. Security basis: lattice problems (LWE (Learning With Errors — a hard mathematical problem used as the foundation for quantum-resistant encryption), MLWE) and hash functions — believed quantum-resistant.</p>
+        <p><strong>RSA ENCRYPTION</strong>: A code based on the difficulty of factoring HUGE numbers. A 2048-bit RSA number is a product of two giant primes — about 617 digits each.<br><br>
+        <strong>SHOR'S ALGORITHM</strong>: A quantum recipe (Peter Shor, 1994) that factors those giant numbers far faster than any classical algorithm can. That's the threat to RSA.<br><br>
+        <strong>POST-QUANTUM CRYPTOGRAPHY (PQC)</strong>: New encryption based on math problems that even quantum computers can't solve quickly. Most are built on <em>lattice</em> puzzles — finding the shortest path through a high-dimensional grid.<br><br>
+        <strong>NIST 2024 STANDARDS</strong>: <em>Kyber</em> for sharing keys, <em>Dilithium</em> and <em>SPHINCS+</em> for signing — all approved as official US government quantum-safe encryption.</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p><strong>SHOR'S ALGORITHM</strong> (finds the prime factors of large numbers — threatening RSA encryption): Phase estimation finds period r of f(x)=a^x mod N. QFT (Quantum Fourier Transform — a quantum version of the mathematical tool used to find repeating patterns)-based: O((log N)² log log N) gates. Continued fraction expansion recovers factors. RSA-2048: ~4096 logical qubits, millions physical (surface code (the most promising quantum error correction code — arranges qubits in a 2D grid where errors can be detected and fixed), threshold ~1% error). <strong>ML-KEM (Kyber)</strong>: Module Learning With Errors (MLWE) — security reduces to worst-case lattice SVP (Shortest Vector Problem — finding the shortest vector in a high-dimensional lattice, believed to be hard even for quantum computers). Key sizes: Kyber-512 (AES-128 equiv), Kyber-768 (AES-192), Kyber-1024 (AES-256). <strong>DILITHIUM</strong>: Fiat-Shamir with aborts on Module LWE/SIS. <strong>HYBRID DEPLOYMENT</strong>: TLS 1.3 + X25519Kyber768 (Google Chrome, Cloudflare) — classical + PQC (Post-Quantum Cryptography — encryption designed to resist attacks from quantum computers) combined. <strong>WOLFSSL 5.9.0</strong>: FIPS (Federal Information Processing Standard — official US government security certification) 140-3 certs #4718 and #5041, liboqs integration for PQC — an example of production-ready quantum-safe TLS in use today.</p>
+        <p><strong>SHOR'S ALGORITHM</strong>: Quantum period-finding using the Quantum Fourier Transform. Once the period of f(x) = a^x mod N is found, classical post-processing (continued fractions) extracts the prime factors of N.<br><br>
+        <strong>RESOURCE COST</strong>: RSA-2048 needs roughly 4,000 logical qubits. With error correction, that's millions of physical qubits — well beyond today's hardware.<br><br>
+        <strong>LATTICE-BASED PQC</strong>: NIST's chosen replacements rely on the hardness of lattice problems like LWE (Learning With Errors). The intuition: in very high dimensions, finding the shortest vector in a lattice is hard for both classical AND quantum computers.<br><br>
+        <strong>HYBRID DEPLOYMENT</strong>: Browsers and TLS libraries are rolling out hybrid modes that combine a classical key exchange (X25519) with a PQC one (Kyber-768) — so even if one breaks, the other still protects you. Chrome and Cloudflare have been shipping this since 2023.</p>
+      </div>
+      <div class="level-text" data-level="darpa-pm">
+        <p><strong>SHOR'S CIRCUIT</strong>: Phase-estimation framework. Modular exponentiation a^x mod N (dominant T-gate cost), QFT over Z_N for period extraction. Gate complexity O((log N)² · log log N · log log log N) (Coppersmith fast-QFT); continued-fraction post-processing on phase estimate yields r.<br><br>
+        <strong>RESOURCE ESTIMATES</strong>: Gidney-Ekerå (2019): RSA-2048 → ~4096 logical qubits, ~20M physical (surface code d≈25, p_phys < 10⁻³), ~8h at 1 MHz logical clock. Magic-state distillation factory dominates physical-qubit budget.<br><br>
+        <strong>ML-KEM (FIPS 203)</strong>: Module-LWE over R_q = Z_q[X]/(X²⁵⁶+1), q = 3329. Parameter sets: ML-KEM-512 (k=2, NIST cat 1), ML-KEM-768 (k=3, cat 3, default), ML-KEM-1024 (k=4, cat 5). Public-key 800/1184/1568 bytes; ciphertext 768/1088/1568.<br><br>
+        <strong>ML-DSA (FIPS 204)</strong>: Fiat-Shamir-with-aborts over Module-LWE/SIS. Parameter sets cat 2/3/5; signature 2420/3293/4595 bytes.<br><br>
+        <strong>SLH-DSA (FIPS 205)</strong>: Stateless hash-based; FORS+XMSSMT trees; signature 7,856–49,856 bytes (small/fast variants).<br><br>
+        <strong>HYBRID TLS 1.3</strong>: X25519Kyber768Draft00 (RFC draft); production: Chrome/Cloudflare since 2023, OpenSSL 3.5+. wolfSSL 5.9.0 with liboqs integration: NIST CMVP FIPS 140-3 cert #4718 (TLS 1.3 + ECC), cert #5041 (additional cipher suites).</p>
       </div>
     </div>
   </div>
 
-  <!-- TAB 6 — QUANTUM QUIZ -->
+  <!-- TAB 6 — QUANTUM QUIZ (final / graduation test) -->
   <div id="tab6" class="tab-panel">
     <h2 class="quiz-header" id="quiz-title">🧠 Quantum Quiz</h2>
-    <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(6)">🔄 Reset</button></div>
+    <p style="text-align:center;color:#a0a0cc;font-size:0.95rem;margin-bottom:14px;max-width:700px;margin-left:auto;margin-right:auto">Final test — answer to graduate as a Quantum Scientist! Each question has a 💡 Hint, and your results screen has a 🔗 Learn-More link for every question so you can dive deeper.</p>
+    <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(6)">🔄 Restart Quiz</button></div>
     <div id="quiz-container">
       <div class="quiz-progress-wrap">
         <div class="quiz-progress-label" id="quiz-progress-label">Question 1 of 10</div>
@@ -2263,6 +2645,10 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
       <div class="quiz-question-box">
         <div class="quiz-question-text" id="quiz-question-text">Loading question...</div>
         <div class="quiz-options" id="quiz-options"></div>
+        <div class="quiz-hint-row">
+          <button class="quiz-hint-btn" id="quiz-hint-btn" onclick="toggleQuizHint()">💡 Show Hint</button>
+        </div>
+        <div class="quiz-hint-text" id="quiz-hint-text"></div>
         <div id="quiz-fact-box"></div>
       </div>
     </div>
@@ -2270,7 +2656,11 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
       <div class="quiz-badge" id="quiz-badge">🏆</div>
       <div class="quiz-badge-title" id="quiz-badge-title">Quantum Master!</div>
       <div class="quiz-score-num" id="quiz-score-num">10 / 10</div>
-      <button class="btn btn-purple" onclick="restartQuiz()" style="margin-top:8px;">🔄 Try Again</button>
+      <div class="quiz-play-again-wrap"><button class="btn btn-purple" onclick="restartQuiz()" style="margin-top:8px;">🔄 Try Again</button></div>
+      <div class="quiz-review-list" id="quiz-review-list">
+        <div class="quiz-review-title">📖 Review every question — keep learning!</div>
+        <div id="quiz-review-items"></div>
+      </div>
     </div>
   </div>
 
@@ -2288,8 +2678,9 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
 
     <div id="teleport-narrative">
       <div class="level-text active" data-level="explorer" id="tp-nar-explorer">Alice has a SECRET quantum state — a special color that only she knows! Can we get it to Bob without moving the particle? YES — with quantum teleportation! Press Step 1 to begin!</div>
-      <div class="level-text" data-level="scientist" id="tp-nar-scientist">Alice holds an unknown qubit |ψ⟩ = α|0⟩ + β|1⟩ — where α and β are probability amplitudes — their squares tell you the chance of measuring 0 or 1. We need to transfer this state to Bob without physically moving it, and without knowing what α and β are.</div>
-      <div class="level-text" data-level="engineer" id="tp-nar-engineer">Initial state: Alice holds qubit |ψ⟩ = α|0⟩ + β|1⟩ — where α and β are probability amplitudes — their squares tell you the chance of measuring 0 or 1. Protocol requires a pre-shared Bell pair (a maximally entangled 2-qubit state used as the quantum communication channel). Total system: |ψ⟩ ⊗ |Φ⁺⟩ = (α|0⟩+β|1⟩) ⊗ (|00⟩+|11⟩)/√2</div>
+      <div class="level-text" data-level="scientist" id="tp-nar-scientist">Alice has a special qubit she wants to send to Bob. The trick: she doesn't know exactly what's on her qubit, but quantum teleportation lets her send it perfectly anyway — using a pair of "linked" particles and two regular bits of information.</div>
+      <div class="level-text" data-level="engineer" id="tp-nar-engineer">Alice's qubit holds an unknown quantum state. To send it to Bob, the protocol uses an entangled pair of qubits (a "Bell pair") shared in advance, plus 2 ordinary bits sent through any normal channel. The original state is consumed in Alice's measurement — quantum information is moved, not copied.</div>
+      <div class="level-text" data-level="darpa-pm" id="tp-nar-darpa-pm">Initial state: Alice holds qubit |ψ⟩ = α|0⟩ + β|1⟩. Protocol requires a pre-shared Bell pair |Φ⁺⟩ = (|00⟩+|11⟩)/√2. Total system: |ψ⟩ ⊗ |Φ⁺⟩ = (α|0⟩+β|1⟩) ⊗ (|00⟩+|11⟩)/√2. Resource cost: 1 ebit + 2 cbits per qubit teleported. Fidelity = 1 for ideal channels.</div>
     </div>
 
     <div class="teleport-stage" id="teleport-stage">
@@ -2368,15 +2759,17 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
 
     <div id="speed-narrative">
       <div class="level-text active" data-level="explorer" id="spd-nar-explorer">🔑 Imagine a GIANT padlock with a number so big it would take every computer on Earth longer than the universe has existed to crack it. A quantum computer can crack it in a few HOURS! That's why we need new quantum-safe locks RIGHT NOW!</div>
-      <div class="level-text" data-level="scientist" id="spd-nar-scientist">RSA encryption relies on the hardness of integer factorization. Classical best algorithm (GNFS (General Number Field Sieve — the fastest classical algorithm for factoring large numbers, used to break RSA)): sub-exponential O(exp((log N)^(1/3))). Shor's quantum algorithm (finds the prime factors of large numbers — threatening RSA encryption): polynomial O((log N)³) — meaning the time grows slowly even for enormous numbers N. RSA-2048 classical estimate: ~10^18 operations. Shor's: ~10^9 operations on a fault-tolerant QC.</div>
-      <div class="level-text" data-level="engineer" id="spd-nar-engineer">GNFS (General Number Field Sieve — the fastest classical algorithm for factoring large numbers, used to break RSA) complexity: O(exp(1.9*(log N)^(1/3) * (log log N)^(2/3))). Shor's (finds the prime factors of large numbers — threatening RSA encryption): O((log N)^2 * (log log N) * (log log log N)) gate complexity via QFT (Quantum Fourier Transform — a quantum version of the mathematical tool used to find repeating patterns)-based period finding. RSA-2048 needs ~4096 logical qubits, millions of physical with error correction. Estimated time: ~8 hours at 1MHz logical gate rate.</div>
+      <div class="level-text" data-level="scientist" id="spd-nar-scientist">Today's RSA encryption is safe because factoring 2048-bit numbers is incredibly slow on regular computers — about 10¹⁸ operations. Shor's algorithm makes a quantum computer factor those same numbers in a tiny fraction of that time. That's why governments are switching to new quantum-safe standards.</div>
+      <div class="level-text" data-level="engineer" id="spd-nar-engineer">RSA encryption relies on integer factorization being hard. The best classical algorithm (GNFS) is sub-exponential — it scales roughly like exp((log N)^(1/3)). Shor's quantum algorithm runs in time polynomial in log N, an exponential speedup. RSA-2048 would take a classical supercomputer ~10¹³ years; a sufficiently large fault-tolerant quantum computer would take ~8 hours.</div>
+      <div class="level-text" data-level="darpa-pm" id="spd-nar-darpa-pm">GNFS complexity: L_N[1/3, (64/9)^(1/3)] = O(exp(1.9·(log N)^(1/3)·(log log N)^(2/3))). Shor's algorithm achieves O((log N)² · log log N · log log log N) gate complexity via QFT-based period finding. RSA-2048 cost: ~4096 logical qubits, ~20M physical qubits under surface-code distance d≈25, ~8h at 1 MHz logical gate rate (Gidney & Ekerå 2019). Magic-state distillation dominates non-Clifford T-gate budget.</div>
     </div>
 
     <div class="explanation-box" id="speed-explanation">
       <h3>🔬 How does it work?</h3>
       <div class="level-text active" data-level="explorer">Quantum computers are like having a SUPERPOWER for hard problems! Some tasks that would take longer than the universe has existed can be done in HOURS!</div>
-      <div class="level-text" data-level="scientist" id="speed-sci-text">Shor's algorithm (finds the prime factors of large numbers — threatening RSA encryption) factors large integers exponentially faster using quantum Fourier transform (QFT — a quantum version of the mathematical tool used to find repeating patterns) — breaking RSA encryption that classical computers would need millions of years to crack.</div>
-      <div class="level-text" data-level="engineer" id="speed-eng-text">Shor's algorithm (finds the prime factors of large numbers — threatening RSA encryption): O(log³N) — meaning the time grows slowly even for enormous numbers N — quantum vs O(exp(N^1/3)) classical. For 2048-bit RSA: ~10¹³ years classically vs ~8 hours on a fault-tolerant QC.</div>
+      <div class="level-text" data-level="scientist" id="speed-sci-text">Shor's algorithm uses a quantum trick called the Quantum Fourier Transform to factor huge numbers far faster than any regular algorithm can — breaking RSA encryption that would normally take millions of years.</div>
+      <div class="level-text" data-level="engineer" id="speed-eng-text">Shor's algorithm finds the period of the function a^x mod N using a Quantum Fourier Transform; once that period is known, factoring N is easy classically. Quantum Fourier Transform = a quantum version of the math tool that finds repeating patterns.</div>
+      <div class="level-text" data-level="darpa-pm">Shor's algorithm: O((log N)³) gate complexity vs sub-exponential L_N[1/3, c] classical (GNFS). Reduction: factor N → find r such that a^r ≡ 1 (mod N) → period-finding → QFT eigenvalue extraction. For RSA-2048: ~10¹³ years classically vs ~8 hours fault-tolerant. Bottleneck: T-gate count for modular exponentiation circuit.</div>
     </div>
     <div class="key-concepts-box">
       <h3>📖 Key Concepts</h3>
@@ -2410,9 +2803,23 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
           <button class="future-card-toggle">Learn More ▼</button>
         </div>
         <div class="future-card-detail">
-          <div class="level-text active" data-level="explorer">Scientists can use quantum computers like a SUPER microscope to look at tiny medicine molecules and design new cures for diseases! Diseases that take decades to cure today could be solved in just a few years with quantum computers! 💊✨</div>
-          <div class="level-text" data-level="scientist">Quantum computers can simulate molecular interactions at the quantum level using algorithms like VQE (Variational Quantum Eigensolver — a hybrid quantum-classical algorithm that finds the lowest energy state of a molecule). This enables precise drug design, protein folding prediction, and understanding of enzyme reactions — all computationally intractable classically for large molecules.</div>
-          <div class="level-text" data-level="engineer">Target applications: FeMoco nitrogenase simulation (~54 qubits), cytochrome P450 drug metabolism modeling (~150 qubits). VQE (Variational Quantum Eigensolver — a hybrid quantum-classical algorithm that finds the lowest energy state of a molecule) circuit depth O(n^4) for n molecular orbitals. Error-corrected fault-tolerant QC needed for pharmaceutical-grade accuracy. Timeline: early demonstrations 2025-2028, clinically useful simulations ~2035.</div>
+          <div class="level-text active" data-level="explorer">Scientists can use quantum computers like a SUPER microscope to look at tiny medicine molecules and design new cures for diseases!<br><br>Diseases that take decades to cure today could be solved in just a few years with quantum computers! 💊✨</div>
+          <div class="level-text" data-level="scientist">
+            <p><b>Why molecules are hard.</b> A medicine works by sticking to a specific spot on a protein in your body. To design new medicines, scientists need to know <em>exactly</em> how electrons inside molecules move and bond — and electrons follow quantum rules.</p>
+            <p><b>What classical computers can't do.</b> Simulating a big molecule on a regular computer means tracking every possible arrangement of every electron. The work doubles every time you add an electron — so big molecules quickly become impossible.</p>
+            <p><b>What quantum computers offer.</b> Quantum computers are made of qubits, which themselves obey quantum rules. So they can <em>directly</em> simulate molecules using algorithms like <b>VQE</b> (Variational Quantum Eigensolver) — a teamwork algorithm where the quantum computer finds the molecule's lowest-energy shape and a classical computer adjusts the recipe.</p>
+          </div>
+          <div class="level-text" data-level="engineer">
+            <p><b>The opportunity.</b> Drug discovery currently takes 10–15 years and ~$2 B per approved drug, partly because we cannot accurately simulate large molecules classically. Quantum simulation could shrink the search loop dramatically.</p>
+            <p><b>Real targets being studied.</b> FeMoco (the active site of nitrogenase, ~54 qubits) — could enable industrial nitrogen fixation at room temperature. Cytochrome P450 (drug metabolism, ~150 qubits) — predicts side effects without animal testing.</p>
+            <p><b>Algorithm.</b> VQE: a hybrid loop. Prepare a quantum state on the QPU, measure its energy, then have a classical optimizer tweak the parameters. Repeat until the energy stops dropping — that's the molecule's ground state.</p>
+            <p><b>Timeline.</b> Useful pharmaceutical simulations require <em>chemical accuracy</em> (≈ 1 kcal/mol error), which in turn requires fault-tolerant quantum computers. Early demonstrations: 2025–2028. Clinically useful: ~2035.</p>
+          </div>
+          <div class="level-text" data-level="darpa-pm">
+            <p>Target Hamiltonians: H = Σh_pq a†_p a_q + ½Σ h_pqrs a†_p a†_q a_r a_s (second-quantized electronic structure). Mappings: Jordan-Wigner, Bravyi-Kitaev. VQE ansätze: UCCSD (depth O(n^4)), Hardware-Efficient (low-depth, less expressive), ADAPT-VQE (adaptive operator selection).</p>
+            <p>Resource estimates (FeMoco): 54 qubits, ~10⁹ T-gates with phase estimation; surface-code overhead → ~10⁶ physical qubits. Drug metabolism (CYP450): ~150 qubits, ~10¹¹ T-gates. Chemical accuracy (1 kcal/mol ≈ 1.6 mHa) requires logical p_L &lt; 10⁻⁶ → distance d ≥ 25 surface code.</p>
+            <p>Programs: DARPA QuICC, Quantum Benchmarking Initiative; pharma partnerships (Merck, Roche–IBM, Boehringer–Google).</p>
+          </div>
         </div>
       </div>
 
@@ -2426,9 +2833,23 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
           <button class="future-card-toggle">Learn More ▼</button>
         </div>
         <div class="future-card-detail">
-          <div class="level-text active" data-level="explorer">Quantum computers can create SUPER DETAILED weather simulations — like having a billion tiny weather sensors all working at once! Better weather predictions means we can prepare for hurricanes, floods, and protect our planet! 🌍</div>
-          <div class="level-text" data-level="scientist">Quantum simulation of atmospheric chemistry and fluid dynamics can model interactions that are exponentially hard classically. HHL algorithm (Harrow-Hassidim-Lloyd algorithm — solves systems of linear equations exponentially faster than classical computers) provides exponential speedup for linear systems arising in climate models. Quantum optimization can also design more efficient renewable energy grids and battery materials.</div>
-          <div class="level-text" data-level="engineer">HHL (Harrow-Hassidim-Lloyd algorithm — solves systems of linear equations exponentially faster than classical computers) algorithm: O(log N · κ² · ε⁻¹) vs classical O(N · κ · ε⁻¹). Applied to Navier-Stokes discretizations over N grid points. Near-term: quantum-classical hybrid for sub-grid physics parameterization. NCAR and ECMWF exploring quantum co-processors for ensemble weather modeling.</div>
+          <div class="level-text active" data-level="explorer">Quantum computers can create SUPER DETAILED weather simulations — like having a billion tiny weather sensors all working at once!<br><br>Better predictions mean we can prepare for hurricanes, floods, and droughts — and protect our planet! 🌍</div>
+          <div class="level-text" data-level="scientist">
+            <p><b>The challenge.</b> Weather and climate models work by solving HUGE systems of equations describing how air and water move and react. The more grid points you use, the more accurate the forecast — and the more computer power you need.</p>
+            <p><b>How quantum could help — two different ways:</b></p>
+            <p>1. <em>Solving giant systems of equations.</em> A quantum algorithm called <b>HHL</b> can solve certain linear systems exponentially faster than classical algorithms. That's directly useful for fluid-dynamics and climate-model math.</p>
+            <p>2. <em>Designing better materials.</em> Separate quantum optimization algorithms (like QAOA) can help design better batteries, more efficient solar panels, and stronger renewable-energy grids.</p>
+          </div>
+          <div class="level-text" data-level="engineer">
+            <p><b>Linear-system speedup (HHL).</b> Many climate equations reduce to solving Ax = b for huge sparse matrices A. The HHL algorithm produces a quantum state proportional to the solution x in time roughly logarithmic in matrix size, vs. linear classically — a potential exponential speedup. Catch: extracting a useful answer from the state can erode the speedup, so HHL is useful when you only need <em>one</em> property of the solution (like an average), not the full vector.</p>
+            <p><b>Applied to weather.</b> Discretize the Navier-Stokes equations onto N grid cells; get a sparse linear system. Quantum-classical hybrid pipelines could replace the most expensive sub-grid physics parameterization. Climate centers (NCAR, ECMWF) are exploring quantum co-processors for ensemble forecasting.</p>
+            <p><b>Materials.</b> Variational algorithms (VQE/QAOA) can search for new battery cathode materials and catalysts for direct-air carbon capture — both critical climate-tech levers.</p>
+          </div>
+          <div class="level-text" data-level="darpa-pm">
+            <p><b>HHL complexity.</b> O(log N · κ² · s² · ε⁻¹) where κ = condition number of A, s = sparsity, ε = solution accuracy; vs classical iterative O(N · s · κ · log(1/ε)). Caveat: state-prep and read-out can dominate end-to-end cost (Aaronson 2015 caveats).</p>
+            <p><b>Climate applications.</b> Variational quantum solvers for compressible Navier-Stokes (Liu-Childs-Bao 2021), quantum lattice-Boltzmann methods (Mezzacapo et al.). NCAR/ECMWF MoUs with IBM, Google for quantum-co-processor ensemble forecasting (target: 2030+).</p>
+            <p><b>Materials.</b> VQE/QAOA for transition-metal-oxide cathodes, MOF catalyst screening for DAC. DOE FECM funding ~$50M/yr for quantum-aided materials discovery; DARPA AIE program complementing.</p>
+          </div>
         </div>
       </div>
 
@@ -3076,6 +3497,11 @@ function renderCoins() {
     wrapper.style.flexDirection = 'column';
     wrapper.style.alignItems = 'center';
 
+    // Stage = coin + overlay barrier (kept tight to the 150x150 coin so the
+    // barrier ring never bleeds over the descriptor label below)
+    const stage = document.createElement('div');
+    stage.className = 'coin-stage';
+
     const coin = document.createElement('div');
     coin.className = 'coin spinning';
     coin.id = 'coin-' + i;
@@ -3086,13 +3512,15 @@ function renderCoins() {
     barrier.id = 'barrier-' + i;
     barrier.textContent = '⟨ SUPERPOSITION ⟩';
 
+    stage.appendChild(coin);
+    stage.appendChild(barrier);
+
     const label = document.createElement('div');
     label.className = 'coin-barrier-label';
     label.id = 'barrier-label-' + i;
     label.textContent = 'UNKNOWN — both H and T at the same time!';
 
-    wrapper.appendChild(coin);
-    wrapper.appendChild(barrier);
+    wrapper.appendChild(stage);
     wrapper.appendChild(label);
     row.appendChild(wrapper);
   }
@@ -3860,19 +4288,36 @@ generateNewPin();
 let currentLevel = 'explorer'; // eslint-disable-line (single declaration)
 
 function setLevel(level) {
+  // Validate — fall back to explorer for unknown levels
+  const VALID = ['explorer','scientist','engineer','darpa-pm'];
+  if (!VALID.includes(level)) level = 'explorer';
   currentLevel = level;
   // Update body class
-  document.body.classList.remove('explorer','scientist','engineer');
+  document.body.classList.remove(...VALID);
   document.body.classList.add(level);
   // Update level buttons
   document.querySelectorAll('.level-btn').forEach(b => b.classList.toggle('active', b.dataset.level === level));
-  // Update all level-text divs
+  // Update all level-text divs — fall back to engineer text for darpa-pm if no
+  // dedicated darpa-pm variant exists for that container.
+  document.querySelectorAll('.level-text').forEach(el => el.classList.remove('active'));
   document.querySelectorAll('.level-text').forEach(el => {
-    el.classList.toggle('active', el.dataset.level === level);
+    if (el.dataset.level === level) el.classList.add('active');
   });
-  // Show/hide sci-eng-only elements
+  // For darpa-pm: where no darpa-pm variant exists in a group, fall through
+  // to engineer text so nothing goes blank.
+  if (level === 'darpa-pm') {
+    document.querySelectorAll('.explanation-box, [data-level-group]').forEach(group => {
+      const hasPm = group.querySelector('.level-text[data-level="darpa-pm"]');
+      if (!hasPm) {
+        const eng = group.querySelector('.level-text[data-level="engineer"]');
+        if (eng) eng.classList.add('active');
+      }
+    });
+  }
+  // Show/hide sci-eng-only elements (DARPA PM also gets the advanced UI)
+  const isAdvanced = (level === 'scientist' || level === 'engineer' || level === 'darpa-pm');
   document.querySelectorAll('.sci-eng-only').forEach(el => {
-    el.style.display = (level === 'scientist' || level === 'engineer') ? (el.tagName === 'BUTTON' ? 'inline-flex' : 'flex') : 'none';
+    el.style.display = isAdvanced ? (el.tagName === 'BUTTON' ? 'inline-flex' : 'flex') : 'none';
   });
   // Update prob-label
   const pl = document.getElementById('prob-label');
@@ -3948,91 +4393,212 @@ function generateKyberKey() {
    ===================================================== */
 const QUIZ_EXPLORER = [
   { q: "What is a qubit like?", opts: ["A magic coin that is BOTH heads AND tails at once! 🪙","A really fast computer chip","A tiny battery","A spinning top"], ans: 0,
-    fact: "Real quantum computers at IBM and Google use qubits made from superconducting metal cooled to -459°F — colder than outer space! 🥶" },
+    fact: "Real quantum computers at IBM and Google use qubits made from superconducting metal cooled to -459°F — colder than outer space! 🥶",
+    hint: "Think back to the Coin Flip test — a regular coin lands on ONE side, but a quantum coin can be both at the same time until you peek!",
+    ref: { url: "https://www.ibm.com/quantum/learn-quantum-computing", label: "IBM — What is a Qubit?" } },
   { q: "What happens when you LOOK at a quantum coin?", opts: ["It picks ONE side — heads OR tails!","It disappears","It becomes two coins","Nothing happens"], ans: 0,
-    fact: "When scientists 'look' at a quantum particle, the act of measuring it forces it to choose a definite state! 🔭" },
+    fact: "When scientists 'look' at a quantum particle, the act of measuring it forces it to choose a definite state! 🔭",
+    hint: "This is called 'measurement' — the act of observing a quantum thing changes it. Try the Coin Flip 'Measure' button!",
+    ref: { url: "https://www.khanacademy.org/computing/computers-and-internet/xcae6f4a7ff015e7d:online-data-security/xcae6f4a7ff015e7d:data-encryption-techniques/a/encryption-decryption-and-code-cracking", label: "Khan Academy — Measurement & Quantum States" } },
   { q: "What is quantum entanglement?", opts: ["Two particles that are best friends — what happens to one instantly affects the other!","Two magnets sticking together","A really long wire","Two computers sharing a screen"], ans: 0,
-    fact: "Einstein called entanglement 'spooky action at a distance' — he thought it was impossible, but experiments proved it's REAL! 👻" },
+    fact: "Einstein called entanglement 'spooky action at a distance' — he thought it was impossible, but experiments proved it's REAL! 👻",
+    hint: "Remember the Entanglement test? When you measured one particle, its partner ALWAYS matched — instantly!",
+    ref: { url: "https://www.nobelprize.org/prizes/physics/2022/popular-information/", label: "Nobel Prize 2022 — Entanglement Experiments" } },
   { q: "How far apart can entangled particles still affect each other?", opts: ["All the way across the UNIVERSE! 🚀","Only in the same room","Up to 1 mile","Only if touching"], ans: 0,
-    fact: "Scientists have entangled particles and tested them from Earth to satellites over 1,200 km apart! 🛰️" },
+    fact: "Scientists have entangled particles and tested them from Earth to satellites over 1,200 km apart! 🛰️",
+    hint: "There is no known distance limit. China's Micius satellite proved this between Earth and space!",
+    ref: { url: "https://www.science.org/doi/10.1126/science.aan3211", label: "Science — Satellite-based Quantum Entanglement (Micius)" } },
   { q: "What can a quantum computer solve that normal computers cannot?", opts: ["Super hard problems that would take millions of years!","Video games faster","Math homework","Sending emails"], ans: 0,
-    fact: "Today's best supercomputers would take longer than the universe has existed to solve problems a quantum computer could crack in minutes! ⚡" },
+    fact: "Today's best supercomputers would take longer than the universe has existed to solve problems a quantum computer could crack in minutes! ⚡",
+    hint: "Quantum computers aren't faster at everyday stuff — they're faster at very special hard problems like factoring huge numbers.",
+    ref: { url: "https://quantumai.google/learn/lab/quantum-supremacy", label: "Google — Quantum Supremacy Explained" } },
   { q: "What is quantum teleportation?", opts: ["Moving quantum information without moving the actual particle!","Moving people like Star Trek","Sending a text message really fast","A type of spaceship"], ans: 0,
-    fact: "Real quantum teleportation has been demonstrated in labs — scientists have teleported quantum information over 100 km of fiber optic cable! 🌐" },
+    fact: "Real quantum teleportation has been demonstrated in labs — scientists have teleported quantum information over 100 km of fiber optic cable! 🌐",
+    hint: "It's NOT Star Trek teleportation. The Teleporter test shows: Alice sends Bob the qubit's STATE using entanglement + 2 classical bits.",
+    ref: { url: "https://en.wikipedia.org/wiki/Quantum_teleportation", label: "Quantum Teleportation — Bennett et al. 1993" } },
   { q: "What does DARPA do?", opts: ["Invents amazing future technology for the US military!","Makes video games","Builds cars","Runs the post office"], ans: 0,
-    fact: "DARPA invented the internet in 1969 — now they're building the quantum internet! 🌐" },
+    fact: "DARPA invented the internet in 1969 — now they're building the quantum internet! 🌐",
+    hint: "DARPA = Defense Advanced Research Projects Agency. They funded the ARPANET (the original internet) and now fund quantum networking research.",
+    ref: { url: "https://www.darpa.mil/about-us/about-darpa", label: "DARPA — About Us" } },
   { q: "Why do we need quantum-safe locks?", opts: ["Because quantum computers can crack old locks super fast!","Because keys get lost","Because locks get rusty","Just for fun"], ans: 0,
-    fact: "Most banks and governments need to start switching to quantum-safe encryption NOW before quantum computers arrive! 🔐" },
+    fact: "Most banks and governments need to start switching to quantum-safe encryption NOW before quantum computers arrive! 🔐",
+    hint: "A future quantum computer running Shor's algorithm could break the RSA encryption that protects banks, websites, and emails today.",
+    ref: { url: "https://csrc.nist.gov/projects/post-quantum-cryptography", label: "NIST — Post-Quantum Cryptography Standards" } },
   { q: "Which US agency funds cutting-edge quantum research for national security?", opts: ["DARPA 🌐","NASA","NSF","NOAA"], ans: 0,
-    fact: "DARPA (Defense Advanced Research Projects Agency) funds programs like ONISQ, Quantum Benchmarking, and US2QC — pushing quantum computing toward practical national security applications!" },
+    fact: "DARPA (Defense Advanced Research Projects Agency) funds programs like ONISQ, Quantum Benchmarking, and US2QC — pushing quantum computing toward practical national security applications!",
+    hint: "It's the same agency that gave us the original Internet. Their initials are D-A-R-P-A.",
+    ref: { url: "https://www.darpa.mil/research/programs?topic=quantum", label: "DARPA — Quantum Research Programs" } },
   { q: "What is superposition?", opts: ["Being in TWO places or states at the SAME TIME!","A yoga pose","Moving super fast","A type of telescope"], ans: 0,
-    fact: "Quantum superposition was first described by Erwin Schrödinger in 1935 — the same scientist who invented the famous 'Schrödinger's Cat' thought experiment! 🐱" },
+    fact: "Quantum superposition was first described by Erwin Schrödinger in 1935 — the same scientist who invented the famous 'Schrödinger's Cat' thought experiment! 🐱",
+    hint: "Think of Schrödinger's cat — alive AND dead until you open the box. That's superposition!",
+    ref: { url: "https://plato.stanford.edu/entries/qt-issues/", label: "Stanford Encyclopedia — Quantum Mechanics" } },
 ];
 
 const QUIZ_SCIENTIST = [
-  { q: "What is quantum superposition?", opts: ["Both states at once","One state only","Two particles colliding","A type of computer"], ans: 0,
-    fact: "The first qubit was demonstrated experimentally in 1995 by the NIST group using a trapped beryllium ion." },
-  { q: "What does quantum entanglement mean?", opts: ["Particles stay correlated instantly","Particles physically merge","Makes internet faster","A math problem"], ans: 0,
-    fact: "Wavefunction collapse is described by Born's rule: P(outcome) = |⟨outcome|ψ⟩|² — the probability equals the square of the amplitude." },
-  { q: "What event collapses a quantum superposition?", opts: ["Measurement / observation","Temperature change","Gravity","Waiting long enough"], ans: 0,
-    fact: "The 2022 Nobel Prize in Physics went to Aspect, Clauser, and Zeilinger for experiments demonstrating violations of Bell inequalities." },
-  { q: "What is a qubit?", opts: ["A quantum bit — the basic unit of quantum info","A quantum byte","A type of laser","A subatomic particle"], ans: 0,
-    fact: "Bell's theorem (1964) proved that no local hidden variable theory can reproduce all quantum predictions — entanglement is fundamentally non-local." },
-  { q: "Who experimentally proved entanglement is real?", opts: ["Bell test experiments (Aspect, Zeilinger, Clauser)","Einstein in 1935","Newton's laws","Alan Turing"], ans: 0,
-    fact: "Quantum computers gain advantage through quantum parallelism — but only specific algorithms can harness it; most classical algorithms see no speedup." },
-  { q: "Why are quantum computers faster for some tasks?", opts: ["Superposition lets them try all answers at once","They have better CPUs","More RAM","Faster clock speeds"], ans: 0,
-    fact: "Quantum teleportation requires a classical communication channel for the 2-bit correction message — it cannot transmit information faster than light." },
-  { q: "What does NIST stand for?", opts: ["National Institute of Standards & Technology","Nuclear Information Systems Tech","New Internet Security Tools","None of these"], ans: 0,
-    fact: "DARPA's Quantum Benchmarking Initiative aims to establish metrics for useful quantum advantage beyond classical simulation." },
-  { q: "Which algorithm can break RSA encryption?", opts: ["Shor's algorithm","Grover's algorithm","Bell's theorem","Hadamard transform"], ans: 0,
-    fact: "NIST selected CRYSTALS-Kyber, Dilithium, FALCON, and SPHINCS+ as post-quantum standards after a 7-year public evaluation process." },
-  { q: "What is Quantum Key Distribution (QKD) used for?", opts: ["Provably secure communication","Faster internet speeds","Breaking passwords","Storing quantum data"], ans: 0,
-    fact: "wolfSSL with FIPS 140-3 certification and liboqs integration is one example of quantum-safe TLS deployed in production systems protecting critical infrastructure today." },
-  { q: "When did NIST approve post-quantum cryptography standards?", opts: ["2024","2020","2016","2022"], ans: 0,
-    fact: "Superposition is mathematically represented in Hilbert space — a qubit state |ψ⟩ = α|0⟩ + β|1⟩ where |α|² + |β|² = 1." },
+  // Calibrated for ages 11–14 per NSF Q12 framework + NGSS MS-PS4. No bra-ket,
+  // no Born's rule notation, no Hilbert space — those move to DARPA PM tier.
+  { q: "What is quantum superposition?", opts: ["A particle being in BOTH states at once","Only one state at a time","Two particles touching","A computer chip"], ans: 0,
+    fact: "Superposition is what makes quantum computers different from regular computers — a qubit can hold two possibilities at the same time, until you measure it.",
+    hint: "Think of a coin spinning in the air — it's BOTH heads and tails until it lands. That spinning state is the everyday version of superposition.",
+    ref: { url: "https://www.ibm.com/topics/quantum-computing", label: "IBM — What is Quantum Computing?" } },
+  { q: "What is quantum entanglement?", opts: ["Two particles linked so measuring one instantly tells you about the other","Two particles glued together","Two particles colliding","A type of laser"], ans: 0,
+    fact: "Entanglement was the focus of the 2022 Nobel Prize in Physics — Aspect, Clauser, and Zeilinger proved it's real, not just theory.",
+    hint: "It's not that the particles touch or send a signal. They share a 'rule' — measure one, and the partner's outcome is locked in immediately.",
+    ref: { url: "https://www.nobelprize.org/prizes/physics/2022/popular-information/", label: "Nobel Prize 2022 — Entanglement Explained" } },
+  { q: "What happens to a quantum particle when you measure it?", opts: ["It picks one definite outcome (the superposition collapses)","It disappears","It becomes faster","Nothing changes"], ans: 0,
+    fact: "Once measured, a qubit is no longer in superposition — it's just like a classical bit until you reset it. This is called 'wavefunction collapse'.",
+    hint: "It's like opening a box with Schrödinger's cat — until you peek, the cat is in BOTH states; the moment you peek, you see ONE.",
+    ref: { url: "https://en.wikipedia.org/wiki/Wave_function_collapse", label: "Wikipedia — Wavefunction Collapse" } },
+  { q: "What is a qubit?", opts: ["A quantum bit — the basic unit of quantum information","A quantum byte","A subatomic particle","A type of cable"], ans: 0,
+    fact: "Real qubits today are built from tiny superconducting circuits, trapped ions, or photons of light. Each has trade-offs in speed and stability.",
+    hint: "It's the quantum version of a classical bit. Bits are 0 or 1; qubits can be 0, 1, OR a mix of both.",
+    ref: { url: "https://quantum.ibm.com/learning/courses", label: "IBM Quantum Learning — What is a Qubit?" } },
+  { q: "How can entangled particles 'communicate' across long distances?", opts: ["They don't actually send a signal — measurements are just correlated","Through a tiny invisible cable","Faster-than-light radio waves","They use the internet"], ans: 0,
+    fact: "Entanglement does NOT let you send information faster than light — Einstein's speed limit still holds. The correlation is what's instant, not the message.",
+    hint: "When you measure one, you learn what the OTHER will show — but you can't choose what it shows, so no actual message gets sent.",
+    ref: { url: "https://www.science.org/doi/10.1126/science.aan3211", label: "Science — Satellite-based Entanglement (Micius)" } },
+  { q: "Why can quantum computers solve some problems faster?", opts: ["They explore many possibilities at the same time using superposition","They have faster chips","They have more memory","They never sleep"], ans: 0,
+    fact: "Only certain problems get a quantum speedup — like factoring huge numbers or searching unsorted lists. For everyday tasks, regular computers are still faster.",
+    hint: "Imagine trying every door in a maze at once instead of one at a time. That's the kind of advantage quantum gets — but only on specific problems.",
+    ref: { url: "https://quantumai.google/learn", label: "Google Quantum AI — Learn" } },
+  { q: "What is quantum teleportation?", opts: ["Sending a particle's quantum STATE to a faraway particle without moving the original","Moving people like Star Trek","Sending email faster","Time travel"], ans: 0,
+    fact: "Quantum teleportation has been done in real labs across 100+ km of fiber and even between Earth and a satellite — but it always uses a regular signal too.",
+    hint: "It's NOT moving matter — it's copying the QUALITIES (the quantum state) of one particle onto another particle far away, using entanglement plus a regular message.",
+    ref: { url: "https://en.wikipedia.org/wiki/Quantum_teleportation", label: "Quantum Teleportation — How It Works" } },
+  { q: "Why might quantum computers break today's encryption?", opts: ["A quantum computer can factor huge numbers fast — and RSA depends on factoring being slow","Quantum computers can read passwords directly","They have access to the internet","They can guess passwords randomly"], ans: 0,
+    fact: "Most banks, websites, and governments use RSA today. A future quantum computer running Shor's algorithm could break it — that's why NIST released new 'post-quantum' standards in 2024.",
+    hint: "RSA's security comes from the fact that factoring 2048-bit numbers takes today's computers millions of years. Quantum changes that.",
+    ref: { url: "https://csrc.nist.gov/projects/post-quantum-cryptography", label: "NIST — Post-Quantum Cryptography" } },
+  { q: "What is post-quantum cryptography?", opts: ["New encryption designed to stay safe even against quantum computers","Encryption that uses qubits","Encryption that runs in the future","A type of password manager"], ans: 0,
+    fact: "NIST finalized three post-quantum standards in August 2024: ML-KEM (for key sharing), ML-DSA, and SLH-DSA (for signatures).",
+    hint: "It does NOT use quantum computers — it uses regular computers, but with math problems that even quantum computers can't solve quickly.",
+    ref: { url: "https://www.nist.gov/news-events/news/2024/08/nist-releases-first-3-finalized-post-quantum-encryption-standards", label: "NIST — First Post-Quantum Standards (2024)" } },
+  { q: "What does DARPA do, and why does it care about quantum?", opts: ["Funds advanced research for US national security — including quantum","Builds video games","Runs the post office","Makes phones"], ans: 0,
+    fact: "DARPA invented the original Internet (ARPANET) in 1969. Today, programs like Quantum Benchmarking Initiative and US2QC are pushing quantum forward.",
+    hint: "D-A-R-P-A = Defense Advanced Research Projects Agency. Same agency that gave us GPS, drones, and the Internet.",
+    ref: { url: "https://www.darpa.mil/research/programs?topic=quantum", label: "DARPA — Quantum Research Programs" } },
 ];
 
 const QUIZ_ENGINEER = [
-  { q: "Which quantum gate creates equal superposition from |0⟩?", opts: ["Hadamard (H) gate","CNOT gate","Pauli-X gate","Toffoli gate"], ans: 0,
-    fact: "The Hadamard gate H = (1/√2)[[1,1],[1,-1]] creates |+⟩ = (|0⟩+|1⟩)/√2 from |0⟩ — the canonical superposition state." },
-  { q: "What does |ψ⟩ = α|0⟩ + β|1⟩ represent?", opts: ["A general qubit state vector","A Bell state","A density matrix","A unitary operator"], ans: 0,
-    fact: "The Bloch sphere represents a qubit's state space as a unit sphere in R³ — pure states lie on the surface, mixed states inside." },
-  { q: "What is the classical upper bound of the CHSH inequality?", opts: ["S ≤ 2","S ≤ 2√2","S ≤ 4","S ≤ 1"], ans: 0,
-    fact: "CHSH inequality: S = |E(a,b) - E(a,b') + E(a',b) + E(a',b')| ≤ 2 classically; quantum mechanics achieves S = 2√2 (Tsirelson bound)." },
-  { q: "What is the time complexity of Shor's factoring algorithm?", opts: ["O((log N)³)","O(N²)","O(2^N)","O(N log N)"], ans: 0,
-    fact: "Shor's algorithm uses the Quantum Fourier Transform over Z_N to find the period r of f(x)=a^x mod N in O((log N)³) steps." },
-  { q: "NIST FIPS 203 standardizes which algorithm?", opts: ["ML-KEM (CRYSTALS-Kyber)","ML-DSA (Dilithium)","SLH-DSA (SPHINCS+)","RSA-4096"], ans: 0,
-    fact: "ML-KEM (FIPS 203) uses Module-LWE with parameters (k=2,3,4) for security levels 128/192/256-bit — resistant to both classical and quantum attacks." },
-  { q: "What does the quantum no-cloning theorem state?", opts: ["An unknown quantum state cannot be copied","Qubits cannot be measured","Entanglement has distance limits","Superposition is always lossy"], ans: 0,
-    fact: "No-cloning theorem proof: assume cloner U|ψ⟩|0⟩ = |ψ⟩|ψ⟩; linearity requires U(α|0⟩+β|1⟩)|0⟩ ≠ (α|0⟩+β|1⟩)² — contradiction." },
-  { q: "What is Grover's algorithm's speedup for unstructured search?", opts: ["O(√N) — quadratic speedup","O(log N) — logarithmic","O(N/2) — linear","O(N²) — quadratic slowdown"], ans: 0,
-    fact: "Grover's algorithm provides optimal quadratic speedup for unstructured search — provably no quantum algorithm can do better." },
-  { q: "Approximately how many logical qubits are needed to break RSA-2048?", opts: ["~4,000 logical qubits","~100 qubits","~1,000,000 qubits","~50 qubits"], ans: 0,
-    fact: "RSA-2048 requires ~4096 logical qubits and ~10^10 Toffoli gates for Shor's algorithm — current hardware has <1000 noisy physical qubits." },
-  { q: "Which protocol uses entanglement for provably secure communication?", opts: ["BB84 (Bennett-Brassard 1984)","RSA","AES-256","TLS 1.3"], ans: 0,
-    fact: "BB84 security proof relies on the quantum bit error rate (QBER): if QBER > 11%, assume eavesdropping and abort key generation." },
-  { q: "Which wolfSSL FIPS 140-3 certificate covers TLS 1.3 with ECC?", opts: ["#4718","#1234","#9001","#5041"], ans: 0,
-    fact: "wolfSSL FIPS 140-3 cert #4718 covers TLS 1.3 with ECC; cert #5041 covers additional cipher suites including AES-GCM and ChaCha20-Poly1305." },
+  // Calibrated for ages 15–18 per NGSS HS-PS4 + AP CS A. Visual matrices and
+  // simple gates are OK; CHSH inequality, Tsirelson bound, FIPS-203 parameter
+  // sets, complexity classes, and certificate numbers move to DARPA PM tier.
+  { q: "Which quantum gate puts |0⟩ into an equal superposition of |0⟩ and |1⟩?", opts: ["Hadamard (H) gate","CNOT gate","Pauli-X (NOT) gate","Identity (I) gate"], ans: 0,
+    fact: "The Hadamard gate is the most important single-qubit gate in quantum computing — almost every algorithm starts with it to create superposition.",
+    hint: "Think of it as a 50/50 mixer. Apply it to |0⟩ and you get a half-and-half mix of |0⟩ and |1⟩.",
+    ref: { url: "https://learning.quantum.ibm.com/", label: "IBM Quantum Learning — Single-Qubit Gates" } },
+  { q: "What does the Pauli-X gate do?", opts: ["Flips a qubit: |0⟩ ↔ |1⟩ — the quantum NOT gate","Measures a qubit","Creates entanglement","Adds a 90° phase"], ans: 0,
+    fact: "Pauli-X is the quantum equivalent of the classical NOT gate, but unlike NOT it can also flip superposition states correctly.",
+    hint: "There are three Pauli gates: X (flip like NOT), Y, and Z. X is the most intuitive — it's literally a bit-flip.",
+    ref: { url: "https://en.wikipedia.org/wiki/Quantum_logic_gate", label: "Wikipedia — Quantum Logic Gates" } },
+  { q: "What does the CNOT gate need TWO qubits to do?", opts: ["Flip the second qubit only if the first is |1⟩ — the gate that creates entanglement","Cancel both qubits","Copy the first qubit","Measure both qubits"], ans: 0,
+    fact: "Combining a Hadamard with a CNOT is the standard recipe to create a Bell state — the simplest entangled state of two qubits.",
+    hint: "CNOT = Controlled-NOT. The first qubit is the 'control'; it decides whether to flip the second.",
+    ref: { url: "https://learning.quantum.ibm.com/", label: "IBM Quantum Learning — Multi-Qubit Gates" } },
+  { q: "What does Shor's algorithm let a quantum computer do?", opts: ["Factor large numbers fast — breaking RSA encryption","Search the internet","Render 3D graphics","Compress files"], ans: 0,
+    fact: "Peter Shor published this algorithm in 1994. It was the first proof that a quantum computer could outperform classical computers on a real-world problem.",
+    hint: "RSA's security depends on the fact that factoring huge numbers is HARD for classical computers. Shor's algorithm makes it EASY for a quantum one.",
+    ref: { url: "https://en.wikipedia.org/wiki/Shor%27s_algorithm", label: "Wikipedia — Shor's Algorithm" } },
+  { q: "What does Grover's algorithm provide vs classical search?", opts: ["A quadratic speedup — about √N steps instead of N","An exponential speedup","No speedup","A linear slowdown"], ans: 0,
+    fact: "Grover's algorithm searches an unsorted list of N items in roughly √N steps — for 1 million items, that's ~1000 quantum steps vs 1 million classical steps.",
+    hint: "It's slower than Shor's exponential speedup, but it applies to a wider range of problems. Quadratic = squared, so √N ↔ N.",
+    ref: { url: "https://en.wikipedia.org/wiki/Grover%27s_algorithm", label: "Wikipedia — Grover's Algorithm" } },
+  { q: "Why is RSA encryption vulnerable to a future quantum computer?", opts: ["RSA's security relies on factoring being slow — Shor's algorithm makes factoring fast on a quantum computer","RSA stores passwords in plain text","RSA uses too few bits","RSA was banned"], ans: 0,
+    fact: "Even a 2048-bit RSA key, considered safe today, would be breakable by a sufficiently large quantum computer running Shor's algorithm.",
+    hint: "It's not about brute force. It's about a clever quantum trick (Shor's algorithm) that turns factoring from impossibly slow into fast.",
+    ref: { url: "https://csrc.nist.gov/projects/post-quantum-cryptography", label: "NIST — Why We Need PQC" } },
+  { q: "What does the no-cloning theorem mean for quantum information?", opts: ["You cannot perfectly copy an unknown quantum state","Qubits can never be deleted","Photons always come in pairs","Quantum errors can't be fixed"], ans: 0,
+    fact: "No-cloning is what makes quantum cryptography (QKD) provably secure: an eavesdropper can't copy the quantum bits without disturbing them.",
+    hint: "If you don't know what state a qubit is in, there's no machine in the universe that can make a perfect copy — proven mathematically by Wootters and Zurek (1982).",
+    ref: { url: "https://en.wikipedia.org/wiki/No-cloning_theorem", label: "Wikipedia — No-Cloning Theorem" } },
+  { q: "What is BB84?", opts: ["A protocol that uses qubits to share a secret key with provable security","A type of qubit","A quantum compiler","A NIST encryption standard"], ans: 0,
+    fact: "BB84 was invented in 1984 by Bennett and Brassard. It was the first practical quantum cryptography protocol, and is still the basis for most QKD systems today.",
+    hint: "It stands for Bennett-Brassard 1984. Two scientists + a year = the protocol's name.",
+    ref: { url: "https://en.wikipedia.org/wiki/BB84", label: "Wikipedia — BB84 Protocol" } },
+  { q: "What did NIST release in August 2024?", opts: ["The first three finalized post-quantum cryptography standards","A new quantum computer","A quantum key search engine","A satellite-based quantum network"], ans: 0,
+    fact: "The three standards are ML-KEM (FIPS 203, key encapsulation), ML-DSA (FIPS 204, digital signatures), and SLH-DSA (FIPS 205, hash-based signatures).",
+    hint: "It was a 7-year evaluation process with 80+ candidate algorithms submitted from around the world.",
+    ref: { url: "https://www.nist.gov/news-events/news/2024/08/nist-releases-first-3-finalized-post-quantum-encryption-standards", label: "NIST — First PQC Standards" } },
+  { q: "Which group of physicists won the 2022 Nobel Prize for proving entanglement is real?", opts: ["Aspect, Clauser, and Zeilinger","Einstein, Podolsky, and Rosen","Feynman, Bohr, and Heisenberg","Wheeler, Pauli, and Dirac"], ans: 0,
+    fact: "Their experiments — over four decades — closed the loopholes critics had used to argue entanglement might still be 'classical'. The 2022 Nobel ended that debate.",
+    hint: "All three did Bell-test experiments with entangled photons. EPR (Einstein-Podolsky-Rosen) was the original 1935 puzzle they answered.",
+    ref: { url: "https://www.nobelprize.org/prizes/physics/2022/popular-information/", label: "Nobel Prize 2022 — Popular Science Background" } },
+];
+
+// ─── QUIZ_DARPA_PM ──────────────────────────────────────────────
+// Calibrated for adult experts: program managers, cryptographers, PhDs.
+// All content here was previously in Engineer or Scientist tier but research
+// (NSF Q12, NGSS, Brown et al. 2023) shows it is undergraduate-or-later
+// material and inappropriate for K-12 audiences.
+const QUIZ_DARPA_PM = [
+  { q: "What does |ψ⟩ = α|0⟩ + β|1⟩ represent in Dirac notation?", opts: ["A pure single-qubit state with complex amplitudes |α|² + |β|² = 1","A density operator","A unitary evolution operator","A measurement projector"], ans: 0,
+    fact: "Dirac (bra-ket) notation is the standard formalism for quantum states. It treats kets |ψ⟩ as vectors in a complex Hilbert space and bras ⟨ψ| as elements of the dual space.",
+    hint: "α and β are complex amplitudes; their squared magnitudes give measurement probabilities (Born's rule).",
+    ref: { url: "https://en.wikipedia.org/wiki/Bra%E2%80%93ket_notation", label: "Bra-Ket Notation — Dirac Formalism" } },
+  { q: "What is the Tsirelson bound on the CHSH inequality?", opts: ["S = 2√2 ≈ 2.828","S = 2","S = 4","S = π"], ans: 0,
+    fact: "Tsirelson (1980) proved the bound for any quantum theory satisfying no-signaling. Real Bell-test experiments routinely measure S ≈ 2.7, well above the classical bound of 2.",
+    hint: "Classical local-hidden-variable theories saturate at S ≤ 2. Quantum mechanics achieves up to 2√2 — the maximum any no-signaling theory can reach.",
+    ref: { url: "https://en.wikipedia.org/wiki/Tsirelson%27s_bound", label: "Tsirelson's Bound — CHSH Inequality" } },
+  { q: "What is the asymptotic complexity of Shor's factoring algorithm?", opts: ["O((log N)³) — polynomial in the bit length","O(N²)","O(2^(log N))","O(N log N)"], ans: 0,
+    fact: "Shor's algorithm uses the Quantum Fourier Transform over Z_N to find the period r of f(x)=a^x mod N. With recent optimizations (Regev 2023, Coppersmith QFT) the constant factors drop further.",
+    hint: "Polynomial in log N — exponentially faster than the General Number Field Sieve (GNFS) which is sub-exponential at L_N[1/3, (64/9)^(1/3)].",
+    ref: { url: "https://arxiv.org/abs/quant-ph/9508027", label: "Shor (1995) — Polynomial-Time Factoring" } },
+  { q: "FIPS 203 specifies which parameter sets for ML-KEM?", opts: ["ML-KEM-512, ML-KEM-768, ML-KEM-1024 (NIST security categories 1, 3, 5)","Kyber-256, Kyber-512, Kyber-1024","RSA-2048, RSA-3072, RSA-4096","NTRU-509, NTRU-677, NTRU-821"], ans: 0,
+    fact: "ML-KEM-768 is NIST's recommended default for general use. The underlying problem is Module-LWE over the ring Z_q[X]/(X^256+1) with q = 3329.",
+    hint: "NIST Categories 1/3/5 correspond to AES-128/192/256 equivalent post-quantum security levels.",
+    ref: { url: "https://csrc.nist.gov/pubs/fips/203/final", label: "NIST FIPS 203 — ML-KEM Specification" } },
+  { q: "Approximately how many physical qubits (with surface-code error correction) are needed to break RSA-2048?", opts: ["~20 million physical qubits (≈4,096 logical)","~4,000 physical qubits","~1,000 physical qubits","~100 physical qubits"], ans: 0,
+    fact: "Gidney & Ekerå (2019) estimate ~8 hours on 20M physical qubits with surface-code distance ~25. State-of-the-art quantum hardware in 2026 has ~1000 noisy physical qubits — orders of magnitude short.",
+    hint: "Logical qubit overhead with surface code is roughly (distance)² physical per logical, plus magic-state distillation for non-Clifford gates.",
+    ref: { url: "https://arxiv.org/abs/1905.09749", label: "Gidney & Ekerå (2019) — RSA-2048 Quantum Cost" } },
+  { q: "What complexity class contains problems solvable in polynomial time by a quantum computer?", opts: ["BQP (Bounded-error Quantum Polynomial)","BPP","NP","PSPACE"], ans: 0,
+    fact: "BQP ⊇ BPP and BQP ⊆ PSPACE are both known. Whether BQP ⊆ NP or BQP ⊇ NP remains open — a major question in complexity theory.",
+    hint: "Bounded-error means the algorithm gives the correct answer with probability ≥ 2/3 (amplifiable to arbitrary high probability via repetition).",
+    ref: { url: "https://en.wikipedia.org/wiki/BQP", label: "BQP — Quantum Complexity Class" } },
+  { q: "Which DARPA program targets utility-scale fault-tolerant quantum computing by 2033?", opts: ["US2QC (Underexplored Systems for Utility-Scale Quantum Computing)","ONISQ","HR0011","Quantum Benchmarking Initiative"], ans: 0,
+    fact: "US2QC was announced in 2023 as a follow-on to ONISQ. It funds Atom Computing, IBM, and others to demonstrate 'utility-scale' fault-tolerant quantum hardware.",
+    hint: "DARPA's quantum portfolio: ONISQ (NISQ-era benchmarks), Quantum Benchmarking Initiative (cross-platform metrics), US2QC (post-NISQ fault-tolerant systems).",
+    ref: { url: "https://www.darpa.mil/research/programs?topic=quantum", label: "DARPA — Quantum Programs Portfolio" } },
+  { q: "Why is BB84's security ultimately rooted in the no-cloning theorem?", opts: ["An eavesdropper cannot copy unknown qubit states without introducing detectable errors (QBER)","Photons always travel at the speed of light","Polarization filters are perfect","BB84 uses entanglement"], ans: 0,
+    fact: "BB84 is a prepare-and-measure protocol — it does NOT require entanglement. Its security proof was first rigorized by Mayers (2001) and Shor & Preskill (2000) using quantum error correction.",
+    hint: "If QBER (quantum bit error rate) exceeds ~11%, the protocol aborts. The no-cloning theorem guarantees that any eavesdropping strategy raises QBER detectably.",
+    ref: { url: "https://en.wikipedia.org/wiki/BB84", label: "BB84 — Security Foundations" } },
+  { q: "Which NIST FIPS standard governs cryptographic module security boundaries (relevant for PQC deployment)?", opts: ["FIPS 140-3 (replacing FIPS 140-2)","FIPS 199","FIPS 186-5","FIPS 800-53"], ans: 0,
+    fact: "FIPS 140-3 has four security levels (1–4). PQC algorithms must be implemented inside a validated cryptographic module to be approved for federal use.",
+    hint: "140-2 was the long-standing predecessor (1994 → 2026 sunset). 140-3 aligns with ISO/IEC 19790:2012.",
+    ref: { url: "https://csrc.nist.gov/projects/cryptographic-module-validation-program", label: "NIST — Cryptographic Module Validation Program" } },
+  { q: "What is the dominant quantum-resource cost in a fault-tolerant Shor implementation?", opts: ["Magic-state distillation for T-gates (non-Clifford operations)","Hadamard gate count","Qubit measurement","Classical preprocessing"], ans: 0,
+    fact: "Surface code natively supports Clifford gates transversally, but T-gates (and other non-Clifford gates) require costly magic-state distillation factories — often >50% of the total qubit budget.",
+    hint: "Clifford+T is universal. Cliffords are 'free' under surface code; T-gates are expensive. That asymmetry drives the qubit-count estimates for cryptographically relevant Shor.",
+    ref: { url: "https://arxiv.org/abs/quant-ph/0403025", label: "Bravyi & Kitaev — Magic State Distillation" } },
 ];
 
 let quizQuestions = [];
 let quizIndex = 0;
 let quizScore = 0;
 let quizAnswered = false;
+let quizAnswers = []; // { question, selected, correct, hint, ref }
 
 function initQuiz() {
   if (currentLevel === 'explorer') {
     quizQuestions = [...QUIZ_EXPLORER];
     document.getElementById('quiz-title').textContent = '🧠 Quantum Quiz — Explorer Edition';
+  } else if (currentLevel === 'scientist') {
+    quizQuestions = [...QUIZ_SCIENTIST];
+    document.getElementById('quiz-title').textContent = '🔬 Quantum Quiz — Scientist Edition';
   } else if (currentLevel === 'engineer') {
     quizQuestions = [...QUIZ_ENGINEER];
     document.getElementById('quiz-title').textContent = '⚛️ Quantum Quiz — Engineer Edition';
+  } else if (currentLevel === 'darpa-pm') {
+    quizQuestions = [...QUIZ_DARPA_PM];
+    document.getElementById('quiz-title').textContent = '🎖 Quantum Quiz — DARPA PM Edition';
   } else {
-    quizQuestions = [...QUIZ_SCIENTIST];
-    document.getElementById('quiz-title').textContent = '🔬 Quantum Quiz — Scientist Edition';
+    quizQuestions = [...QUIZ_EXPLORER];
+    document.getElementById('quiz-title').textContent = '🧠 Quantum Quiz';
   }
   quizIndex = 0;
   quizScore = 0;
+  quizAnswers = [];
   document.getElementById('quiz-container').style.display = 'block';
   document.getElementById('quiz-score-reveal').classList.remove('visible');
   showQuizQuestion();
@@ -4047,6 +4613,18 @@ function showQuizQuestion() {
   const factBox = document.getElementById('quiz-fact-box');
   factBox.textContent = '';
   factBox.classList.remove('visible');
+  // Reset hint UI
+  const hintBtn = document.getElementById('quiz-hint-btn');
+  const hintText = document.getElementById('quiz-hint-text');
+  if (hintBtn) {
+    hintBtn.textContent = '💡 Show Hint';
+    hintBtn.disabled = false;
+    hintBtn.style.display = q.hint ? 'inline-block' : 'none';
+  }
+  if (hintText) {
+    hintText.textContent = q.hint || '';
+    hintText.classList.remove('visible');
+  }
   const opts = document.getElementById('quiz-options');
   opts.innerHTML = '';
   q.opts.forEach((opt, i) => {
@@ -4058,11 +4636,26 @@ function showQuizQuestion() {
   });
 }
 
+function toggleQuizHint() {
+  const hintText = document.getElementById('quiz-hint-text');
+  const hintBtn  = document.getElementById('quiz-hint-btn');
+  if (!hintText || !hintBtn) return;
+  if (hintText.classList.contains('visible')) {
+    hintText.classList.remove('visible');
+    hintBtn.textContent = '💡 Show Hint';
+  } else {
+    hintText.classList.add('visible');
+    hintBtn.textContent = '💡 Hide Hint';
+  }
+}
+
 function answerQuiz(selected, correct, btn) {
   if (quizAnswered) return;
   quizAnswered = true;
   const allBtns = document.querySelectorAll('.quiz-opt-btn');
   allBtns.forEach(b => b.disabled = true);
+  const hintBtn = document.getElementById('quiz-hint-btn');
+  if (hintBtn) hintBtn.disabled = true;
   if (selected === correct) {
     btn.classList.add('correct');
     quizScore++;
@@ -4070,8 +4663,18 @@ function answerQuiz(selected, correct, btn) {
     btn.classList.add('wrong');
     allBtns[correct].classList.add('correct');
   }
+  // Record this answer for the results review
+  const cur = quizQuestions[quizIndex];
+  quizAnswers.push({
+    q: cur.q,
+    selectedText: cur.opts[selected],
+    correctText:  cur.opts[correct],
+    isCorrect:    selected === correct,
+    hint: cur.hint || '',
+    ref:  cur.ref  || null,
+  });
   const factBox = document.getElementById('quiz-fact-box');
-  const fact = quizQuestions[quizIndex] && quizQuestions[quizIndex].fact;
+  const fact = cur && cur.fact;
   if (fact) {
     factBox.textContent = '💡 ' + fact;
     factBox.classList.add('visible');
@@ -4104,12 +4707,60 @@ function showQuizResult() {
   document.getElementById('quiz-badge').textContent = badge;
   document.getElementById('quiz-badge-title').textContent = title;
   document.getElementById('quiz-score-num').textContent = `${quizScore} / ${quizQuestions.length} correct`;
+  renderQuizReview();
 }
+
+function renderQuizReview() {
+  const container = document.getElementById('quiz-review-items');
+  if (!container) return;
+  container.innerHTML = '';
+  quizAnswers.forEach((a, i) => {
+    const item = document.createElement('div');
+    item.className = 'quiz-review-item ' + (a.isCorrect ? 'correct' : 'wrong');
+    const status = a.isCorrect
+      ? '<span class="quiz-review-status correct">✓ Correct</span>'
+      : '<span class="quiz-review-status wrong">✗ Missed</span>';
+    const yourAnswer = a.isCorrect
+      ? ''
+      : `<div class="quiz-review-answer">Your answer: <span style="color:#fca5a5">${escapeHtml(a.selectedText)}</span></div>`;
+    const correctAnswer = `<div class="quiz-review-answer">Correct answer: <b>${escapeHtml(a.correctText)}</b></div>`;
+    const hint = a.hint
+      ? `<div class="quiz-review-hint">💡 ${escapeHtml(a.hint)}</div>`
+      : '';
+    const ref = a.ref && a.ref.url
+      ? `<a class="quiz-review-ref" href="${escapeAttr(a.ref.url)}" target="_blank" rel="noopener">🔗 Learn more — ${escapeHtml(a.ref.label || a.ref.url)} ↗</a>`
+      : '';
+    item.innerHTML = `
+      <div class="quiz-review-q">Q${i+1}. ${escapeHtml(a.q)}${status}</div>
+      ${yourAnswer}
+      ${correctAnswer}
+      ${hint}
+      ${ref}
+    `;
+    container.appendChild(item);
+  });
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+function escapeAttr(s) { return escapeHtml(s); }
 
 function restartQuiz() {
   document.getElementById('quiz-container').style.display = 'block';
   document.getElementById('quiz-score-reveal').classList.remove('visible');
   initQuiz();
+}
+
+// Expose quiz datasets on window so external tooling/tests can introspect them.
+if (typeof window !== 'undefined') {
+  window.QUIZ_EXPLORER  = QUIZ_EXPLORER;
+  window.QUIZ_SCIENTIST = QUIZ_SCIENTIST;
+  window.QUIZ_ENGINEER  = QUIZ_ENGINEER;
+  window.QUIZ_DARPA_PM  = QUIZ_DARPA_PM;
+  Object.defineProperty(window, 'quizQuestions', { get: () => quizQuestions });
 }
 
 // Init quiz on load
@@ -4123,38 +4774,48 @@ let tpSecret = '🟠';
 let tpCurrentStep = 0;
 
 const TP_NARRATIVES = [
+  // Per research (NSF Q12 + Brown et al. 2023): bra-ket and Bell-state
+  // formalism live at DARPA PM. Scientist (11–14) and Engineer (15–18) get
+  // age-appropriate plain-language summaries.
   { // step 0 — initial
     explorer: "Alice has a SECRET quantum state — a special color that only she knows! Can we get it to Bob without moving the particle? YES — with quantum teleportation! Press Step 1 to begin!",
-    scientist: "Alice holds an unknown qubit |ψ⟩ = α|0⟩ + β|1⟩. We need to transfer this state to Bob without physically moving it, and without knowing what α and β are.",
-    engineer:  "Initial state: Alice holds qubit |ψ⟩ = α|0⟩ + β|1⟩. Protocol requires a pre-shared Bell pair. Total system: |ψ⟩ ⊗ |Φ⁺⟩ = (α|0⟩+β|1⟩) ⊗ (|00⟩+|11⟩)/√2"
+    scientist: "Alice has a special qubit she wants to send to Bob. The trick: she doesn't know exactly what's on her qubit, but quantum teleportation lets her send it perfectly anyway — using a pair of 'linked' particles and two regular bits of information.",
+    engineer:  "Alice's qubit holds an unknown quantum state. To send it to Bob, the protocol uses an entangled pair of qubits (a 'Bell pair') shared in advance, plus 2 ordinary bits sent through any normal channel. The original state is consumed in Alice's measurement — quantum information is moved, not copied.",
+    darpaPm:   "Initial state: Alice holds qubit |ψ⟩ = α|0⟩ + β|1⟩. Protocol requires a pre-shared Bell pair |Φ⁺⟩ = (|00⟩+|11⟩)/√2. Total system: |ψ⟩ ⊗ |Φ⁺⟩ = (α|0⟩+β|1⟩) ⊗ (|00⟩+|11⟩)/√2. Resource cost: 1 ebit + 2 cbits per qubit teleported. Fidelity = 1 for ideal channels."
   },
   { // step 1 — after Entangle
     explorer: "🔗 Alice and Bob created a SPECIAL LINK — a pair of entangled particles! It's like a quantum walkie-talkie. No matter how far apart they are, what happens to one instantly affects the other!",
-    scientist: "Alice and Bob share a Bell pair |Φ⁺⟩ = (|00⟩+|11⟩)/√2. This entangled pair is the 'quantum channel' for teleportation. Alice now holds 2 qubits: her secret state and her half of the Bell pair.",
-    engineer:  "Bell pair distributed. System state: |ψ⟩_A ⊗ |Φ⁺⟩_AB = (α|0⟩+β|1⟩)_A ⊗ (|00⟩+|11⟩)_AB / √2. Alice holds qubits A and the first Bell qubit. Bob holds the second Bell qubit."
+    scientist: "Alice and Bob now share a pair of entangled particles. This entangled pair is the 'quantum channel' Alice will use to teleport her secret state to Bob.",
+    engineer:  "The Bell pair is distributed: Alice keeps one half, Bob keeps the other. Alice now holds two qubits — her secret qubit and her half of the Bell pair. Bob holds the other half of the Bell pair.",
+    darpaPm:   "Bell pair distributed. System state: |ψ⟩_A ⊗ |Φ⁺⟩_AB = (α|0⟩+β|1⟩)_A ⊗ (|00⟩+|11⟩)_AB / √2. Alice holds qubits A and the first Bell qubit; Bob holds the second Bell qubit."
   },
   { // step 2 — after Measure
     explorer: "🔬 Alice looked at her particles and got a result — TWO BITS of information (like two coin flips). The quantum state collapsed, but don't worry — the information isn't lost! It's encoded in those two bits!",
-    scientist: "Alice performs a Bell measurement on her two qubits, collapsing the system into one of 4 outcomes: {00, 01, 10, 11} each with probability 25%. This measurement 'encodes' Alice's secret state into the classical bits.",
-    engineer:  "Alice applies CNOT (ctrl: |ψ⟩, target: Bell qubit A), then Hadamard to |ψ⟩. Measures both in computational basis: outcome {m1,m2} ∈ {00,01,10,11} each with prob |α|²/2 or |β|²/2. Bob's qubit collapses to one of: α|0⟩+β|1⟩, α|1⟩+β|0⟩, α|0⟩−β|1⟩, α|1⟩−β|0⟩."
+    scientist: "Alice measures her two qubits together. There are 4 possible outcomes (00, 01, 10, 11), each equally likely. Whichever she gets, the secret information has been 'imprinted' into those 2 bits.",
+    engineer:  "Alice does a 'Bell measurement' on her two qubits: she runs them through a CNOT and a Hadamard, then measures. The 4 possible outcomes (00, 01, 10, 11) each occur with probability 25%. Bob's qubit instantly correlates with whatever Alice got — but Bob can't read his qubit yet.",
+    darpaPm:   "Alice applies CNOT (ctrl: |ψ⟩, target: Bell qubit A), then Hadamard to |ψ⟩. Measures both in computational basis: outcome {m1,m2} ∈ {00,01,10,11}, each with prob 1/4. Bob's qubit collapses to one of: α|0⟩+β|1⟩, α|1⟩+β|0⟩, α|0⟩−β|1⟩, α|1⟩−β|0⟩."
   },
   { // step 3 — after Send Bits
     explorer: "📡 Alice sends those two bits to Bob over a regular phone call (or radio). This is the ONLY classical part — we NEED these 2 bits to complete the teleportation. Without them, Bob can't decode his particle!",
-    scientist: "The 2 classical bits are sent via a classical channel (phone, radio, internet). This is why teleportation can't send information faster than light — you still need the classical bits! The no-signaling theorem is upheld.",
-    engineer:  "Classical communication of 2 bits is REQUIRED — no faster-than-light transmission. The 2 bits tell Bob which Pauli correction to apply. Note: before receiving bits, Bob's state is maximally mixed (no info about |ψ⟩ — no-cloning upheld)."
+    scientist: "Alice sends those 2 bits to Bob over a normal channel (phone, radio, internet). This is exactly why teleportation can't be faster than light — Bob still has to wait for those bits to arrive.",
+    engineer:  "Sending 2 classical bits is REQUIRED — and they travel at most at light speed. Without them, Bob's qubit looks completely random and contains no usable information about Alice's state. This is why quantum teleportation does NOT violate relativity.",
+    darpaPm:   "Classical communication of 2 bits is REQUIRED — no FTL transmission. Before receiving bits, ρ_B = Tr_A(|Ψ⟩⟨Ψ|) = I/2 (maximally mixed) → no information about |ψ⟩, consistent with no-signaling. Bits encode which Pauli correction Bob must apply."
   },
   { // step 4 — victory
     explorer: "🎉 Bob applied a correction based on Alice's two bits — and his particle BECAME Alice's secret state! The color teleported! Alice's original state was DESTROYED (that's the rules of quantum!) but Bob has an EXACT COPY now!",
-    scientist: "Bob applies the Pauli correction: I (00), X (01), Z (10), or XZ (11). His qubit is now exactly |ψ⟩ = α|0⟩ + β|1⟩ — Alice's original state, perfectly reconstructed. Alice's original is destroyed (no-cloning theorem satisfied).",
-    engineer:  "After Pauli correction: Bob's state = |ψ⟩ = α|0⟩ + β|1⟩. Teleportation is exact — no approximation. Original destroyed at Alice. Resources consumed: 1 Bell pair + 2 classical bits per qubit teleported. Fidelity = 1.0 for perfect channels. Used in quantum repeaters and distributed QC."
+    scientist: "Based on the 2 bits Alice sent, Bob applies one of 4 simple operations to his qubit. His qubit is now in the EXACT same quantum state Alice's original was in. Alice's original was destroyed during her measurement — there's never two copies (that's the no-cloning theorem).",
+    engineer:  "Bob applies one of 4 corrections — I, X, Z, or XZ — based on the 2 bits. His qubit now holds exactly the state Alice's qubit had. The teleportation is exact, not approximate. Real-world labs have demonstrated this between Earth and a satellite (China's Micius, 2017).",
+    darpaPm:   "Bob applies Pauli correction: I (00), X (01), Z (10), or XZ (11). Final state: |ψ⟩_B = α|0⟩ + β|1⟩. Original at Alice destroyed; no-cloning satisfied. Used in quantum repeaters (Briegel et al. 1998), distributed quantum computing, and entanglement-based QKD."
   }
 ];
 
 function updateTeleportNarrative(step) {
   const n = TP_NARRATIVES[step] || TP_NARRATIVES[0];
-  document.getElementById('tp-nar-explorer').textContent = n.explorer;
+  document.getElementById('tp-nar-explorer').textContent  = n.explorer;
   document.getElementById('tp-nar-scientist').textContent = n.scientist;
-  document.getElementById('tp-nar-engineer').textContent = n.engineer;
+  document.getElementById('tp-nar-engineer').textContent  = n.engineer;
+  const pmEl = document.getElementById('tp-nar-darpa-pm');
+  if (pmEl) pmEl.textContent = n.darpaPm || n.engineer;
   document.getElementById('teleport-narrative').classList.toggle('victory', step === 4);
 }
 
@@ -4597,67 +5258,73 @@ function toggleFutureCard(header) {
 }
 
 /* =====================================================
-   5-MINUTE TIMER
+   SESSION FLOW: SPLASH → AUTO-START 5-MIN TIMER → THANK YOU → SPLASH
    ===================================================== */
 let _timerInterval = null;
 let _timerSecondsLeft = 300;
+const _SESSION_LENGTH_SEC = 300;
 
-function toggleTimer() {
-  if (_timerInterval) {
-    stopTimer();
-  } else {
-    startTimer();
-  }
+function fmtTimer(secs) {
+  if (secs < 0) secs = 0;
+  const mm = String(Math.floor(secs / 60)).padStart(2, '0');
+  const ss = String(secs % 60).padStart(2, '0');
+  return mm + ':' + ss;
+}
+
+function updateSessionPill() {
+  const pill = document.getElementById('session-timer-pill');
+  if (!pill) return;
+  pill.textContent = fmtTimer(_timerSecondsLeft);
+  pill.classList.remove('warning', 'critical');
+  if (_timerSecondsLeft <= 30) pill.classList.add('critical');
+  else if (_timerSecondsLeft <= 60) pill.classList.add('warning');
 }
 
 function startTimer() {
-  _timerSecondsLeft = 300;
-  updateTimerDisplays(_timerSecondsLeft);
-  setTimerDisplaysVisible(true);
-  setTimerBtnsRunning(true);
+  if (_timerInterval) { clearInterval(_timerInterval); _timerInterval = null; }
+  _timerSecondsLeft = _SESSION_LENGTH_SEC;
+  updateSessionPill();
   _timerInterval = setInterval(function() {
     _timerSecondsLeft--;
-    updateTimerDisplays(_timerSecondsLeft);
+    updateSessionPill();
     if (_timerSecondsLeft <= 0) {
       stopTimer();
-      setTimerDisplaysVisible(false);
       showThankyou();
     }
   }, 1000);
 }
 
 function stopTimer() {
-  clearInterval(_timerInterval);
-  _timerInterval = null;
-  setTimerDisplaysVisible(false);
-  setTimerBtnsRunning(false);
+  if (_timerInterval) { clearInterval(_timerInterval); _timerInterval = null; }
+  _timerSecondsLeft = _SESSION_LENGTH_SEC;
+  updateSessionPill();
 }
 
-function updateTimerDisplays(secs) {
-  const mm = String(Math.floor(secs / 60)).padStart(2, '0');
-  const ss = String(secs % 60).padStart(2, '0');
-  const text = mm + ':' + ss;
-  ['timer-display-tab2', 'timer-display-global'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = text;
-  });
+// Splash → app: Continue button on the splash screen
+function startSession() {
+  const splash = document.getElementById('splash-screen');
+  if (splash) splash.classList.add('hidden');
+  document.getElementById('thankyou-overlay').classList.remove('visible');
+  // Reset every tab to a clean state and go to tab 1
+  for (let i = 1; i <= 11; i++) { try { resetTab(i); } catch(e) {} }
+  switchTab('1');
+  startTimer();
+  window.scrollTo(0, 0);
 }
 
-function setTimerDisplaysVisible(visible) {
-  ['timer-display-tab2', 'timer-display-global'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle('visible', visible);
-  });
+// Hard reset: end session, return to splash
+function resetToSplash() {
+  stopTimer();
+  document.getElementById('thankyou-overlay').classList.remove('visible');
+  for (let i = 1; i <= 11; i++) { try { resetTab(i); } catch(e) {} }
+  switchTab('1');
+  const splash = document.getElementById('splash-screen');
+  if (splash) splash.classList.remove('hidden');
+  window.scrollTo(0, 0);
 }
 
-function setTimerBtnsRunning(running) {
-  ['timer-btn-tab2', 'timer-btn-global'].forEach(id => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.classList.toggle('running', running);
-    el.textContent = running ? '⏹ Cancel Timer' : '⏱ Start 5 Min Timer';
-  });
-}
+// Backwards compat — anything still calling toggleTimer just no-ops gracefully
+function toggleTimer() { /* timer is auto-managed by session now */ }
 
 function showThankyou() {
   document.getElementById('thankyou-overlay').classList.add('visible');
@@ -4665,11 +5332,52 @@ function showThankyou() {
 
 function dismissThankyou() {
   document.getElementById('thankyou-overlay').classList.remove('visible');
-  // Switch to tab 1 and reset all
-  switchTab('1');
-  for (let i = 1; i <= 11; i++) { try { resetTab(i); } catch(e) {} }
-  window.scrollTo(0, 0);
+  resetToSplash();
 }
+
+/* Splash starfield */
+function initSplashStars() {
+  const canvas = document.getElementById('splash-stars');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  const stars = [];
+  function resize() {
+    canvas.width  = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  for (let i = 0; i < 220; i++) {
+    stars.push({
+      x: Math.random(), y: Math.random(),
+      r: Math.random() * 1.6 + 0.3,
+      opacity: Math.random() * 0.7 + 0.15,
+      speed: Math.random() * 0.4 + 0.05,
+      phase: Math.random() * Math.PI * 2,
+    });
+  }
+  function draw(t) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    stars.forEach(s => {
+      const tw = 0.5 + 0.5 * Math.sin(t * 0.001 * s.speed + s.phase);
+      ctx.beginPath();
+      ctx.arc(s.x * canvas.width, s.y * canvas.height, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(199,210,254,' + (s.opacity * tw) + ')';
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+}
+document.addEventListener('DOMContentLoaded', initSplashStars);
+// Also allow Enter on the splash to start the session
+document.addEventListener('keydown', function(e) {
+  const splash = document.getElementById('splash-screen');
+  if (e.key === 'Enter' && splash && !splash.classList.contains('hidden')) {
+    startSession();
+  }
+});
 
 /* =====================================================
    GLOBAL RESET TAB
