@@ -2375,9 +2375,9 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
       </div>
       <div class="level-text" data-level="engineer">
         <p><b>The setup.</b> A qubit holds a quantum state that's a blend of |0⟩ and |1⟩ at the same time — that's superposition.</p>
-        <p><b>How to create it.</b> The Hadamard gate (H) is the standard way: H|0⟩ → an equal 50/50 mix of |0⟩ and |1⟩.</p>
-        <p><b>What measurement does.</b> Collapses the qubit to a single classical bit (0 or 1), each with probability set by the qubit's amplitudes.</p>
-        <p><b>Worked example.</b> Apply H to |0⟩, then measure 1,000 times → expect ~500 zeros and ~500 ones (the classic 50/50 split).</p>
+        <p><b>How to create it.</b> The Hadamard gate (H) is the standard recipe: apply H to |0⟩ and you get an equal mix of |0⟩ and |1⟩. Apply H again and you get back to where you started.</p>
+        <p><b>What measurement does.</b> Collapses the qubit to a definite classical bit — either 0 or 1. The qubit's amplitudes determine which outcome is more likely.</p>
+        <p><b>Why it matters.</b> Superposition is the raw resource that makes quantum algorithms different from classical ones. Almost every quantum algorithm starts by putting qubits into superposition with H, then uses interference to push the right answer to the top.</p>
       </div>
       <div class="level-text" data-level="darpa-pm">
         <p><b>State.</b> Qubit |ψ⟩ = α|0⟩ + β|1⟩ with normalization |α|² + |β|² = 1.</p>
@@ -2529,26 +2529,22 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         <p>A <strong>classical computer</strong> is like ONE explorer trying every path one at a time — so slow! 🐢<br><br>A <strong>quantum computer</strong> is like having THOUSANDS of explorers trying ALL paths at the SAME time! ⚡<br><br>The moment any explorer finds the exit — done!</p>
       </div>
       <div class="level-text" data-level="scientist">
-        <p><b>The setup.</b> A maze with 1,000,000 paths. Only one leads to the prize.</p>
-        <p><b>The classical way.</b> Try paths one at a time. On average ~500,000 tries before you find it. Worst case: 1,000,000.</p>
-        <p><b>The quantum way (Grover's algorithm).</b> Put all paths in superposition (one quantum step), then "amplify" the right path. After about √1,000,000 ≈ <b>1,000 rounds</b>, the right path is overwhelmingly likely.</p>
-        <p><b>The shortcut to remember:</b> classical takes N steps, quantum takes √N steps. That's called a <b>quadratic speedup</b>.</p>
-        <p><b>Try it yourself.</b> What about N = 100? Classical = 100. Quantum ≈ √100 = <b>10</b>. That's the same trick, just smaller.</p>
-        <p><b>The catch.</b> Grover only helps for searching <em>unsorted</em> things. Most problems don't get a speedup at all — quantum isn't a faster CPU, it's a different kind of computer.</p>
+        <p><b>The setup.</b> Imagine a maze with lots of paths — only one leads to the prize.</p>
+        <p><b>The classical way.</b> A classical computer tries paths one at a time. Half the time you'll get lucky early; the rest of the time you'll be checking for a long while.</p>
+        <p><b>The quantum way (Grover's algorithm).</b> A quantum computer puts ALL paths in superposition at once, then uses a clever step called "amplification" to make the right path stand out. The wrong paths' chances quietly cancel; the right path's chances grow.</p>
+        <p><b>The big idea to remember.</b> Quantum search is roughly the SQUARE ROOT as fast as classical search. That's called a <b>quadratic speedup</b>.</p>
+        <p><b>The catch.</b> Grover's only helps for searching unsorted things. Most everyday problems don't get a speedup at all — quantum isn't a faster CPU, it's a different kind of computer that's specialized for specific tricks.</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p><b>The application.</b> "I have N items. One of them is the answer. I have no clue which." A classical computer must check each one — average N/2 lookups, worst case N. Quantum can do it in roughly √N lookups.</p>
-        <p><b>The procedure (just two repeating steps).</b><br>
-        <b>1. Oracle.</b> A quantum gate that flips the sign of the right answer (and only the right answer). Marks it without revealing where it is.<br>
-        <b>2. Diffusion.</b> A reflection that boosts the marked answer's amplitude and shrinks everyone else's. Each round, the right answer gets a bit more likely.</p>
-        <p><b>The rule of thumb.</b> About <b>(π/4)·√N</b> rounds, then measure. Reported answer = solution with high probability.</p>
-        <p><b>Worked example — find a needle in a haystack of N = 1,000,000:</b></p>
+        <p><b>The application.</b> Unstructured search — "I have a big set of items. One is the answer. I have no clue which." Classical computers have to check items one at a time. Quantum can be quadratically faster.</p>
+        <p><b>How Grover's algorithm works (just two repeating steps).</b></p>
         <ul style="margin:0 0 10px 18px">
-          <li>Classical (worst case): up to <b>1,000,000</b> checks.</li>
-          <li>Quantum (Grover): about (π/4)·√1,000,000 ≈ <b>785</b> rounds.</li>
-          <li>That's roughly <b>1,300× fewer</b> oracle calls.</li>
+          <li><b>Oracle</b> — a quantum gate that flips the sign of the right answer (and only the right answer). It marks the solution without revealing where it is.</li>
+          <li><b>Diffusion</b> — a reflection that boosts the marked answer's amplitude and shrinks everyone else's. Each round, the right answer becomes a little more likely.</li>
         </ul>
-        <p><b>Why it can't go faster.</b> The BBBV theorem (1997) proves √N is the best any quantum algorithm can do for unstructured search.</p>
+        <p><b>Why it works.</b> Together, those two steps form a <em>rotation</em> in a 2D plane spanned by "right answer" and "everything else". After the right number of rounds, almost all the amplitude lives on the right answer — measure and you get it with very high probability.</p>
+        <p><b>Why it can't go any faster.</b> A famous lower-bound result (BBBV, 1997) proves there's no quantum algorithm for unstructured search that beats Grover. The square-root speedup is the ceiling.</p>
+        <p><b>Where it's used in practice.</b> Inside larger algorithms — graph problems, NP-search verification, attacking symmetric ciphers (which is why post-quantum guidance doubles AES key length).</p>
       </div>
       <div class="level-text" data-level="darpa-pm">
         <p><b>Iteration count.</b> Grover's algorithm: T = ⌊π/(4·θ)⌋ rotations, where sin θ = √(M/N) for M marked items in N total.</p>
@@ -2671,9 +2667,10 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
           <p><b>The fix:</b> "post-quantum cryptography" (PQC) — new math problems that are hard even for quantum computers. In <b>August 2024</b>, NIST officially approved the first three PQC standards: <em>Kyber</em> (for key sharing), <em>Dilithium</em>, and <em>SPHINCS+</em> (for digital signatures).</p>
         </div>
         <div class="level-text" data-level="engineer">
-          <p><b>Why RSA breaks.</b> RSA security comes from the hardness of factoring N = p·q where p,q are large primes. Classical algorithms (GNFS) take sub-exponential time — far too long. Shor's algorithm uses the <em>Quantum Fourier Transform</em> to find the period of a^x mod N, which gives the factors directly.</p>
-          <p><b>Resource cost.</b> Breaking RSA-2048 needs roughly 4,000 perfect ("logical") qubits. With error correction, that's millions of physical qubits. Today's hardware: ~1,000 noisy qubits. The threat is real — but years away.</p>
-          <p><b>Today's defense.</b> NIST's August 2024 PQC standards: <b>FIPS 203 (ML-KEM/Kyber)</b> for key exchange, <b>FIPS 204 (ML-DSA/Dilithium)</b> and <b>FIPS 205 (SLH-DSA/SPHINCS+)</b> for digital signatures. These are based on lattice problems and hash-based math that are believed quantum-hard. Major TLS libraries (wolfSSL, OpenSSL) already ship hybrid modes that combine classical + PQC keys for safe migration.</p>
+          <p><b>Why RSA breaks.</b> RSA's security depends on one assumption: that factoring large numbers is too slow to do in any reasonable time. Classical algorithms can't break that assumption. Shor's algorithm can — it turns factoring into a period-finding problem and uses the Quantum Fourier Transform to read off the period in one shot.</p>
+          <p><b>The catch.</b> Shor's algorithm needs a fault-tolerant quantum computer with thousands of "perfect" qubits. Today's hardware is far from that — but the threat is real enough that governments are migrating cryptography NOW.</p>
+          <p><b>Today's defense — post-quantum cryptography.</b> Instead of relying on factoring, the new NIST standards use math problems built around lattices and hash functions. Both are believed to be hard even for quantum computers. The key idea: pick a problem quantum computers <em>also</em> can't solve quickly.</p>
+          <p><b>How migration works.</b> Major encryption libraries already ship "hybrid" modes that combine classical and post-quantum keys at the same time. If either one breaks, the other still protects you — so deployment is safe even before quantum threats arrive.</p>
         </div>
         <div class="level-text" data-level="darpa-pm">
           <p><b>Algorithm.</b> Shor's reduces factoring N to period-finding for f(x) = a^x mod N via the QFT over Z_N. Gate complexity O((log N)³) vs GNFS L_N[1/3, (64/9)^(1/3)] sub-exponential. Recent improvements (Regev 2023, Ekerå-Håstad windowed approach) reduce constants further.</p>
@@ -2716,10 +2713,10 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         <strong>NIST 2024 STANDARDS</strong>: <em>Kyber</em> for sharing keys, <em>Dilithium</em> and <em>SPHINCS+</em> for signing — all approved as official US government quantum-safe encryption.</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p><strong>SHOR'S ALGORITHM</strong>: Quantum period-finding using the Quantum Fourier Transform. Once the period of f(x) = a^x mod N is found, classical post-processing (continued fractions) extracts the prime factors of N.<br><br>
-        <strong>RESOURCE COST</strong>: RSA-2048 needs roughly 4,000 logical qubits. With error correction, that's millions of physical qubits — well beyond today's hardware.<br><br>
-        <strong>LATTICE-BASED PQC</strong>: NIST's chosen replacements rely on the hardness of lattice problems like LWE (Learning With Errors). The intuition: in very high dimensions, finding the shortest vector in a lattice is hard for both classical AND quantum computers.<br><br>
-        <strong>HYBRID DEPLOYMENT</strong>: Browsers and TLS libraries are rolling out hybrid modes that combine a classical key exchange (X25519) with a PQC one (Kyber-768) — so even if one breaks, the other still protects you. Chrome and Cloudflare have been shipping this since 2023.</p>
+        <p><strong>SHOR'S ALGORITHM</strong>: Reduces factoring to a period-finding problem, then uses the Quantum Fourier Transform to read off the period quickly. Simple classical math (continued fractions) turns the period back into the prime factors. The exponential speedup over GNFS comes from the quantum step.</p>
+        <p><strong>FAULT-TOLERANCE GAP</strong>: Shor's algorithm needs perfect ("logical") qubits — but real qubits are noisy. Error correction wraps many noisy qubits into one logical qubit. Building enough logical qubits to break RSA is the central engineering challenge.</p>
+        <p><strong>LATTICE-BASED PQC</strong>: NIST's chosen replacements use lattice problems instead of factoring. Intuition: in very high-dimensional spaces, finding the shortest vector in a lattice is hard for both classical AND quantum computers. That hardness becomes the new security foundation.</p>
+        <p><strong>HYBRID DEPLOYMENT</strong>: Browsers and TLS libraries combine a classical key exchange with a post-quantum one — if either breaks, the other still protects you. That makes migration safe to roll out now, before quantum threats arrive.</p>
       </div>
       <div class="level-text" data-level="darpa-pm">
         <p><strong>SHOR'S CIRCUIT</strong>: Phase-estimation framework. Modular exponentiation a^x mod N (dominant T-gate cost), QFT over Z_N for period extraction. Gate complexity O((log N)² · log log N · log log log N) (Coppersmith fast-QFT); continued-fraction post-processing on phase estimate yields r.<br><br>
@@ -2817,16 +2814,23 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         <p><b>Why it doesn't break physics.</b> Alice's original is destroyed by her measurement (no-cloning theorem holds), and the 2 classical bits travel at light-speed maximum (no faster-than-light info).</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p><b>Pre-shared resource.</b> A Bell pair |Φ⁺⟩ = (|00⟩+|11⟩)/√2 — Alice keeps qubit A, Bob keeps qubit B.</p>
-        <p><b>Protocol (4 steps):</b></p>
+        <p><b>The pre-shared resource.</b> Alice and Bob share a "Bell pair" — two qubits that have been entangled in advance. Alice keeps one half, Bob keeps the other.</p>
+        <p><b>The protocol — four steps.</b></p>
         <ul style="margin:0 0 10px 18px">
-          <li>1. Alice applies CNOT(her data qubit → A), then H to her data qubit.</li>
-          <li>2. Alice measures both qubits in the computational basis → 2 classical bits, each outcome 25% likely.</li>
-          <li>3. Alice sends the 2 bits to Bob over any classical channel.</li>
-          <li>4. Bob applies one of 4 Pauli corrections based on the bits: 00→I, 01→X, 10→Z, 11→XZ.</li>
+          <li>1. Alice combines her data qubit with her half of the Bell pair using a CNOT and a Hadamard gate.</li>
+          <li>2. Alice measures both qubits — getting two random bits (00, 01, 10, or 11).</li>
+          <li>3. Alice sends those two bits to Bob over any normal channel — this is the "classical" part of teleportation, and it's what keeps the protocol from being faster than light.</li>
+          <li>4. Based on the two bits, Bob applies a simple correction (one of four basic gates) to his qubit. After the correction, his qubit holds the exact state Alice's data qubit started in.</li>
         </ul>
-        <p><b>Resource cost per qubit teleported.</b> 1 Bell pair (1 ebit) + 2 classical bits (2 cbits). Fidelity = 1.0 for ideal channels.</p>
-        <p><b>Where it's used.</b> Quantum repeater networks (extending entanglement over long fibers), distributed quantum computing (linking small QPUs into a bigger logical machine).</p>
+        <p><b>Why no rules of physics break.</b> Alice's original is destroyed during her measurement (so there's never two copies — no-cloning). And the two classical bits travel at most at light speed (so no faster-than-light info).</p>
+        <p><b>Where it's used.</b> Quantum repeater networks (extending entanglement over long fibers), and distributed quantum computing (linking small quantum processors into a bigger logical machine).</p>
+      </div>
+      <div class="level-text" data-level="darpa-pm">
+        <p><b>Initial state.</b> |ψ⟩_C ⊗ |Φ⁺⟩_AB = (α|0⟩+β|1⟩)_C ⊗ (|00⟩+|11⟩)_AB / √2 — Alice holds qubits C, A; Bob holds B.</p>
+        <p><b>Bell measurement.</b> Alice applies (H ⊗ I)·CNOT_{C→A}, then measures C, A in the computational basis. Outcome m₁m₂ ∈ {00, 01, 10, 11} each with probability 1/4.</p>
+        <p><b>Bob's branch.</b> Conditioned on m₁m₂, Bob's qubit collapses to one of: α|0⟩+β|1⟩, α|1⟩+β|0⟩, α|0⟩−β|1⟩, α|1⟩−β|0⟩. Pauli correction restores |ψ⟩: 00→I, 01→X, 10→Z, 11→Z·X.</p>
+        <p><b>Information accounting.</b> Holevo bound respected: 1 ebit + 2 cbits ⇒ 1 qubit transmitted. No-cloning preserved (state at C is destroyed). No-signalling preserved: ρ_B = I/2 prior to receiving the 2 cbits.</p>
+        <p><b>Real-world performance.</b> Free-space teleportation (Yin et al., Nature 2017): 1,200 km Earth↔Micius satellite, fidelity 0.80 ± 0.01. Fiber teleportation: ~100 km demonstrated (Sun et al. 2017). Used in quantum repeaters (Briegel-Dür-Cirac-Zoller 1998), distributed QC, gate teleportation, and entanglement-based QKD (E91).</p>
       </div>
     </div>
     <div class="key-concepts-box">
@@ -2838,7 +2842,19 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         <p><strong>QUANTUM TELEPORTATION</strong>: Transfers an unknown qubit state using 1 Bell pair (a maximally entangled 2-qubit state) + 2 classical bits. Protocol by Bennett et al. (1993), first demonstrated experimentally by Zeilinger (1997). <strong>BELL MEASUREMENT</strong>: Joint measurement of two qubits in the Bell basis — projects onto one of 4 Bell states (the four maximally entangled 2-qubit states). <strong>PAULI CORRECTIONS</strong>: Bob applies I, X, Z, or XZ (=iY) based on Alice's 2-bit outcome: 00→I, 01→X, 10→Z, 11→XZ. The state is EXACTLY reconstructed — no approximation. <strong>NO-CLONING SATISFIED</strong>: Alice's original is destroyed during Bell measurement.</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p><strong>TELEPORTATION CIRCUIT</strong>: Alice applies CNOT (Controlled-NOT gate — flips the second qubit only if the first qubit is 1) (ctrl:|ψ⟩, target:Bell qubit A), then H to |ψ⟩. Measures in {|0⟩,|1⟩} basis. <strong>RESOURCE COST</strong>: 1 ebit (entangled Bell pair) + 2 cbits per qubit teleported. <strong>FIDELITY</strong>: F=1 for perfect channels and operations. <strong>DENSE CODING DUAL</strong>: 2 cbits can be sent using 1 ebit + 1 qubit (superdense coding). <strong>QUANTUM REPEATER APPLICATION</strong>: Teleportation + entanglement swapping (connecting two particles that have never interacted, by measuring two other particles that were each entangled with one of them) extends quantum channels beyond direct photon loss. <strong>GATE TELEPORTATION</strong>: Can teleport quantum gates — key resource for fault-tolerant quantum computing.</p>
+        <p><strong>TELEPORTATION CIRCUIT</strong>: A Bell measurement (CNOT + Hadamard, then measure) on the data qubit and Alice's half of the Bell pair. The measurement outcome plus a Pauli correction (I, X, Z, or XZ) reconstructs the state at Bob's qubit.</p>
+        <p><strong>RESOURCE BOOKKEEPING</strong>: One entangled pair plus two classical bits is enough to move one qubit. The exchange is exact — no approximation.</p>
+        <p><strong>DENSE CODING (the dual)</strong>: A related protocol moves classical bits using entanglement instead. Same resource accounting, opposite direction — a clean way to see that ebits and cbits trade off cleanly.</p>
+        <p><strong>QUANTUM REPEATERS</strong>: Real fibers lose photons over distance. Teleportation + "entanglement swapping" stitches short links together, extending entanglement across networks that are too long for direct transmission.</p>
+        <p><strong>GATE TELEPORTATION</strong>: The same idea generalizes to teleporting quantum <em>gates</em> instead of states. That's a foundational primitive for fault-tolerant quantum computing.</p>
+      </div>
+      <div class="level-text" data-level="darpa-pm">
+        <p><strong>PROTOCOL CIRCUIT</strong>: U_BSM = (H ⊗ I)·CNOT_{C→A}; measurement projects onto Bell basis {|Φ⁺⟩, |Φ⁻⟩, |Ψ⁺⟩, |Ψ⁻⟩}. Bob's correction: σ^(m₁,m₂) ∈ {I, X, Z, ZX}.</p>
+        <p><strong>RESOURCE THEORY</strong>: Teleportation = 1 ebit + 2 cbits ↔ 1 qubit (LOCC-equivalent). Superdense coding = 1 ebit + 1 qubit ↔ 2 cbits. Both bounded by Holevo and saturate the LOCC channel capacity.</p>
+        <p><strong>FIDELITY DEGRADATION</strong>: Imperfect Bell pair (Werner-state fidelity F_W) ⇒ teleported-state fidelity F = (3F_W + 1)/4. Below F_W = 1/2 the protocol provides no quantum advantage over classical 1/2-fidelity transmission.</p>
+        <p><strong>EXPERIMENTAL RECORDS</strong>: Earth↔Micius satellite (Yin et al. 2017): 1,200 km, F = 0.80 ± 0.01. Fiber: 100 km plus (Sun et al. 2017). Trapped-ion intra-trap (Olmschenk et al. 2009): F = 0.90.</p>
+        <p><strong>FAULT-TOLERANCE PRIMITIVE</strong>: Gate teleportation (Gottesman-Chuang 1999) is the foundation of magic-state distillation. Surface-code logical T-gate via injection + teleportation; ~10⁴ T-gates/s achievable on near-term FT hardware.</p>
+        <p><strong>DARPA / NSF programs</strong>: NSF QLCI for hybrid networks; DARPA Quantum Networks programs (e.g., Quantum Augmented Network). Chicago QNet 124 km testbed operates with teleportation-style entanglement distribution.</p>
       </div>
     </div>
   </div>
@@ -2889,10 +2905,10 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         <p><b>Numbers to remember.</b> Best classical algorithm on RSA-2048: <b>~10¹³ years</b>. Shor's algorithm on a future quantum computer: <b>~8 hours</b>.</p>
       </div>
       <div class="level-text" data-level="engineer" id="speed-eng-text">
-        <p><b>Reduction.</b> Shor's algorithm reduces factoring N → finding the period r of f(x) = a^x mod N (for a random a coprime to N).</p>
-        <p><b>The quantum step.</b> The Quantum Fourier Transform extracts the period from a superposition over x values — a job classical FFT would still need to sift through exponentially many candidates for.</p>
-        <p><b>Once you have r.</b> A few simple classical steps (continued fractions + gcd) give the prime factors of N.</p>
-        <p><b>Worked numbers.</b> RSA-2048 (a 617-digit modulus): ~10¹³ years classical (GNFS) vs ~8 hours on a fault-tolerant QC.</p>
+        <p><b>The reduction.</b> Shor's clever idea: factoring N can be turned into finding the <em>period</em> of a math function. So if you can find that period quickly, you can factor quickly.</p>
+        <p><b>The quantum step.</b> The Quantum Fourier Transform reads off the period in one shot from a superposition of inputs — something a classical FFT can't replicate without exponentially many samples.</p>
+        <p><b>The classical step.</b> Once you have the period, simple grade-school math (continued fractions + gcd) gives you the factors.</p>
+        <p><b>Why this matters.</b> The math behind RSA assumes factoring is impossibly slow. Shor's quietly demolishes that assumption — given a fault-tolerant quantum computer.</p>
       </div>
       <div class="level-text" data-level="darpa-pm">
         <p><b>Reduction.</b> Factor N → find r such that a^r ≡ 1 (mod N) → period-finding via QFT eigenvalue extraction.</p>
@@ -2918,15 +2934,29 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         <p><b>The big idea.</b> Quantum doesn't speed up <em>everything</em> — only specific problems where a clever algorithm exploits superposition + interference.</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p><b>Complexity at a glance:</b></p>
+        <p><b>Five quantum algorithms worth knowing — what each one is FOR.</b></p>
         <ul style="margin:0 0 10px 18px">
-          <li><b>Factoring:</b> Shor O((log N)³) vs GNFS sub-exponential ≈ exp((log N)^(1/3)).</li>
-          <li><b>Search:</b> Grover O(√N) vs classical O(N) — provably tight (BBBV).</li>
-          <li><b>Simulation:</b> VQE O(N⁴) measurements (NISQ-compatible) vs exact diagonalization O(2ⁿ).</li>
-          <li><b>Optimization:</b> QAOA depth-p achieves approx ratio &gt; 0.6929 for Max-Cut (Goemans-Williamson SDP bound).</li>
-          <li><b>Linear systems:</b> HHL O(log N · κ² · 1/ε) vs classical O(N · κ).</li>
+          <li><b>Shor's</b> — factors large numbers. Threatens RSA. The reason post-quantum cryptography exists.</li>
+          <li><b>Grover's</b> — searches unsorted data. Quadratic speedup. Used inside larger algorithms.</li>
+          <li><b>VQE</b> — finds the lowest-energy state of a molecule. Hybrid quantum + classical loop.</li>
+          <li><b>QAOA</b> — approximate solutions to combinatorial optimization (routing, scheduling).</li>
+          <li><b>HHL</b> — solves giant linear systems. Useful when you only need a single statistic about the solution.</li>
         </ul>
-        <p><b>Fault-tolerance overhead.</b> Surface code with physical error rate p ≈ 0.1% needs ~1,000 physical qubits per logical qubit. RSA-2048 ⇒ ~4,096 logical ⇒ ~20M physical (Gidney-Ekerå 2019). Useful fault-tolerant QC: estimated 2030–2040.</p>
+        <p><b>The honest summary.</b> Quantum doesn't speed up <em>everything</em> — only specific structures (period-finding, unstructured search, quantum simulation, certain linear algebra). For general purposes a classical computer remains the right tool.</p>
+        <p><b>Why fault tolerance matters.</b> Today's quantum hardware is noisy. Useful real-world quantum advantage requires error-corrected ("fault-tolerant") qubits — a major engineering frontier still being built out across the 2030s.</p>
+      </div>
+      <div class="level-text" data-level="darpa-pm">
+        <p><b>Algorithm class hierarchy.</b> BQP (efficient quantum) ⊇ BPP (efficient classical-randomized). BQP ⊆ PSPACE proven. BQP vs NP: open. BQP-complete problems include Approximate Jones-Polynomial, Hidden-Subgroup over abelian groups, and several lattice-related problems.</p>
+        <p><b>Detailed complexity table:</b></p>
+        <ul style="margin:0 0 10px 18px">
+          <li><b>Factoring:</b> Shor O((log N)³) gates; recent Regev (2023) variant trades qubit count ↔ depth tradeoff. GNFS L_N[1/3, (64/9)^(1/3)] sub-exponential.</li>
+          <li><b>Search:</b> Grover Θ(√N); BBBV (Bennett-Bernstein-Brassard-Vazirani) gives Ω(√N) lower bound — provably tight for unstructured oracles.</li>
+          <li><b>Simulation:</b> Hamiltonian sim O(t · ‖H‖ · log(1/ε) / ε^o(1)) (Berry-Childs-Kothari 2015); Lloyd 1996 baseline O(t² · ‖H‖² / ε).</li>
+          <li><b>Optimization:</b> QAOA p→∞ → optimal; finite-depth approx ratios depend on graph structure (Farhi-Goldstone-Gutmann 2014).</li>
+          <li><b>Linear systems:</b> HHL O(log N · κ² · s² / ε); state-prep & read-out caveats (Aaronson 2015).</li>
+        </ul>
+        <p><b>Fault-tolerance budget for cryptanalytic Shor.</b> Gidney-Ekerå (2019): RSA-2048 → 4,096 logical qubits, ~10⁹ T-gates, surface-code distance d ≈ 25, p_phys ≤ 10⁻³ ⇒ ~20M physical qubits, ~8 hours at 1 MHz logical clock. Magic-state distillation factories (Bravyi-Kitaev 2005) dominate the qubit budget — typically 50–80% overhead.</p>
+        <p><b>DARPA programs.</b> US2QC (Underexplored Systems for Utility-Scale Quantum Computing, 2023+) targets utility-scale FTQC by 2033. Quantum Benchmarking Initiative defines hardware-agnostic metrics. ASIMOV addresses assurance for autonomous AI atop quantum substrates.</p>
       </div>
     </div>
   </div>
@@ -2956,10 +2986,10 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
             <p><b>What quantum computers offer.</b> Quantum computers are made of qubits, which themselves obey quantum rules. So they can <em>directly</em> simulate molecules using algorithms like <b>VQE</b> (Variational Quantum Eigensolver) — a teamwork algorithm where the quantum computer finds the molecule's lowest-energy shape and a classical computer adjusts the recipe.</p>
           </div>
           <div class="level-text" data-level="engineer">
-            <p><b>The opportunity.</b> Drug discovery currently takes 10–15 years and ~$2 B per approved drug, partly because we cannot accurately simulate large molecules classically. Quantum simulation could shrink the search loop dramatically.</p>
-            <p><b>Real targets being studied.</b> FeMoco (the active site of nitrogenase, ~54 qubits) — could enable industrial nitrogen fixation at room temperature. Cytochrome P450 (drug metabolism, ~150 qubits) — predicts side effects without animal testing.</p>
-            <p><b>Algorithm.</b> VQE: a hybrid loop. Prepare a quantum state on the QPU, measure its energy, then have a classical optimizer tweak the parameters. Repeat until the energy stops dropping — that's the molecule's ground state.</p>
-            <p><b>Timeline.</b> Useful pharmaceutical simulations require <em>chemical accuracy</em> (≈ 1 kcal/mol error), which in turn requires fault-tolerant quantum computers. Early demonstrations: 2025–2028. Clinically useful: ~2035.</p>
+            <p><b>The opportunity.</b> Drug discovery is slow partly because we can't accurately simulate large molecules on classical computers. Better simulations would dramatically shrink the search loop — fewer dead-end candidates, faster paths to clinical trials.</p>
+            <p><b>What scientists want to simulate.</b> Active sites of important enzymes (nitrogenase for fertilizer chemistry, cytochrome P450 for drug metabolism). Both are too big for exact classical methods, but small enough to be plausible quantum-computing targets.</p>
+            <p><b>How VQE works.</b> A hybrid loop. The quantum computer prepares a candidate molecular state, measures its energy, and a classical optimizer adjusts the recipe. Keep iterating until the energy stops dropping — that's the molecule's ground state, the configuration nature actually picks.</p>
+            <p><b>The accuracy bar.</b> Useful pharmaceutical simulations require "chemical accuracy" — predictions tight enough that they actually match wet-lab experiments. That bar requires fault-tolerant quantum hardware; early demonstrations are happening now, clinically useful results expected in the 2030s.</p>
           </div>
           <div class="level-text" data-level="darpa-pm">
             <p>Target Hamiltonians: H = Σh_pq a†_p a_q + ½Σ h_pqrs a†_p a†_q a_r a_s (second-quantized electronic structure). Mappings: Jordan-Wigner, Bravyi-Kitaev. VQE ansätze: UCCSD (depth O(n^4)), Hardware-Efficient (low-depth, less expressive), ADAPT-VQE (adaptive operator selection).</p>
@@ -2987,9 +3017,9 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
             <p>2. <em>Designing better materials.</em> Separate quantum optimization algorithms (like QAOA) can help design better batteries, more efficient solar panels, and stronger renewable-energy grids.</p>
           </div>
           <div class="level-text" data-level="engineer">
-            <p><b>Linear-system speedup (HHL).</b> Many climate equations reduce to solving Ax = b for huge sparse matrices A. The HHL algorithm produces a quantum state proportional to the solution x in time roughly O(log N · κ²) — vs. classical O(N · κ) — a potential exponential speedup when the matrix is well-conditioned. Catch: extracting a useful answer from the state can erode the speedup, so HHL is useful when you only need one property of the solution (like an average), not the full vector.</p>
-            <p><b>Applied to weather.</b> Modern weather models discretize the atmosphere into ~10⁹ grid cells — ECMWF's 9 km global grid has ~6.6 million cells in the horizontal alone, multiplied by ~137 vertical levels. Discretizing Navier-Stokes on this grid yields a sparse linear system; quantum-classical hybrids could replace the most expensive sub-grid physics parameterization. NCAR and ECMWF are exploring quantum co-processors for ensemble forecasting (target: 2030+).</p>
-            <p><b>Materials.</b> Variational algorithms (VQE / QAOA) can search for new battery cathode materials and catalysts for direct-air carbon capture — DOE FECM funds ~$50M/yr toward quantum-aided materials discovery.</p>
+            <p><b>Linear-system speedup.</b> Climate equations boil down to solving giant systems of linear equations on every timestep. The HHL quantum algorithm can produce a solution exponentially faster than classical methods — but only if you can extract a single useful statistic from it (an average, a moment) without reading the whole answer.</p>
+            <p><b>Applied to weather.</b> Modern weather models slice the atmosphere into a huge 3D grid and solve fluid-dynamics equations between every cell. Quantum-classical hybrids could replace the most expensive inner loops, especially the "sub-grid physics" parameterization that classical models can't afford to do exactly. National weather centers (NCAR, ECMWF) are already exploring this with IBM and Google.</p>
+            <p><b>Beyond weather: better materials.</b> Variational quantum algorithms (VQE, QAOA) can search for new battery cathode materials and catalysts for direct-air carbon capture — both critical climate-tech levers that depend on hard-to-simulate chemistry.</p>
           </div>
           <div class="level-text" data-level="darpa-pm">
             <p><b>HHL complexity.</b> O(log N · κ² · s² · ε⁻¹) where κ = condition number of A, s = sparsity, ε = solution accuracy; vs classical iterative O(N · s · κ · log(1/ε)). Caveat: state-prep and read-out can dominate end-to-end cost (Aaronson 2015 caveats).</p>
@@ -3017,10 +3047,10 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
             <p><b>In the wild.</b> China runs a 2,000 km QKD trunk line; banks in Switzerland and Japan use QKD for vault links.</p>
           </div>
           <div class="level-text" data-level="engineer">
-            <p><b>Protocols.</b> BB84 (1984, prepare-and-measure, security via no-cloning) and E91 (1991, entanglement-based, security via Bell-test monogamy).</p>
-            <p><b>Security model.</b> Information-theoretic — not computational. An adversary with infinite compute still can't break it.</p>
-            <p><b>Numbers.</b> QBER threshold for security: &gt; 11% ⇒ assume eavesdropping. Key-rate scales as ~μ · η (mean photon number × channel transmission).</p>
-            <p><b>Migration strategy.</b> NIST PQC (FIPS 203/204/205) for the near-term software upgrade; QKD for long-distance trunk lines and high-value links.</p>
+            <p><b>Two flagship protocols.</b> BB84 (the original "prepare-and-measure" protocol, secure because of the no-cloning theorem) and E91 (an entanglement-based protocol, secure because entanglement can't be shared with a third party — that's "monogamy of entanglement").</p>
+            <p><b>The security model is unusual.</b> Most cryptography is "computationally secure" — safe only because we believe certain math problems are hard. QKD is "information-theoretically secure" — even an adversary with infinite computing power can't break it without producing detectable errors.</p>
+            <p><b>How eavesdropping is detected.</b> Any attempt to intercept the quantum signal raises the error rate above a known threshold. Sender and receiver compare a small slice of their bits, and if the error rate is too high, they abort and try again.</p>
+            <p><b>Migration strategy.</b> Post-quantum cryptography (NIST 2024 standards) is the near-term software-only upgrade for everyone. QKD goes on top for long-distance trunk lines and the highest-value links.</p>
           </div>
         </div>
       </div>
@@ -3047,10 +3077,10 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
             <p><b>The catch.</b> "Quantum advantage for ML" is still mostly research-stage — most everyday ML doesn't speed up.</p>
           </div>
           <div class="level-text" data-level="engineer">
-            <p><b>HHL.</b> Solves Ax = b in O(log N · κ²) for sparse, well-conditioned A; classical baseline O(N · κ). Exponential speedup if κ = O(polylog N).</p>
-            <p><b>Quantum kernel methods.</b> Encode classical x as |φ(x)⟩ via a quantum feature map; compute kernel K(x,y) = |⟨φ(x)|φ(y)⟩|² on hardware. Used in quantum SVMs and kernel-ridge regression.</p>
-            <p><b>Known obstacle.</b> Barren plateaus — gradients vanish exponentially with circuit depth, limiting VQC trainability beyond ~50 qubits.</p>
-            <p><b>Current SOTA.</b> Quantum advantage proven for specific sampling problems (Google Sycamore 2019, USTC Jiuzhang 2020). No "killer ML app" yet — this is the active research frontier.</p>
+            <p><b>The HHL angle.</b> Many classical ML problems (regression, recommendation, kernel methods) reduce to solving giant linear systems. The HHL quantum algorithm can solve those exponentially faster — when the matrix is well-conditioned and you only need a single statistic from the answer.</p>
+            <p><b>Quantum kernel methods.</b> A quantum circuit takes a classical input and embeds it into a high-dimensional Hilbert space. The "similarity" between two inputs is computed natively by the quantum hardware. Useful inside SVMs and other kernel-based models — when classical kernels would be too expensive to evaluate.</p>
+            <p><b>The big known obstacle.</b> "Barren plateaus" — for deep variational circuits, the gradients used by the classical optimizer vanish exponentially with circuit size. That makes deep quantum networks very hard to train without special tricks.</p>
+            <p><b>Where the field is.</b> Quantum advantage has been demonstrated for specific sampling problems (Google's Sycamore in 2019, China's Jiuzhang in 2020). A "killer ML app" hasn't arrived yet — this is one of the most active research frontiers.</p>
           </div>
         </div>
       </div>
@@ -3073,10 +3103,10 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
             <p><b>Real uses.</b> GPS-free navigation, gravity mapping for geology, scanning for hidden tunnels and submarines.</p>
           </div>
           <div class="level-text" data-level="engineer">
-            <p><b>Sensor type.</b> Atom interferometer using laser-cooled Rb-87 or Cs-133 atoms in free fall.</p>
-            <p><b>Governing equation.</b> Phase shift Δφ = k_eff · g · T² where T = interrogation (free-fall) time and k_eff = effective wavevector (laser photon recoil momentum).</p>
-            <p><b>State of the art.</b> Δg/g ~ 10⁻⁹ for stationary gravimeters; cold-atom gyroscope rotation sensitivity 6×10⁻¹⁰ rad/s/√Hz.</p>
-            <p><b>DARPA programs.</b> SIGMA+ (chem/bio detection) and MESO (mesoscopic quantum sensors) fund quantum inertial nav for submarine + space applications.</p>
+            <p><b>The sensor.</b> An atom interferometer — laser-cooled atoms drop through a sequence of laser pulses that act like beam-splitters and mirrors for matter waves. The interference pattern tells you exactly how the sensor moved while the atoms were in free-fall.</p>
+            <p><b>What it measures.</b> Acceleration, rotation, and the local strength of gravity. Tiny shifts in those quantities create visible shifts in the interference pattern.</p>
+            <p><b>Why it's so much better than classical sensors.</b> Atoms are nearly identical at the quantum level — every measurement uses an "instrument" that's perfectly calibrated by the laws of physics. Classical accelerometers drift over time; atomic ones don't.</p>
+            <p><b>DARPA's interest.</b> Programs like SIGMA+ and MESO fund quantum sensors for navigation in GPS-denied environments — submarines, spacecraft, contested airspace.</p>
           </div>
         </div>
       </div>
@@ -3099,11 +3129,11 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
             <p><b>Where it stands.</b> Working testbeds at Delft, Harvard, and Chicago. First useful nodes: ~2030–2035.</p>
           </div>
           <div class="level-text" data-level="engineer">
-            <p><b>Architecture.</b> Quantum repeaters using Bell-state measurement + entanglement swapping extend entanglement past the fiber-loss limit.</p>
-            <p><b>Loss budget.</b> Photon attenuation in fiber: L_att ≈ 20 km. Without repeaters, end-to-end rate decays as 10^(−αL/10). With repeaters, scaling is polylog(L).</p>
-            <p><b>Memory requirement.</b> Memory-assisted repeaters need quantum-memory coherence time &gt; L/c (round-trip light time across the link).</p>
-            <p><b>Network stack.</b> Physical (single photons) → link (entanglement generation) → network (routing). IETF Quantum Internet RG drafting protocols.</p>
-            <p><b>Real testbed.</b> Chicago Quantum Exchange: 124 km of deployed fiber, 4 nodes operational since 2022.</p>
+            <p><b>The fundamental challenge.</b> Photons get lost in optical fiber — past a certain distance, a direct fiber link can't reliably carry quantum information. Worse, you can't just amplify quantum signals (no-cloning theorem) the way classical optical networks do.</p>
+            <p><b>The fix: quantum repeaters.</b> Distribute entanglement over short hops, then use Bell measurements to "swap" them into longer-range entanglement. Repeat the swap and you can stitch arbitrarily long entangled links — no copy required.</p>
+            <p><b>What the hardware needs.</b> Reliable quantum memory (so a node can hold its entanglement until the next-hop neighbor is ready), single-photon detectors with high efficiency, and low-loss fiber.</p>
+            <p><b>The network stack.</b> Just like the classical internet — but instead of "TCP / IP / Ethernet" the layers are "physical photons / link-level entanglement generation / network-level routing". The IETF has a Quantum Internet research group drafting the protocols.</p>
+            <p><b>Real testbeds.</b> Chicago Quantum Exchange runs a working multi-node quantum network using deployed fiber. Similar testbeds exist in Delft, Boston, and Beijing.</p>
           </div>
         </div>
       </div>
@@ -3140,12 +3170,12 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
             <p><b>Trade-offs.</b> ✅ Fastest gates, mature semiconductor-style fabrication. ❌ Needs giant dilution refrigerators; limited qubit-to-qubit connectivity.</p>
           </div>
           <div class="level-text" data-level="engineer">
-            <p><b>Qubit type.</b> Transmon — an LC circuit with a Josephson junction tuned so EJ/EC ≫ 1 to reduce sensitivity to charge noise.</p>
-            <p><b>Hamiltonian.</b> H = 4EC(n − ng)² − EJ cos(φ).</p>
-            <p><b>Gate times.</b> Single-qubit ~20 ns; two-qubit (CZ / CNOT) ~40–200 ns.</p>
-            <p><b>Coherence + errors.</b> T1 ~100–500 μs, T2 ~50–300 μs (best devices). Error: ~0.1% 1q, ~0.5–1% 2q (IBM 2023 best).</p>
-            <p><b>Connectivity.</b> Heavy-hex lattice (IBM), planar grid (Google) — limits direct two-qubit pairs.</p>
-            <p><b>Roadmap.</b> Google Sycamore: 53 qubits, quantum supremacy claim 2019. IBM: 100,000-qubit systems by 2033 via modular interconnects + cryogenic control electronics (CryoSPEC).</p>
+            <p><b>What it is.</b> A "transmon" — basically a tiny LC circuit with a Josephson junction (a non-linear inductor). The non-linearity gives the qubit two distinct, addressable energy levels.</p>
+            <p><b>Why so cold.</b> Thermal vibrations would knock the qubit out of its quantum state. Cooling to near absolute zero in a dilution refrigerator is what keeps it coherent.</p>
+            <p><b>How gates are applied.</b> Microwave pulses — fast, electrical, mature.</p>
+            <p><b>Connectivity.</b> Each qubit can only "talk" to its physical neighbours on the chip's lattice (heavy-hex on IBM, square grid on Google). Long-range entanglement requires SWAP chains.</p>
+            <p><b>Trade-offs.</b> ✅ Fastest gates of any platform; mature semiconductor-style fabrication. ❌ Bulky cryogenics; limited connectivity adds compilation overhead.</p>
+            <p><b>Where it stands.</b> Google's Sycamore was the first to claim "quantum supremacy" (2019). IBM's roadmap targets large modular systems by 2033.</p>
           </div>
         </div>
       </div>
@@ -3169,12 +3199,10 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
             <p><b>Key players.</b> IonQ, Quantinuum (formerly Honeywell).</p>
           </div>
           <div class="level-text" data-level="engineer">
-            <p><b>Qubit encoding.</b> Hyperfine ground states. For Yb-171: |F=0, mF=0⟩ and |F=1, mF=0⟩ split by ~12.6 GHz.</p>
-            <p><b>Two-qubit gate.</b> Mølmer-Sørensen interaction via a shared phonon mode of the trap (XX-type entangling gate).</p>
-            <p><b>Fidelities.</b> 99.9%+ single-qubit (best demonstrated). 99.5%+ two-qubit.</p>
-            <p><b>Coherence.</b> T2 hours in best systems.</p>
-            <p><b>Quality metric.</b> Algorithmic Qubits (AQ) — captures effective qubits after error. Quantinuum H2: 56 AQ.</p>
-            <p><b>Trade-off.</b> ✅ Best fidelity + all-to-all connectivity ⇒ lower SWAP overhead. ❌ Gate speed limits achievable circuit depth before decoherence; multi-trap scaling needs photonic interconnects.</p>
+            <p><b>What it is.</b> Each qubit is a single atom with one electron in two stable energy levels — those levels become |0⟩ and |1⟩. The atom is held in midair by oscillating electric fields and cooled with lasers until it sits nearly motionless.</p>
+            <p><b>How gates work.</b> Lasers (or microwaves) drive transitions between the two energy levels. Two-qubit gates use a clever trick: the trapped ions share a vibrational mode, and that shared "phonon bus" carries information between qubits to create entanglement.</p>
+            <p><b>Connectivity is a big deal.</b> Any ion in the trap can entangle with any other directly. That avoids the SWAP-chain overhead that limits superconducting platforms.</p>
+            <p><b>Trade-offs.</b> ✅ Best fidelities of any platform; all-to-all connectivity. ❌ Gates are slower than superconducting (microseconds, not nanoseconds), which limits how deep a circuit can go before decoherence. Scaling beyond a single trap requires photonic interconnects between traps.</p>
           </div>
         </div>
       </div>
@@ -3198,11 +3226,11 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
             <p><b>Key players.</b> PsiQuantum (silicon photonics, aiming at million-qubit machine); Xanadu (Borealis, photonic processor).</p>
           </div>
           <div class="level-text" data-level="engineer">
-            <p><b>Encoding.</b> Dual-rail (|0⟩=|1,0⟩, |1⟩=|0,1⟩ across two waveguides) or polarization (H/V).</p>
-            <p><b>Linear-optical gates.</b> Beamsplitters + phase shifters give the full Clifford group. Non-Clifford gates (e.g. CNOT) require ancilla photons + measurement + feedforward — the KLM protocol.</p>
-            <p><b>Quantum advantage demo.</b> Boson sampling — drawing from |ψ_out⟩ = U|1ⁿ 0^(m−n)⟩ is #P-hard classically. Xanadu Borealis (2022): 216-mode Gaussian boson sampler.</p>
-            <p><b>Fault-tolerant route.</b> PsiQuantum's Fusion-Based QC (FBQC) — combines photon pairs via fusion measurements into resource states.</p>
-            <p><b>Hardware needs.</b> Photon-number-resolving detectors (SNSPDs), low-loss waveguides, CMOS-compatible silicon photonics for wafer-scale integration.</p>
+            <p><b>What it is.</b> Each qubit is a single photon — information is encoded in the photon's polarization, the time it arrives, or which waveguide it's traveling in.</p>
+            <p><b>Why it's special.</b> Photons travel at the speed of light, don't need cryogenic cooling, and naturally couple into fiber-optic networks. That makes photonic platforms uniquely suited to the future quantum internet.</p>
+            <p><b>The hard part.</b> Two-photon gates can't be done deterministically with linear optics — they're <em>probabilistic</em> and require ancilla photons plus measurement-based feedback to succeed reliably. And photons get lost in real-world fibers.</p>
+            <p><b>How quantum advantage was first proven on photonic hardware.</b> "Boson sampling" — sampling from the output of a giant photonic interferometer is provably hard classically. Xanadu's Borealis demonstrated this experimentally.</p>
+            <p><b>The fault-tolerant route.</b> PsiQuantum's "Fusion-Based Quantum Computing" — combines photon pairs through fusion measurements into resource states large enough for error correction. Built on industry-standard silicon photonics for wafer-scale integration.</p>
           </div>
         </div>
       </div>
@@ -3226,12 +3254,11 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
             <p><b>Key players.</b> QuEra (Harvard spin-off), Atom Computing, Pasqal, Infleqtion.</p>
           </div>
           <div class="level-text" data-level="engineer">
-            <p><b>Rydberg blockade.</b> When atom A is in Rydberg state |r⟩, van-der-Waals interaction V(R) = C₆/R⁶ (~MHz at R = 5 μm) blocks atom B from exciting. This realizes a CZ gate.</p>
-            <p><b>Gate protocol.</b> π-pulse A → |r⟩; π-pulse B conditional on blockade; π-pulse A → |g⟩. Demonstrated fidelity: 99.5%.</p>
-            <p><b>Tweezer array.</b> Acousto-optic deflectors (AODs) or spatial light modulators (SLMs) shape arbitrary 2D/3D atom patterns.</p>
-            <p><b>State of the art.</b> QuEra Aquila: 256-qubit analog system. Harvard 2023: 48 error-corrected logical qubits from 280 physical. 10,000+ atom arrays demonstrated.</p>
-            <p><b>Capabilities.</b> Mid-circuit measurement + real-time feedforward already working.</p>
-            <p><b>DARPA funding.</b> ONISQ + Quantum Benchmarking Initiative.</p>
+            <p><b>What it is.</b> Each qubit is a single neutral atom held in a microscopic laser-tweezer trap. Hundreds (or thousands) of atoms can be arranged in any 2D or 3D pattern by reshaping the lasers between shots.</p>
+            <p><b>Two-qubit gates via Rydberg blockade.</b> Excite an atom into a giant "Rydberg" state and its electric field becomes huge — so big it stops nearby atoms from being excited too. That blockade IS the entangling interaction.</p>
+            <p><b>Why it scales.</b> The trap layout is reconfigurable per shot — you can rearrange thousands of atoms into whatever connectivity your algorithm needs. That's hard to do with superconducting circuits etched onto a fixed chip.</p>
+            <p><b>What's already working.</b> Mid-circuit measurement plus real-time feedback — both essential for error correction. Recent demonstrations have built error-corrected logical qubits from raw atom arrays.</p>
+            <p><b>DARPA's interest.</b> Funded through ONISQ and the Quantum Benchmarking Initiative.</p>
           </div>
         </div>
       </div>
@@ -3254,12 +3281,10 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
             <p><b>Status.</b> Theory looks great. Experimentally extremely hard. Microsoft's 2023 "first topological qubit" claim was later revised; the field is still verifying the underlying physics.</p>
           </div>
           <div class="level-text" data-level="engineer">
-            <p><b>Majorana zero modes (MZMs).</b> Zero-energy bound states at the ends of a 1D topological superconductor — a quasi-particle that is its own antiparticle.</p>
-            <p><b>Realization.</b> InAs semiconductor nanowire + s-wave Al superconductor under magnetic field induces p-wave proximity superconductivity (Kitaev chain model).</p>
-            <p><b>Topological protection.</b> Qubit information stored non-locally across a pair of MZMs — local perturbations smaller than the energy gap can't flip the qubit.</p>
-            <p><b>Gates via braiding.</b> Exchanging (braiding) non-Abelian anyons implements quantum gates topologically — immune to local errors.</p>
-            <p><b>Target spec.</b> Logical error rate &lt; 10⁻⁶ without conventional error-correction overhead.</p>
-            <p><b>Open challenge.</b> Demonstrating genuine non-Abelian statistics experimentally. Microsoft Azure Quantum has invested billions; first plausible topological qubit systems claimed for 2025+.</p>
+            <p><b>The big idea.</b> Build qubits whose information lives in the <em>topology</em> of a system instead of any specific particle's local state. Local noise can't disturb a topological property — so the qubit is intrinsically protected.</p>
+            <p><b>The exotic ingredient: Majorana zero modes.</b> Special quasi-particles predicted to appear at the ends of certain superconducting wires. They behave like their own antiparticles and store information in a way that's distributed across two locations — neither end alone has the information.</p>
+            <p><b>How gates work.</b> Exchange (or "braid") two of these particles around each other and the qubit's quantum state changes in a controlled way. The gate is determined by the path of the braid, not by exact timing — that's where the noise immunity comes from.</p>
+            <p><b>The promise vs. the reality.</b> If it works, the engineering overhead drops dramatically: fewer physical qubits per logical qubit, no need for the same heavy error-correction machinery. But experimentally proving genuine Majorana behavior has been very hard. Microsoft has invested heavily; the field is still verifying the underlying physics.</p>
           </div>
         </div>
       </div>
@@ -3297,17 +3322,30 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         <p><b>Most likely future.</b> A hybrid — different platforms optimised for different tasks (compute, networking, sensing).</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p><b>Benchmarks favour:</b></p>
+        <p><b>What each platform is best at:</b></p>
         <ul style="margin:0 0 10px 18px">
-          <li><b>Superconducting</b> — circuit depth (fast gates, mature control electronics).</li>
-          <li><b>Trapped ion</b> — algorithmic qubits (best fidelity, all-to-all connectivity).</li>
-          <li><b>Neutral atom</b> — analog simulation + scale.</li>
-          <li><b>Photonic</b> — quantum networking + room-temperature operation.</li>
+          <li><b>Superconducting</b> — fastest gates, deepest practical circuits. The mature platform of today.</li>
+          <li><b>Trapped ion</b> — best fidelity, all-to-all connectivity. Slower but cleaner.</li>
+          <li><b>Neutral atom</b> — best scaling and reconfigurable connectivity. Strong for analog simulation.</li>
+          <li><b>Photonic</b> — uniquely suited to quantum networking; works at room temperature.</li>
+          <li><b>Topological</b> — intrinsic noise immunity if it works. Still experimentally unproven.</li>
         </ul>
-        <p><b>Fault-tolerance threshold.</b> Surface code: ~1% physical error rate. Superconducting ~0.5% (approaching). Trapped ion ~0.1% (already below).</p>
-        <p><b>Resource estimation for RSA-2048.</b> ~4,096 logical qubits × ~1,000 physical/logical with surface code ⇒ ~4M physical qubits (Gidney-Ekerå 2019: ~20M with overhead). Current best: IBM Condor 1,121 qubits (2023).</p>
-        <p><b>Timeline to cryptographically-relevant QC.</b> Optimistic: 2030. Consensus: 2035–2040.</p>
-        <p><b>DARPA funding.</b> All five platforms via ONISQ, Quantum Benchmarking Initiative, and US2QC.</p>
+        <p><b>The fault-tolerance race.</b> Building useful quantum advantage requires error-corrected qubits. Different platforms approach the error threshold for surface-code error correction from different directions — trapped ions are already below it, superconducting are approaching, others are catching up.</p>
+        <p><b>Cryptographic timeline.</b> Most experts expect a cryptographically relevant quantum computer in the 2030s. That's why federal agencies are migrating to post-quantum cryptography NOW, well before the threat materializes.</p>
+        <p><b>DARPA funding.</b> All five platforms supported through ONISQ, the Quantum Benchmarking Initiative, and US2QC (utility-scale FTQC by 2033).</p>
+      </div>
+      <div class="level-text" data-level="darpa-pm">
+        <p><b>Hardware-agnostic figures of merit.</b> Quantum Volume (IBM), Algorithmic Qubits (Quantinuum's AQ = effective fault-tolerant qubits after error budget), CLOPS (circuit layer operations per second). DARPA Quantum Benchmarking Initiative targeting cross-platform metrics decoupled from vendor marketing.</p>
+        <p><b>Per-platform threshold posture (vs surface-code threshold ≈ 1%):</b></p>
+        <ul style="margin:0 0 10px 18px">
+          <li><b>Superconducting (transmon)</b> — single-q ~10⁻⁴, two-q ~5×10⁻³–10⁻². Heavy-hex (IBM) vs square (Google) connectivity. Below threshold demonstrated; logical-qubit demonstrations scaling (IBM 2024–2025 Heron, Willow).</li>
+          <li><b>Trapped ion</b> — single-q 10⁻⁵, two-q 10⁻³ (Quantinuum 2023). All-to-all reduces SWAP overhead by ~3–10× vs nearest-neighbour. Photonic interconnects required for multi-trap scaling.</li>
+          <li><b>Neutral atom (Rydberg)</b> — two-q 5×10⁻³ (QuEra/Atom 2023). Reconfigurable connectivity per shot. Mid-circuit measurement + feed-forward demonstrated (Harvard 2023, 48 logical from 280 physical).</li>
+          <li><b>Photonic</b> — gate-based: probabilistic 2-q ⇒ heralded protocols. FBQC (PsiQuantum) uses photon-pair fusion to build resource states.</li>
+          <li><b>Topological</b> — undemonstrated; gap protection ⇒ in-principle p_log ≪ 10⁻⁶.</li>
+        </ul>
+        <p><b>Cryptanalytic Shor resource targets.</b> RSA-2048: 4,096 logical, ~10⁹ T-gates, ~20M physical at d≈25 surface code (Gidney-Ekerå 2019). ECC-256: ~2,300 logical, ~2.7×10⁹ Toffoli (Roetteler-Naehrig-Svore-Lauter 2017). 256-bit AES via Grover: ~1,500 logical, ~10⁸² gates ⇒ infeasible; <em>doubling key length</em> remains the recommended classical mitigation.</p>
+        <p><b>Programmatic posture.</b> US2QC (utility-scale FTQC by 2033 target), Quantum Benchmarking Initiative (cross-platform figures of merit), ONISQ legacy programs winding down. CISA + NSA NSM-10: federal PQC migration mandate FY2024–2035; CRQC (cryptographically relevant QC) treated as concrete planning horizon, not speculative.</p>
       </div>
     </div>
 
@@ -5400,39 +5438,53 @@ const SPEED_DATA = [
     eng:'<p><b>Algorithm.</b> HHL solves Ax = b for sparse, well-conditioned A.</p><p><b>Complexity.</b> Classical: O(N · κ). Quantum: O(log N · κ² · 1/ε) where κ = condition number, ε = solution accuracy.</p><p><b>Worked example.</b> 10-day global forecast: ~3 days of supercomputer time classical → ~hours on a fault-tolerant QC. Caveat: state-prep + read-out can erode the speedup; useful with QRAM.</p>' }
 ];
 
+// Per UX directive: Scientist + Engineer narratives are CONCEPT-FIRST —
+// no big-O, no Hamiltonians, no exact qubit counts. Dense formulas + cost
+// estimates moved to the new darpaPm field, which is rendered into the
+// matching #spd-nar-darpa-pm <div>.
 const SPEED_NARRATIVES = [
   { // Factor Number
     explorer: "🔑 Imagine a GIANT padlock with a number so big it would take every computer on Earth longer than the universe has existed to crack it. A quantum computer can crack it in a few HOURS! That's why we need new quantum-safe locks RIGHT NOW!",
-    scientist: "RSA encryption relies on the hardness of integer factorization. Classical best algorithm (GNFS): sub-exponential O(exp((log N)^(1/3))). Shor's quantum algorithm: polynomial O((log N)³). RSA-2048 classical estimate: ~10^18 operations. Shor's: ~10^9 operations on a fault-tolerant QC.",
-    engineer:  "GNFS complexity: O(exp(1.9*(log N)^(1/3) * (log log N)^(2/3))). Shor's: O((log N)^2 * (log log N) * (log log log N)) gate complexity via QFT-based period finding. RSA-2048 needs ~4096 logical qubits, millions of physical with error correction. Estimated time: ~8 hours at 1MHz logical gate rate."
+    scientist: "Today's RSA encryption is safe because factoring HUGE numbers is so slow that even the world's best supercomputers can't do it in any practical amount of time. Shor's algorithm flips that — a sufficiently large quantum computer factors those same numbers in a tiny fraction of the time. That's why governments are urgently rolling out new quantum-safe encryption.",
+    engineer:  "RSA's security rests on a single assumption: factoring large numbers is hard. Classical algorithms (the General Number Field Sieve) scale just barely faster than exponential — fast enough to make 2048-bit RSA practically unbreakable today. Shor's quantum algorithm rewrites the rules: it reduces factoring to finding the period of a math function and uses the Quantum Fourier Transform to read off that period in one shot. The result is an exponential speedup that turns 'practically unbreakable' into 'breakable on a fault-tolerant quantum computer'.",
+    darpaPm:   "GNFS complexity: L_N[1/3, (64/9)^(1/3)] = O(exp(1.9·(log N)^(1/3)·(log log N)^(2/3))). Shor's algorithm: O((log N)² · log log N · log log log N) gate complexity via QFT-based period finding. RSA-2048 resource estimate (Gidney-Ekerå 2019): ~4,096 logical qubits, ~10⁹ T-gates, ~20M physical qubits under surface-code distance d ≈ 25, ~8 hours at 1 MHz logical clock. Magic-state distillation dominates the non-Clifford T-gate budget."
   },
   { // Search Database
     explorer: "🗄️ Imagine you lost your toy in a room with a MILLION boxes. A normal computer opens boxes one by one. A quantum computer checks ALL boxes at the same time and finds your toy in just 1,000 tries! That's Grover's algorithm!",
-    scientist: "Classical unstructured search: O(N) average N/2 queries. Grover's algorithm provides a quadratic speedup: O(√N) queries. For N=1,000,000 items: classical needs ~500,000 queries; Grover's needs ~1,000. Proven to be optimal for quantum unstructured search.",
-    engineer:  "Grover's uses amplitude amplification: oracle O flips target phase, diffusion D = 2|s⟩⟨s|−I amplifies target amplitude. After O(√N) iterations, target probability ≈ 1. Gate count: O(√N * log N). Quadratic speedup proven optimal by BBBV theorem. Applies to NP problems reducible to search."
+    scientist: "Classical computers searching an unsorted list have to check items one at a time — on average half the list before they find the answer. Grover's algorithm uses superposition to 'check' all the items in parallel and uses interference to make the right answer stand out. The result is a quadratic speedup: roughly the square root of the work.",
+    engineer:  "Grover's algorithm runs two repeating steps: an oracle that flips the sign of the right answer, and a diffusion step that boosts that marked answer's amplitude while shrinking everyone else's. Together they form a rotation in a 2D plane spanned by 'right answer' and 'everything else' — after the right number of rounds, almost all the amplitude lives on the answer. The trick is provably optimal: there's no quantum algorithm that beats it for unstructured search.",
+    darpaPm:   "Grover's algorithm: T = ⌊π/(4·θ)⌋ rotations where sin θ = √(M/N) for M marked items in N total. Each iteration is U_s · U_f, with U_f = I − 2|w⟩⟨w| (phase oracle) and U_s = 2|s⟩⟨s| − I (diffusion about uniform |s⟩). Gate count O(√N · poly log N). BBBV theorem (1997) gives matching Ω(√N) lower bound. Brassard-Høyer-Mosca-Tapp (2002) generalizes to amplitude amplification: O(1/√p) speedup for any algorithm with success probability p."
   },
   { // Simulate Molecule
     explorer: "🧬 Scientists want to design new medicines by understanding how tiny molecules work. Classical computers give up because it's TOO COMPLICATED. Quantum computers can simulate molecules perfectly because they're MADE of quantum physics!",
-    scientist: "Simulating quantum systems classically requires exponential resources — the Hilbert space grows as 2^n for n qubits. A 50-electron molecule needs 2^50 classical bits. Quantum simulation is polynomial in n qubits. Applications: drug discovery, materials design, nitrogen fixation for fertilizer.",
-    engineer:  "Classical exact diagonalization: O(2^n) space and time. Quantum phase estimation for ground state energy: O(n^4) gates for chemistry. VQE (Variational Quantum Eigensolver) on NISQ devices: O(n^4) measurements. Target molecules: FeMoco (nitrogenase active site, 54 qubits estimated), cytochrome P450 (drug metabolism)."
+    scientist: "Simulating a molecule means tracking how every electron interacts with every other electron — and the work doubles every time you add another electron. Past about 50 electrons, classical supercomputers run out of memory and time. Quantum computers are themselves quantum, so they can represent the molecule directly — the cost grows only with the number of electrons, not exponentially.",
+    engineer:  "The hard part of quantum chemistry is finding a molecule's lowest-energy ('ground state') electron configuration — exactly what determines its chemistry. Classically the search space doubles for every electron, so big molecules quickly become hopeless. The Variational Quantum Eigensolver (VQE) is a hybrid loop: a quantum computer prepares a candidate state, measures its energy, and a classical optimizer adjusts the recipe. Repeat until the energy stops dropping. Phase estimation gives an alternative path with stronger accuracy guarantees once fault-tolerant hardware exists.",
+    darpaPm:   "Hamiltonian: H = Σ h_pq a†_p a_q + ½ Σ h_pqrs a†_p a†_q a_r a_s. Mappings: Jordan-Wigner, Bravyi-Kitaev. Classical exact diagonalization: O(2ⁿ) space + time. Phase estimation: O(n⁴ · t · ‖H‖ / ε); VQE: O(n⁴) measurements per iteration on NISQ hardware. Target benchmarks: FeMoco (54 qubits, ~10⁹ T-gates), cytochrome P450 (~150 qubits). Chemical accuracy (1 kcal/mol ≈ 1.6 mHa) requires p_log < 10⁻⁶ ⇒ d ≥ 25 surface-code distance."
   },
   { // Optimize Route
     explorer: "🗺️ Imagine a delivery driver who needs to visit 50 houses in the fastest order possible. There are more possible routes than atoms in the universe! Quantum computers can find the best route WAY faster using QAOA!",
-    scientist: "The Traveling Salesman Problem (TSP) is NP-hard — classical algorithms scale as O(n! / 2^n). QAOA (Quantum Approximate Optimization Algorithm) provides approximate solutions with quantum speedup. Real applications: supply chain optimization, airline routing, military logistics planning.",
-    engineer:  "TSP classical: Held-Karp O(n²*2^n). QAOA: alternating cost operator e^(-iγC) and mixer e^(-iβB) layers, depth p. For p=O(n): polynomial circuit depth. Achieves approximation ratio >0.6 for Max-Cut. DARPA interest: logistics optimization for multi-domain operations and resupply routing."
+    scientist: "Optimization problems like 'find the shortest route through 50 cities' have astronomically many possible answers — far too many to check one at a time. The Quantum Approximate Optimization Algorithm (QAOA) uses superposition + interference to favour the better routes. It doesn't always find the absolute best answer, but it finds a near-best answer much faster than classical brute force.",
+    engineer:  "QAOA approaches combinatorial optimization by alternating two operators: a 'cost' operator that injects information about which routes are good, and a 'mixer' operator that explores neighbouring routes. After enough alternating layers, measurement is biased toward near-optimal solutions. Real near-term targets are routing, scheduling, and logistics — places where 'good enough, much faster' beats 'perfect, far too slow'. DARPA's interest: optimization for multi-domain operations.",
+    darpaPm:   "QAOA: alternating layers of e^(−iγ_k C) (cost unitary) and e^(−iβ_k B) (mixer unitary), depth p. For p → ∞ converges to optimum (Farhi-Goldstone-Gutmann 2014). Finite-depth approximation ratio for Max-Cut > 0.6929 at p = 1, beating the best classical Goemans-Williamson SDP bound at sufficient depth. TSP classical Held-Karp O(n²·2ⁿ); QAOA achieves polynomial circuit depth at p = O(n). Active research: warm-starting with classical heuristics, error-mitigated QAOA on NISQ hardware."
   },
   { // Predict Weather
     explorer: "🌤️ Weather prediction needs to simulate millions of air molecules all bumping into each other. Quantum computers can model this like a SUPER DETAILED simulation — helping us predict storms, hurricanes, and even climate change better!",
-    scientist: "Atmospheric modeling requires solving the Navier-Stokes equations over billions of grid points. Quantum algorithms for linear differential equations (HHL) offer exponential speedup. Better climate models improve 10-day forecasts, hurricane track accuracy, and century-scale climate projections.",
-    engineer:  "HHL algorithm solves Ax=b in O(log N * kappa^2) vs classical O(N * kappa) where kappa = condition number. Quantum fluid dynamics via lattice Boltzmann method on quantum hardware. Key challenge: QRAM for data loading. Near-term: quantum-classical hybrid for parameterization of sub-grid physics."
+    scientist: "Weather and climate forecasts work by solving HUGE systems of equations describing how air, water, and heat move through the atmosphere. The more grid cells you use, the better the forecast — and the more compute power you need. Quantum algorithms (HHL is the famous one) can solve certain giant linear systems exponentially faster, opening the door to higher-resolution climate models.",
+    engineer:  "Climate and fluid models discretize the atmosphere into millions or billions of grid cells, then solve giant sparse linear systems on every timestep. The HHL quantum algorithm produces a quantum state proportional to the solution exponentially faster than classical methods — but only when you can extract a useful answer (an average, a moment, an inner product) without reading the whole vector. That makes it most useful inside hybrid pipelines: classical models hand off the most expensive linear-algebra inner loops to a quantum co-processor.",
+    darpaPm:   "HHL solves Ax = b in O(log N · κ² · s² / ε) for sparse, well-conditioned A; classical iterative O(N · κ). Practical caveats (Aaronson 2015): efficient state-preparation + read-out are non-trivial; QRAM remains a hardware bottleneck. Current research targets variational quantum solvers for compressible Navier-Stokes (Liu-Childs-Bao 2021), quantum lattice-Boltzmann (Mezzacapo et al.), and hybrid sub-grid physics parameterization. NCAR/ECMWF MoUs with IBM, Google for ensemble forecasting (target: 2030+)."
   }
 ];
 
 function updateSpeedNarrative(idx) {
   const n = SPEED_NARRATIVES[idx];
-  document.getElementById('spd-nar-explorer').textContent = n.explorer;
+  document.getElementById('spd-nar-explorer').textContent  = n.explorer;
   document.getElementById('spd-nar-scientist').textContent = n.scientist;
-  document.getElementById('spd-nar-engineer').textContent = n.engineer;
+  document.getElementById('spd-nar-engineer').textContent  = n.engineer;
+  // The DARPA PM narrative element wasn't being updated — this is why
+  // PM users saw stale content from challenge 0 when they switched
+  // challenges. Wire it in here.
+  const pmEl = document.getElementById('spd-nar-darpa-pm');
+  if (pmEl) pmEl.textContent = n.darpaPm || n.engineer;
 }
 
 /* ── Speed Visualizations ── */
