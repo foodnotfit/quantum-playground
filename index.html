@@ -286,10 +286,44 @@ body.engineer .sci-eng-only { display: flex; }
 .pqc-section { display:none; background:#0a0a1a; border:2px solid #8b5cf6; border-radius:16px; padding:24px; margin-top:20px; animation:slideIn 0.5s ease; }
 .pqc-section.visible { display:block; }
 .pqc-title { font-size:1.3rem; font-weight:900; color:#8b5cf6; text-align:center; margin-bottom:16px; }
-.pqc-bars { display:flex; gap:24px; justify-content:center; align-items:flex-end; margin-bottom:16px; height:140px; }
-.pqc-bar-wrap { display:flex; flex-direction:column; align-items:center; gap:8px; }
-.pqc-bar { width:80px; border-radius:8px 8px 0 0; }
-.pqc-bar-label { font-size:0.85rem; font-weight:700; text-align:center; max-width:90px; line-height:1.3; }
+/* Bug fix: the bars container previously had height:140px which was smaller
+   than the tallest bar (120px) + the wrap's label below it. The bars
+   overflowed upward, covering the section title and the surrounding copy.
+   New layout: the wrap stacks bar + label in a flex column with explicit
+   space; the parent .pqc-bars uses flex-end so the BARS sit on a shared
+   baseline while labels read cleanly underneath. min-height includes the
+   label area so nothing visually escapes. */
+.pqc-bars {
+  display: flex;
+  gap: 28px;
+  justify-content: center;
+  align-items: flex-end;
+  margin: 14px 0 24px;
+  min-height: 200px;            /* 120px bar + gap + 2-line label + breathing room */
+  padding-bottom: 4px;
+}
+.pqc-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  /* Each wrap can be taller than the parent's content area without
+     pushing the bar into surrounding rows; the wrap itself defines its
+     own vertical extent. */
+}
+.pqc-bar {
+  width: 80px;
+  border-radius: 8px 8px 0 0;
+  flex-shrink: 0;
+}
+.pqc-bar-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+  max-width: 110px;
+  line-height: 1.4;
+  min-height: 40px;             /* reserves vertical room so two-line labels never collide with the bar above */
+}
 .kyber-key-box { background:#0a1a0a; border:2px solid #10b981; border-radius:12px; padding:14px 16px; font-family:monospace; font-size:0.78rem; color:#10b981; word-break:break-all; min-height:60px; margin:10px 0; }
 
 /* ===== HARDWARE TABLE (Tab 10) ===== */
@@ -1250,8 +1284,27 @@ footer {
   font-weight: 900;
   color: #e0e0ff;
   font-variant-numeric: tabular-nums;
+  text-align: center;
+  outline: none;
   transition: all 0.3s;
 }
+input.pin-box { font-family: inherit; }
+input.pin-box:focus {
+  border-color: #00d4ff;
+  box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.25);
+}
+input.pin-box.locked {
+  pointer-events: none;
+  opacity: 0.85;
+}
+.pin-help {
+  text-align: center;
+  color: #a0a0cc;
+  font-size: 0.95rem;
+  margin: -8px 0 14px;
+  line-height: 1.45;
+}
+.pin-help b { color: #00d4ff; }
 
 .pin-box.revealed {
   border-color: #10b981;
@@ -2262,7 +2315,21 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
       </div>
       <!-- DARPA PM (adult / specialist): full formalism OK — Hilbert space, complexity classes, fault-tolerance overhead. -->
       <div class="level-text" data-level="darpa-pm">
-        <p>Quantum computation evolves an n-qubit state |ψ⟩ ∈ ℂ^(2ⁿ) under unitary operators U ∈ SU(2ⁿ), with measurement governed by Born's rule. Resource asymmetries: superposition (H), entanglement (CNOT), interference (phase kickback). <b>BQP ⊇ BPP</b>; <b>BQP vs NP</b> remains open. Cryptographic implications: Shor (1994) gives O((log N)³) factoring → polynomial-time RSA breakage; Grover (1996) gives provably-optimal Ω(√N) search lower bound. Fault-tolerant cost dominated by magic-state distillation for non-Clifford T-gates under surface-code error correction; Gidney & Ekerå (2019) estimate ~20M physical qubits to break RSA-2048. NIST PQC migration (FIPS 203/204/205, Aug 2024) replaces RSA/ECC for federal systems.</p>
+        <p><b>The intuition.</b> A quantum computer's state vector lives in a 2ⁿ-dimensional Hilbert space. Each "gate" is a 2ⁿ × 2ⁿ unitary that rotates that vector. Probability of an outcome i is the squared amplitude ⟨i|ψ⟩².</p>
+        <p><b>Why it can be faster (sometimes).</b> Three resources matter:</p>
+        <ul style="margin:0 0 10px 18px">
+          <li><b>Superposition</b> — a Hadamard gate H gives |+⟩ = (|0⟩+|1⟩)/√2.</li>
+          <li><b>Entanglement</b> — CNOT entangles two qubits so they no longer factor.</li>
+          <li><b>Interference</b> — wrong-answer amplitudes cancel; right-answer amplitudes add.</li>
+        </ul>
+        <p><b>Worked complexity comparison.</b> Factor a 2048-bit RSA modulus N:</p>
+        <ul style="margin:0 0 10px 18px">
+          <li>Best classical (GNFS): exp((64/9)^(1/3) (log N)^(1/3) (log log N)^(2/3)) ≈ <b>10¹³ years</b>.</li>
+          <li>Quantum (Shor 1994): O((log N)³) ≈ <b>~8 hours</b> on a fault-tolerant QC.</li>
+        </ul>
+        <p><b>Engineering cost.</b> Gidney–Ekerå (2019): ~4,096 logical qubits → ~20M physical qubits at surface-code distance d ≈ 25, magic-state distillation for non-Clifford T-gates dominates the budget.</p>
+        <p><b>Mitigation in production today.</b> NIST PQC (Aug 2024): FIPS 203 ML-KEM (Module-LWE), FIPS 204 ML-DSA, FIPS 205 SLH-DSA. Hybrid TLS 1.3 (X25519+ML-KEM-768) is shipping in Chrome/Cloudflare/wolfSSL.</p>
+        <p><b>Open problem.</b> BQP ⊇ BPP is known. BQP vs NP is still open — the central question of quantum complexity theory.</p>
       </div>
     </div>
 
@@ -2307,10 +2374,16 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         <p>A qubit can be in two states at once — both 0 AND 1 at the same time. This is called <strong>superposition</strong>. The moment you measure it, the qubit picks ONE definite answer (either 0 or 1) and the superposition disappears. The chances of getting each outcome are baked into the qubit's quantum state.</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p>A qubit holds a quantum state that's a blend of |0⟩ and |1⟩ at the same time — that's superposition. The Hadamard gate (H) is the standard way to create an equal 50/50 superposition starting from |0⟩. Measurement collapses the qubit to a single classical bit: 0 or 1, each with the probability set by the qubit's state.</p>
+        <p><b>The setup.</b> A qubit holds a quantum state that's a blend of |0⟩ and |1⟩ at the same time — that's superposition.</p>
+        <p><b>How to create it.</b> The Hadamard gate (H) is the standard way: H|0⟩ → an equal 50/50 mix of |0⟩ and |1⟩.</p>
+        <p><b>What measurement does.</b> Collapses the qubit to a single classical bit (0 or 1), each with probability set by the qubit's amplitudes.</p>
+        <p><b>Worked example.</b> Apply H to |0⟩, then measure 1,000 times → expect ~500 zeros and ~500 ones (the classic 50/50 split).</p>
       </div>
       <div class="level-text" data-level="darpa-pm">
-        <p>Qubit |ψ⟩ = α|0⟩ + β|1⟩ with |α|² + |β|² = 1. Hadamard gate H|0⟩ = (|0⟩+|1⟩)/√2 yields the |+⟩ eigenstate of σₓ. Projective measurement in the computational basis returns outcome i with probability |⟨i|ψ⟩|² (Born's rule). Post-measurement state is the corresponding eigenstate; coherence is destroyed.</p>
+        <p><b>State.</b> Qubit |ψ⟩ = α|0⟩ + β|1⟩ with normalization |α|² + |β|² = 1.</p>
+        <p><b>Hadamard gate.</b> H|0⟩ = (|0⟩+|1⟩)/√2 yields the |+⟩ eigenstate of σₓ. H is its own inverse: H² = I.</p>
+        <p><b>Born's rule.</b> Projective measurement in the computational basis returns outcome i with probability |⟨i|ψ⟩|². Post-measurement state collapses to the corresponding eigenstate; coherence is destroyed.</p>
+        <p><b>Worked example.</b> For |ψ⟩ = (3/5)|0⟩ + (4/5)|1⟩: P(0) = 9/25 = 0.36, P(1) = 16/25 = 0.64. After 1,000 shots: ~360 zeros, ~640 ones (within √n shot noise).</p>
       </div>
     </div>
     <div class="key-concepts-box">
@@ -2413,15 +2486,20 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
     <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(4)">🔄 Reset</button></div>
 
     <div class="race-controls">
-      <button class="btn btn-blue" onclick="runClassical()">🐢 Classical</button>
+      <button class="btn btn-blue"   onclick="runClassical()">🐢 Auto Classical</button>
+      <button class="btn btn-green"  onclick="startUserDrive()">🎮 Drive Yourself</button>
       <button class="btn btn-purple" onclick="runQuantum()">⚡ Quantum</button>
-      <button class="btn btn-gold" onclick="runRace()">🏁 RACE!</button>
+      <button class="btn btn-gold"   onclick="runRace()">🏁 RACE!</button>
+    </div>
+
+    <div id="drive-help" style="display:none;text-align:center;background:linear-gradient(135deg,#0d2a1a,#0a1a0a);border:2px solid #10b981;border-radius:12px;padding:10px 16px;margin-bottom:14px;color:#a7f3d0;font-size:0.95rem;line-height:1.5">
+      🎮 You're the classical computer! Use <b>Arrow keys</b> or <b>WASD</b> to drive the blue car from the green corner (top-left) to the red corner (bottom-right). The quantum side will run automatically — see who gets there first!
     </div>
 
     <div class="race-panels">
       <div class="race-panel classical">
         <h3>🐢 Classical Computer</h3>
-        <div class="maze-container" id="classical-maze-container">
+        <div class="maze-container" id="classical-maze-container" tabindex="0" aria-label="Classical maze — use arrow keys or WASD to drive">
           <div class="maze-grid" id="classical-maze"></div>
           <svg class="maze-dots-layer" id="classical-dots-svg"></svg>
         </div>
@@ -2451,19 +2529,38 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         <p>A <strong>classical computer</strong> is like ONE explorer trying every path one at a time — so slow! 🐢<br><br>A <strong>quantum computer</strong> is like having THOUSANDS of explorers trying ALL paths at the SAME time! ⚡<br><br>The moment any explorer finds the exit — done!</p>
       </div>
       <div class="level-text" data-level="scientist">
-        <p><b>The setup.</b> Imagine a maze with 1,000,000 paths. Only one path leads to the prize.<br><br>
-        <b>The classical way.</b> Try the paths one at a time. On average, you'll need to check half a million paths before you find the right one.<br><br>
-        <b>The quantum way (Grover's algorithm).</b> Use superposition to "look at" all the paths at once, then use a quantum trick called <em>amplification</em> to make the right path stand out. You only need about √1,000,000 ≈ 1,000 steps!<br><br>
-        <b>The takeaway.</b> Quantum doesn't make every problem faster — but for searching unsorted things, it gives a <em>quadratic</em> speedup (the square root of the work).</p>
+        <p><b>The setup.</b> A maze with 1,000,000 paths. Only one leads to the prize.</p>
+        <p><b>The classical way.</b> Try paths one at a time. On average ~500,000 tries before you find it. Worst case: 1,000,000.</p>
+        <p><b>The quantum way (Grover's algorithm).</b> Put all paths in superposition (one quantum step), then "amplify" the right path. After about √1,000,000 ≈ <b>1,000 rounds</b>, the right path is overwhelmingly likely.</p>
+        <p><b>The shortcut to remember:</b> classical takes N steps, quantum takes √N steps. That's called a <b>quadratic speedup</b>.</p>
+        <p><b>Try it yourself.</b> What about N = 100? Classical = 100. Quantum ≈ √100 = <b>10</b>. That's the same trick, just smaller.</p>
+        <p><b>The catch.</b> Grover only helps for searching <em>unsorted</em> things. Most problems don't get a speedup at all — quantum isn't a faster CPU, it's a different kind of computer.</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p><b>Grover's algorithm</b> searches an unsorted list of N items in roughly √N steps instead of N — a quadratic speedup. The procedure repeats two operations:<br><br>
-        <b>1. Oracle.</b> A quantum subroutine that "marks" the answer by flipping its sign.<br>
-        <b>2. Diffusion.</b> A quantum operation that boosts the marked answer's probability while shrinking everyone else's.<br><br>
-        After about √N rounds, the marked answer is much more likely than any other, so measuring almost always returns the right one. This is provably the best speedup any quantum algorithm can give for unstructured search (BBBV theorem, 1997).</p>
+        <p><b>The application.</b> "I have N items. One of them is the answer. I have no clue which." A classical computer must check each one — average N/2 lookups, worst case N. Quantum can do it in roughly √N lookups.</p>
+        <p><b>The procedure (just two repeating steps).</b><br>
+        <b>1. Oracle.</b> A quantum gate that flips the sign of the right answer (and only the right answer). Marks it without revealing where it is.<br>
+        <b>2. Diffusion.</b> A reflection that boosts the marked answer's amplitude and shrinks everyone else's. Each round, the right answer gets a bit more likely.</p>
+        <p><b>The rule of thumb.</b> About <b>(π/4)·√N</b> rounds, then measure. Reported answer = solution with high probability.</p>
+        <p><b>Worked example — find a needle in a haystack of N = 1,000,000:</b></p>
+        <ul style="margin:0 0 10px 18px">
+          <li>Classical (worst case): up to <b>1,000,000</b> checks.</li>
+          <li>Quantum (Grover): about (π/4)·√1,000,000 ≈ <b>785</b> rounds.</li>
+          <li>That's roughly <b>1,300× fewer</b> oracle calls.</li>
+        </ul>
+        <p><b>Why it can't go faster.</b> The BBBV theorem (1997) proves √N is the best any quantum algorithm can do for unstructured search.</p>
       </div>
       <div class="level-text" data-level="darpa-pm">
-        <p>Grover's algorithm: T = ⌊π/(4·θ)⌋ rotations, where sin θ = √(M/N) for M marked items in N total. Each iteration is U_s · U_f, where U_f = I − 2|w⟩⟨w| (phase oracle) and U_s = 2|s⟩⟨s| − I (diffusion about the uniform superposition |s⟩ = (1/√N)Σ|x⟩). State trajectory is a 2D rotation in span{|w⟩, |w^⊥⟩}; success amplitude maximized at T iterations. Optimality: BBBV (Bennett-Bernstein-Brassard-Vazirani 1997) gives Ω(√N) lower bound on any quantum oracle algorithm. Generalization: amplitude amplification (Brassard-Høyer-Mosca-Tapp 2002) achieves O(1/√p) speedup for any algorithm with success probability p.</p>
+        <p><b>Iteration count.</b> Grover's algorithm: T = ⌊π/(4·θ)⌋ rotations, where sin θ = √(M/N) for M marked items in N total.</p>
+        <p><b>Per-iteration unitary.</b> Each iteration applies U_s · U_f, where:</p>
+        <ul style="margin:0 0 10px 18px">
+          <li><b>U_f = I − 2|w⟩⟨w|</b> — the phase oracle (flips the sign of the marked state).</li>
+          <li><b>U_s = 2|s⟩⟨s| − I</b> — the diffusion operator (reflection about the uniform superposition |s⟩ = (1/√N)Σ|x⟩).</li>
+        </ul>
+        <p><b>Geometric picture.</b> The state evolves as a 2D rotation in span{|w⟩, |w^⊥⟩}; success amplitude maximizes at T iterations.</p>
+        <p><b>Worked example.</b> M=1, N=10⁶ ⇒ θ = arcsin(10⁻³) ≈ 10⁻³ rad ⇒ T ≈ π/4000 × 10⁶ ≈ <b>785 iterations</b>. Classical needs ≤ N = 10⁶ ⇒ ≈ <b>1,273× speedup</b>.</p>
+        <p><b>Optimality.</b> BBBV (Bennett-Bernstein-Brassard-Vazirani 1997) gives Ω(√N) lower bound for any quantum oracle algorithm — Grover is provably tight.</p>
+        <p><b>Generalization.</b> Amplitude amplification (Brassard-Høyer-Mosca-Tapp 2002) achieves O(1/√p) speedup for any algorithm with success probability p.</p>
       </div>
     </div>
     <div class="key-concepts-box">
@@ -2501,7 +2598,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
     <div class="tab-reset-bar"><button class="btn btn-gray btn-sm" onclick="resetTab(5)">🔄 Reset</button></div>
 
     <div class="top-controls">
-      <button class="btn btn-gray" onclick="generateNewPin()">🎲 New PIN</button>
+      <button class="btn btn-gray" onclick="generateNewPin()">🎲 Random PIN</button>
       <button class="btn btn-gray" onclick="resetCodeBreaker()">🔄 Reset</button>
     </div>
 
@@ -2526,12 +2623,15 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
       </div>
     </div>
 
-    <!-- PIN Display -->
+    <!-- PIN Input — kid types 4 digits, then Classical / Quantum tries to crack THEIR pin -->
+    <div class="pin-help">
+      🔢 <b>Pick the 4-digit PIN you want the vault to use</b> — type a digit in each box (or press 🎲 for a random one). Then click Classical Crack or Quantum Crack to watch each computer try to guess it.
+    </div>
     <div class="pin-display" id="pin-display">
-      <div class="pin-box" id="pin0">?</div>
-      <div class="pin-box" id="pin1">?</div>
-      <div class="pin-box" id="pin2">?</div>
-      <div class="pin-box" id="pin3">?</div>
+      <input class="pin-box pin-input" type="text" inputmode="numeric" pattern="[0-9]" maxlength="1" id="pin0" aria-label="PIN digit 1" autocomplete="off">
+      <input class="pin-box pin-input" type="text" inputmode="numeric" pattern="[0-9]" maxlength="1" id="pin1" aria-label="PIN digit 2" autocomplete="off">
+      <input class="pin-box pin-input" type="text" inputmode="numeric" pattern="[0-9]" maxlength="1" id="pin2" aria-label="PIN digit 3" autocomplete="off">
+      <input class="pin-box pin-input" type="text" inputmode="numeric" pattern="[0-9]" maxlength="1" id="pin3" aria-label="PIN digit 4" autocomplete="off">
     </div>
 
     <!-- Two crack panels -->
@@ -2679,7 +2779,7 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
     <div id="teleport-narrative">
       <div class="level-text active" data-level="explorer" id="tp-nar-explorer">Alice has a SECRET quantum state — a special color that only she knows! Can we get it to Bob without moving the particle? YES — with quantum teleportation! Press Step 1 to begin!</div>
       <div class="level-text" data-level="scientist" id="tp-nar-scientist">Alice has a special qubit she wants to send to Bob. The trick: she doesn't know exactly what's on her qubit, but quantum teleportation lets her send it perfectly anyway — using a pair of "linked" particles and two regular bits of information.</div>
-      <div class="level-text" data-level="engineer" id="tp-nar-engineer">Alice's qubit holds an unknown quantum state. To send it to Bob, the protocol uses an entangled pair of qubits (a "Bell pair") shared in advance, plus 2 ordinary bits sent through any normal channel. The original state is consumed in Alice's measurement — quantum information is moved, not copied.</div>
+      <div class="level-text" data-level="engineer" id="tp-nar-engineer">Alice's qubit holds an unknown quantum state. To send it to Bob, the protocol uses an entangled pair of qubits (a "Bell pair") shared in advance, plus exactly 2 classical bits (each a 0 or 1) sent through any normal channel. Resource cost: 1 ebit + 2 cbits per qubit teleported. The original state is consumed in Alice's measurement — quantum information is moved, not copied.</div>
       <div class="level-text" data-level="darpa-pm" id="tp-nar-darpa-pm">Initial state: Alice holds qubit |ψ⟩ = α|0⟩ + β|1⟩. Protocol requires a pre-shared Bell pair |Φ⁺⟩ = (|00⟩+|11⟩)/√2. Total system: |ψ⟩ ⊗ |Φ⁺⟩ = (α|0⟩+β|1⟩) ⊗ (|00⟩+|11⟩)/√2. Resource cost: 1 ebit + 2 cbits per qubit teleported. Fidelity = 1 for ideal channels.</div>
     </div>
 
@@ -2710,8 +2810,24 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
     <div class="explanation-box">
       <h3>🔬 What&#39;s happening?</h3>
       <div class="level-text active" data-level="explorer">TELEPORTATION IS REAL! We can move quantum information from one place to another without moving the particle itself! Scientists use this for the quantum internet!</div>
-      <div class="level-text" data-level="scientist">Quantum teleportation transfers an unknown qubit state using a pre-shared Bell pair (a maximally entangled 2-qubit state used as the quantum communication channel) plus 2 classical bits. Alice performs a Bell measurement (a joint measurement that projects two qubits onto one of the four Bell states), sends 2 bits to Bob, who applies X and/or Z corrections. The original state is destroyed at Alice (no-cloning theorem upheld).</div>
-      <div class="level-text" data-level="engineer">Protocol: (1) Share Bell pair |Φ⁺⟩ = (|00⟩+|11⟩)/√2 (a maximally entangled state where measuring one qubit instantly determines the other). (2) Alice applies CNOT (Controlled-NOT gate — flips the second qubit only if the first qubit is 1) then H. (3) Measure: 4 outcomes each prob 0.25. (4) Bob applies I, X, Z, or XZ based on bits. Used in quantum repeater networks.</div>
+      <div class="level-text" data-level="scientist">
+        <p><b>The goal.</b> Move an unknown qubit's state from Alice to Bob without sending the qubit itself.</p>
+        <p><b>The recipe.</b> Alice and Bob share a pre-made <b>Bell pair</b> (two maximally entangled qubits) ahead of time. When Alice wants to send, she runs a <b>Bell measurement</b> on her qubit + her half of the Bell pair, gets 2 random classical bits, and sends those 2 bits to Bob over any normal channel.</p>
+        <p><b>What Bob does.</b> Based on which 2 bits arrived, Bob applies one of 4 corrections (do nothing / flip / phase-flip / both) and his qubit is now in Alice's original state.</p>
+        <p><b>Why it doesn't break physics.</b> Alice's original is destroyed by her measurement (no-cloning theorem holds), and the 2 classical bits travel at light-speed maximum (no faster-than-light info).</p>
+      </div>
+      <div class="level-text" data-level="engineer">
+        <p><b>Pre-shared resource.</b> A Bell pair |Φ⁺⟩ = (|00⟩+|11⟩)/√2 — Alice keeps qubit A, Bob keeps qubit B.</p>
+        <p><b>Protocol (4 steps):</b></p>
+        <ul style="margin:0 0 10px 18px">
+          <li>1. Alice applies CNOT(her data qubit → A), then H to her data qubit.</li>
+          <li>2. Alice measures both qubits in the computational basis → 2 classical bits, each outcome 25% likely.</li>
+          <li>3. Alice sends the 2 bits to Bob over any classical channel.</li>
+          <li>4. Bob applies one of 4 Pauli corrections based on the bits: 00→I, 01→X, 10→Z, 11→XZ.</li>
+        </ul>
+        <p><b>Resource cost per qubit teleported.</b> 1 Bell pair (1 ebit) + 2 classical bits (2 cbits). Fidelity = 1.0 for ideal channels.</p>
+        <p><b>Where it's used.</b> Quantum repeater networks (extending entanglement over long fibers), distributed quantum computing (linking small QPUs into a bigger logical machine).</p>
+      </div>
     </div>
     <div class="key-concepts-box">
       <h3>📖 Key Concepts</h3>
@@ -2767,9 +2883,23 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
     <div class="explanation-box" id="speed-explanation">
       <h3>🔬 How does it work?</h3>
       <div class="level-text active" data-level="explorer">Quantum computers are like having a SUPERPOWER for hard problems! Some tasks that would take longer than the universe has existed can be done in HOURS!</div>
-      <div class="level-text" data-level="scientist" id="speed-sci-text">Shor's algorithm uses a quantum trick called the Quantum Fourier Transform to factor huge numbers far faster than any regular algorithm can — breaking RSA encryption that would normally take millions of years.</div>
-      <div class="level-text" data-level="engineer" id="speed-eng-text">Shor's algorithm finds the period of the function a^x mod N using a Quantum Fourier Transform; once that period is known, factoring N is easy classically. Quantum Fourier Transform = a quantum version of the math tool that finds repeating patterns.</div>
-      <div class="level-text" data-level="darpa-pm">Shor's algorithm: O((log N)³) gate complexity vs sub-exponential L_N[1/3, c] classical (GNFS). Reduction: factor N → find r such that a^r ≡ 1 (mod N) → period-finding → QFT eigenvalue extraction. For RSA-2048: ~10¹³ years classically vs ~8 hours fault-tolerant. Bottleneck: T-gate count for modular exponentiation circuit.</div>
+      <div class="level-text" data-level="scientist" id="speed-sci-text">
+        <p><b>The trick.</b> Shor's algorithm uses a quantum tool called the <b>Quantum Fourier Transform</b> to spot patterns in numbers — specifically the "period" of a math sequence.</p>
+        <p><b>Why it cracks RSA.</b> RSA's secret keys depend on factoring HUGE numbers being slow. Once the period is found, the factors fall out almost for free.</p>
+        <p><b>Numbers to remember.</b> Best classical algorithm on RSA-2048: <b>~10¹³ years</b>. Shor's algorithm on a future quantum computer: <b>~8 hours</b>.</p>
+      </div>
+      <div class="level-text" data-level="engineer" id="speed-eng-text">
+        <p><b>Reduction.</b> Shor's algorithm reduces factoring N → finding the period r of f(x) = a^x mod N (for a random a coprime to N).</p>
+        <p><b>The quantum step.</b> The Quantum Fourier Transform extracts the period from a superposition over x values — a job classical FFT would still need to sift through exponentially many candidates for.</p>
+        <p><b>Once you have r.</b> A few simple classical steps (continued fractions + gcd) give the prime factors of N.</p>
+        <p><b>Worked numbers.</b> RSA-2048 (a 617-digit modulus): ~10¹³ years classical (GNFS) vs ~8 hours on a fault-tolerant QC.</p>
+      </div>
+      <div class="level-text" data-level="darpa-pm">
+        <p><b>Reduction.</b> Factor N → find r such that a^r ≡ 1 (mod N) → period-finding via QFT eigenvalue extraction.</p>
+        <p><b>Complexity.</b> Shor O((log N)³) gates vs GNFS sub-exponential L_N[1/3, (64/9)^(1/3)].</p>
+        <p><b>Worked numbers.</b> RSA-2048: ~10¹³ years classical vs ~8 hours fault-tolerant.</p>
+        <p><b>Engineering bottleneck.</b> T-gate count for modular exponentiation under surface-code error correction; magic-state distillation dominates the qubit budget.</p>
+      </div>
     </div>
     <div class="key-concepts-box">
       <h3>📖 Key Concepts</h3>
@@ -2777,10 +2907,26 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         <p>🔑 <strong>SHOR&#39;S ALGORITHM</strong>: The quantum &#39;lock cracker&#39; — finds secret numbers inside big math locks millions of times faster! 🔍 <strong>GROVER&#39;S ALGORITHM</strong>: The quantum &#39;super searcher&#39; — finds what you&#39;re looking for in a huge pile 1000× faster! 🧬 <strong>QUANTUM SIMULATION</strong>: Using quantum computers to pretend to be molecules — to design new medicines! 🗺️ <strong>QAOA</strong>: A quantum GPS that finds the BEST route through many cities super fast!</p>
       </div>
       <div class="level-text" data-level="scientist">
-        <p><strong>SHOR'S ALGORITHM</strong> (finds the prime factors of large numbers — threatening RSA encryption): Polynomial O((log N)³) — meaning the time grows slowly even for enormous numbers N — factoring via QFT (Quantum Fourier Transform — a quantum version of the mathematical tool used to find repeating patterns) period-finding. Threatens RSA/ECC. <strong>GROVER'S ALGORITHM</strong> (searches an unsorted list in √N steps instead of N — a quadratic speedup): Quadratic O(√N) — meaning quantum only needs the square root of the steps a classical computer needs — unstructured search speedup. <strong>VQE (Variational Quantum Eigensolver — a hybrid quantum-classical algorithm that finds the lowest energy state of a molecule)</strong>: Hybrid quantum-classical for molecular ground state energies — NISQ (Noisy Intermediate-Scale Quantum — today's quantum computers with 50-1000 imperfect qubits)-compatible. <strong>QAOA (Quantum Approximate Optimization Algorithm — uses quantum interference to find near-optimal solutions to routing and scheduling problems)</strong>: Parameterized ansatz for combinatorial optimization (Max-Cut, TSP). <strong>HHL ALGORITHM</strong> (Harrow-Hassidim-Lloyd algorithm — solves systems of linear equations exponentially faster than classical computers): Exponential speedup for sparse linear systems Ax=b — applications in CFD, climate modeling, ML. All these represent BQP (Bounded-error Quantum Polynomial time — the class of problems a quantum computer can solve efficiently) algorithms with proven or expected quantum advantage.</p>
+        <p><b>The four big quantum algorithms in plain English:</b></p>
+        <ul style="margin:0 0 10px 18px">
+          <li><b>SHOR'S</b> — factors huge numbers fast. Threatens RSA encryption.</li>
+          <li><b>GROVER'S</b> — searches an unsorted list in √N steps instead of N (quadratic speedup).</li>
+          <li><b>VQE</b> — finds the lowest energy of a molecule. Useful for drug + materials design.</li>
+          <li><b>QAOA</b> — finds near-best solutions to routing/scheduling problems.</li>
+          <li><b>HHL</b> — solves giant linear systems Ax = b exponentially faster.</li>
+        </ul>
+        <p><b>The big idea.</b> Quantum doesn't speed up <em>everything</em> — only specific problems where a clever algorithm exploits superposition + interference.</p>
       </div>
       <div class="level-text" data-level="engineer">
-        <p><strong>ALGORITHM COMPLEXITY COMPARISON</strong>: Factoring: Shor O((log N)³) — meaning the time grows slowly even for enormous numbers N — vs GNFS (General Number Field Sieve — the fastest classical algorithm for factoring large numbers, used to break RSA) O(exp((64/9)^(1/3)(log N)^(1/3)(log log N)^(2/3))). Search: Grover O(√N) — meaning quantum only needs the square root of the steps a classical computer needs — vs classical O(N) — meaning classical computers must check every item one by one — proven optimal by BBBV. Simulation: VQE (Variational Quantum Eigensolver — a hybrid quantum-classical algorithm that finds the lowest energy state of a molecule) O(N^4) measurements vs exact diag O(2^N). Optimization: QAOA (Quantum Approximate Optimization Algorithm — uses quantum interference to find near-optimal solutions to routing and scheduling problems) depth-p achieves approx ratio &gt;0.6929 for Max-Cut (p→∞ optimal). HHL (Harrow-Hassidim-Lloyd algorithm — solves systems of linear equations exponentially faster than classical computers): O(log N * kappa^2 * epsilon^-1) vs classical O(N * kappa). <strong>FAULT TOLERANCE OVERHEAD</strong>: Surface code (the most promising quantum error correction code — arranges qubits in a 2D grid where errors can be detected and fixed) with p_phys=0.1% needs ~1000 physical qubits per logical qubit. All large-scale algorithms require fault-tolerant QC — estimated 2030-2040 for RSA-2048 scale.</p>
+        <p><b>Complexity at a glance:</b></p>
+        <ul style="margin:0 0 10px 18px">
+          <li><b>Factoring:</b> Shor O((log N)³) vs GNFS sub-exponential ≈ exp((log N)^(1/3)).</li>
+          <li><b>Search:</b> Grover O(√N) vs classical O(N) — provably tight (BBBV).</li>
+          <li><b>Simulation:</b> VQE O(N⁴) measurements (NISQ-compatible) vs exact diagonalization O(2ⁿ).</li>
+          <li><b>Optimization:</b> QAOA depth-p achieves approx ratio &gt; 0.6929 for Max-Cut (Goemans-Williamson SDP bound).</li>
+          <li><b>Linear systems:</b> HHL O(log N · κ² · 1/ε) vs classical O(N · κ).</li>
+        </ul>
+        <p><b>Fault-tolerance overhead.</b> Surface code with physical error rate p ≈ 0.1% needs ~1,000 physical qubits per logical qubit. RSA-2048 ⇒ ~4,096 logical ⇒ ~20M physical (Gidney-Ekerå 2019). Useful fault-tolerant QC: estimated 2030–2040.</p>
       </div>
     </div>
   </div>
@@ -2841,9 +2987,9 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
             <p>2. <em>Designing better materials.</em> Separate quantum optimization algorithms (like QAOA) can help design better batteries, more efficient solar panels, and stronger renewable-energy grids.</p>
           </div>
           <div class="level-text" data-level="engineer">
-            <p><b>Linear-system speedup (HHL).</b> Many climate equations reduce to solving Ax = b for huge sparse matrices A. The HHL algorithm produces a quantum state proportional to the solution x in time roughly logarithmic in matrix size, vs. linear classically — a potential exponential speedup. Catch: extracting a useful answer from the state can erode the speedup, so HHL is useful when you only need <em>one</em> property of the solution (like an average), not the full vector.</p>
-            <p><b>Applied to weather.</b> Discretize the Navier-Stokes equations onto N grid cells; get a sparse linear system. Quantum-classical hybrid pipelines could replace the most expensive sub-grid physics parameterization. Climate centers (NCAR, ECMWF) are exploring quantum co-processors for ensemble forecasting.</p>
-            <p><b>Materials.</b> Variational algorithms (VQE/QAOA) can search for new battery cathode materials and catalysts for direct-air carbon capture — both critical climate-tech levers.</p>
+            <p><b>Linear-system speedup (HHL).</b> Many climate equations reduce to solving Ax = b for huge sparse matrices A. The HHL algorithm produces a quantum state proportional to the solution x in time roughly O(log N · κ²) — vs. classical O(N · κ) — a potential exponential speedup when the matrix is well-conditioned. Catch: extracting a useful answer from the state can erode the speedup, so HHL is useful when you only need one property of the solution (like an average), not the full vector.</p>
+            <p><b>Applied to weather.</b> Modern weather models discretize the atmosphere into ~10⁹ grid cells — ECMWF's 9 km global grid has ~6.6 million cells in the horizontal alone, multiplied by ~137 vertical levels. Discretizing Navier-Stokes on this grid yields a sparse linear system; quantum-classical hybrids could replace the most expensive sub-grid physics parameterization. NCAR and ECMWF are exploring quantum co-processors for ensemble forecasting (target: 2030+).</p>
+            <p><b>Materials.</b> Variational algorithms (VQE / QAOA) can search for new battery cathode materials and catalysts for direct-air carbon capture — DOE FECM funds ~$50M/yr toward quantum-aided materials discovery.</p>
           </div>
           <div class="level-text" data-level="darpa-pm">
             <p><b>HHL complexity.</b> O(log N · κ² · s² · ε⁻¹) where κ = condition number of A, s = sparsity, ε = solution accuracy; vs classical iterative O(N · s · κ · log(1/ε)). Caveat: state-prep and read-out can dominate end-to-end cost (Aaronson 2015 caveats).</p>
@@ -2864,8 +3010,18 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         </div>
         <div class="future-card-detail">
           <div class="level-text active" data-level="explorer">Quantum security is like a magical lock that TELLS YOU if someone tried to pick it! If a spy tries to listen to a quantum message, the message automatically changes — and you KNOW someone was snooping! 🔐🕵️</div>
-          <div class="level-text" data-level="scientist">Quantum Key Distribution (QKD — using quantum physics to share secret keys that cannot be intercepted) uses quantum mechanics — not mathematics — to guarantee security. Any eavesdropper must measure quantum states, disturbing them (Heisenberg uncertainty principle). The BB84 protocol (the first quantum key distribution protocol — uses 4 quantum states in 2 bases to share unbreakable keys) detects eavesdroppers via Quantum Bit Error Rate (QBER — the percentage of bits that are wrong, used to detect eavesdroppers) measurements. China operates a 2,000km QKD network.</div>
-          <div class="level-text" data-level="engineer">BB84 (the first quantum key distribution protocol — uses 4 quantum states in 2 bases to share unbreakable keys) security based on no-cloning theorem and Heisenberg uncertainty. Information-theoretic security (not computational). QBER (Quantum Bit Error Rate — the percentage of bits that are wrong, used to detect eavesdroppers) threshold: &gt;11% indicates eavesdropping. Key rate: O(μ · η · QBER) where μ=mean photon number, η=channel efficiency. NIST (National Institute of Standards and Technology — the US government agency that sets cryptography standards) PQC (Post-Quantum Cryptography — encryption designed to resist attacks from quantum computers) (FIPS (Federal Information Processing Standard — official US government security certification) 203/204/205) for near-term, QKD for long-term quantum-native security.</div>
+          <div class="level-text" data-level="scientist">
+            <p><b>Application.</b> Share encryption keys with security guaranteed by physics (not math).</p>
+            <p><b>How it works.</b> The sender encodes bits in quantum states (e.g. photon polarisation). Any eavesdropper has to measure them — and measurement disturbs the state, leaving fingerprints.</p>
+            <p><b>The detector.</b> Quantum Bit Error Rate (QBER) — the % of bits that don't match between sender and receiver. Above ~11% you abort: the line is being tapped.</p>
+            <p><b>In the wild.</b> China runs a 2,000 km QKD trunk line; banks in Switzerland and Japan use QKD for vault links.</p>
+          </div>
+          <div class="level-text" data-level="engineer">
+            <p><b>Protocols.</b> BB84 (1984, prepare-and-measure, security via no-cloning) and E91 (1991, entanglement-based, security via Bell-test monogamy).</p>
+            <p><b>Security model.</b> Information-theoretic — not computational. An adversary with infinite compute still can't break it.</p>
+            <p><b>Numbers.</b> QBER threshold for security: &gt; 11% ⇒ assume eavesdropping. Key-rate scales as ~μ · η (mean photon number × channel transmission).</p>
+            <p><b>Migration strategy.</b> NIST PQC (FIPS 203/204/205) for the near-term software upgrade; QKD for long-distance trunk lines and high-value links.</p>
+          </div>
         </div>
       </div>
 
@@ -2880,8 +3036,22 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         </div>
         <div class="future-card-detail">
           <div class="level-text active" data-level="explorer">Imagine AI that can learn from a MILLION examples at the same time instead of one at a time! Quantum AI could make robots smarter, help doctors diagnose diseases instantly, and solve problems we haven't even thought of yet! 🤖⚡</div>
-          <div class="level-text" data-level="scientist">Quantum Machine Learning (QML — applying quantum algorithms to speed up AI training and inference) algorithms like HHL (Harrow-Hassidim-Lloyd algorithm — solves systems of linear equations exponentially faster than classical computers) for linear systems, quantum PCA, and quantum SVMs offer potential exponential speedup for certain ML tasks. Quantum neural networks use parameterized quantum circuits as trainable models. VQC (Variational Quantum Classifiers) run on today's NISQ (Noisy Intermediate-Scale Quantum — today's quantum computers with 50-1000 imperfect qubits) hardware.</div>
-          <div class="level-text" data-level="engineer">HHL (Harrow-Hassidim-Lloyd algorithm — solves systems of linear equations exponentially faster than classical computers) linear system solver: O(log N · κ²) — exponential speedup when κ=O(polylog N). Quantum kernel methods: feature map φ(x) into Hilbert space via quantum circuit, kernel K(x,y)=|⟨φ(x)|φ(y)⟩|². Barren plateau problem limits deep VQC training. Current SOTA: quantum advantage demonstrated for specific sampling problems (Google Sycamore, 2019).</div>
+          <div class="level-text" data-level="scientist">
+            <p><b>Application.</b> Faster ML for problems classical computers struggle with.</p>
+            <p><b>Three quantum-AI techniques.</b></p>
+            <ul style="margin:0 0 10px 18px">
+              <li><b>HHL</b> — solves giant linear systems Ax = b exponentially faster (useful for regression, recommendation engines).</li>
+              <li><b>Quantum PCA / SVMs</b> — find structure in huge datasets faster.</li>
+              <li><b>Variational Quantum Classifiers (VQC)</b> — train a quantum circuit like a tiny neural net. Already runs on today's NISQ hardware.</li>
+            </ul>
+            <p><b>The catch.</b> "Quantum advantage for ML" is still mostly research-stage — most everyday ML doesn't speed up.</p>
+          </div>
+          <div class="level-text" data-level="engineer">
+            <p><b>HHL.</b> Solves Ax = b in O(log N · κ²) for sparse, well-conditioned A; classical baseline O(N · κ). Exponential speedup if κ = O(polylog N).</p>
+            <p><b>Quantum kernel methods.</b> Encode classical x as |φ(x)⟩ via a quantum feature map; compute kernel K(x,y) = |⟨φ(x)|φ(y)⟩|² on hardware. Used in quantum SVMs and kernel-ridge regression.</p>
+            <p><b>Known obstacle.</b> Barren plateaus — gradients vanish exponentially with circuit depth, limiting VQC trainability beyond ~50 qubits.</p>
+            <p><b>Current SOTA.</b> Quantum advantage proven for specific sampling problems (Google Sycamore 2019, USTC Jiuzhang 2020). No "killer ML app" yet — this is the active research frontier.</p>
+          </div>
         </div>
       </div>
 
@@ -2896,8 +3066,18 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         </div>
         <div class="future-card-detail">
           <div class="level-text active" data-level="explorer">Quantum sensors are SO precise they can feel tiny changes in gravity — like a super-powered compass that works even when GPS is broken or jammed! Perfect for submarines, spacecraft, and soldiers in the field! 🛸🧭</div>
-          <div class="level-text" data-level="scientist">Quantum sensors use atomic interferometry — matter-wave interference of laser-cooled atoms — to measure gravity, rotation, and acceleration with precision 1000× better than classical sensors. This enables GPS-denied navigation, gravitational anomaly mapping for geology, and improved geodesy for Earth observation.</div>
-          <div class="level-text" data-level="engineer">Atom interferometer sensitivity: Δg/g ~ 10⁻⁹ (state of art). Phase shift: Δφ = k_eff · g · T² where T = free-fall time, k_eff = effective wavevector (the momentum kick given to atoms by laser photons, which determines the interferometer's sensitivity to gravity). DARPA SIGMA+ and MESO programs funding quantum inertial navigation. Cold-atom gyroscope: rotation sensitivity 6×10⁻¹⁰ rad/s/√Hz. Applications: submarine navigation, space-based geodesy, underground structure detection.</div>
+          <div class="level-text" data-level="scientist">
+            <p><b>Application.</b> Navigate without GPS — useful for submarines, missiles, planes flying through jamming, and exploring planets where GPS doesn't exist.</p>
+            <p><b>How it works.</b> Cold atoms (laser-cooled to nearly absolute zero) act like waves. Tiny pushes — gravity, rotation, acceleration — change the wave pattern. Reading the pattern tells you exactly how the sensor moved.</p>
+            <p><b>Numbers.</b> Modern atom interferometers measure gravity ~1,000× more precisely than classical accelerometers.</p>
+            <p><b>Real uses.</b> GPS-free navigation, gravity mapping for geology, scanning for hidden tunnels and submarines.</p>
+          </div>
+          <div class="level-text" data-level="engineer">
+            <p><b>Sensor type.</b> Atom interferometer using laser-cooled Rb-87 or Cs-133 atoms in free fall.</p>
+            <p><b>Governing equation.</b> Phase shift Δφ = k_eff · g · T² where T = interrogation (free-fall) time and k_eff = effective wavevector (laser photon recoil momentum).</p>
+            <p><b>State of the art.</b> Δg/g ~ 10⁻⁹ for stationary gravimeters; cold-atom gyroscope rotation sensitivity 6×10⁻¹⁰ rad/s/√Hz.</p>
+            <p><b>DARPA programs.</b> SIGMA+ (chem/bio detection) and MESO (mesoscopic quantum sensors) fund quantum inertial nav for submarine + space applications.</p>
+          </div>
         </div>
       </div>
 
@@ -2912,8 +3092,19 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         </div>
         <div class="future-card-detail">
           <div class="level-text active" data-level="explorer">The quantum internet is like a MAGICAL postal service where letters are made of quantum particles — and if ANYONE tries to open your letter, it SELF-DESTRUCTS and you know someone tried! Scientists are building this right now! 📬⚛️</div>
-          <div class="level-text" data-level="scientist">The quantum internet uses entanglement distribution, quantum repeaters, and quantum memory to connect quantum computers globally. Unlike classical internet, transmitted quantum states cannot be passively copied or intercepted (no-cloning theorem). Early testbeds exist at Delft, Harvard, and Chicago. First quantum internet nodes may be operational by 2030-2035.</div>
-          <div class="level-text" data-level="engineer">Quantum repeater architecture: Bell state measurement (a joint measurement that projects two qubits onto one of the four maximally entangled Bell states) + entanglement swapping (connecting two particles that have never interacted, by measuring two other particles that were each entangled with one of them) extends range beyond photon loss limit (L_att ~20km in fiber). Memory-assisted quantum repeaters need coherence time &gt; L/c. Quantum network stack: physical (photon), link (entanglement generation), network (routing). IETF quantum networking RG drafting protocols. Chicago quantum network: 124km deployed fiber, 4 nodes operational.</div>
+          <div class="level-text" data-level="scientist">
+            <p><b>Application.</b> Connect distant quantum computers, share unhackable keys, and run experiments that span continents.</p>
+            <p><b>How it differs from today's internet.</b> The classical internet copies packets; quantum information CAN'T be copied (no-cloning theorem). Instead, the quantum internet <em>distributes entanglement</em> and uses it to teleport states.</p>
+            <p><b>Building blocks.</b> Entanglement sources, quantum repeaters (refresh entanglement over distance), quantum memory (hold states until both ends are ready).</p>
+            <p><b>Where it stands.</b> Working testbeds at Delft, Harvard, and Chicago. First useful nodes: ~2030–2035.</p>
+          </div>
+          <div class="level-text" data-level="engineer">
+            <p><b>Architecture.</b> Quantum repeaters using Bell-state measurement + entanglement swapping extend entanglement past the fiber-loss limit.</p>
+            <p><b>Loss budget.</b> Photon attenuation in fiber: L_att ≈ 20 km. Without repeaters, end-to-end rate decays as 10^(−αL/10). With repeaters, scaling is polylog(L).</p>
+            <p><b>Memory requirement.</b> Memory-assisted repeaters need quantum-memory coherence time &gt; L/c (round-trip light time across the link).</p>
+            <p><b>Network stack.</b> Physical (single photons) → link (entanglement generation) → network (routing). IETF Quantum Internet RG drafting protocols.</p>
+            <p><b>Real testbed.</b> Chicago Quantum Exchange: 124 km of deployed fiber, 4 nodes operational since 2022.</p>
+          </div>
         </div>
       </div>
 
@@ -2941,8 +3132,21 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         </div>
         <div class="future-card-detail">
           <div class="level-text active" data-level="explorer">Superconducting quantum computers are made from tiny loops of special metal cooled to -459°F — colder than outer space! They are the fastest type of quantum computer and IBM and Google are building them RIGHT NOW. IBM's quantum computers are already available for scientists to use online! ❄️⚡</div>
-          <div class="level-text" data-level="scientist">Superconducting qubits use Josephson junctions (a thin insulating barrier between two superconductors that allows quantum tunneling of Cooper pairs (pairs of electrons that move together in a superconductor without resistance, enabling quantum behavior at the circuit level)) — non-linear inductors from two superconductors separated by a thin insulator. Cooled to ~15 millikelvin (colder than space). Gate times: 10-100 nanoseconds. T2 coherence times: 10-500 microseconds. Current scale: 100-1000+ physical qubits (IBM Eagle, Osprey, Heron). Error rates: ~0.1-1% per gate. Advantage: fast gates, mature fabrication. Challenge: requires dilution refrigerators, limited connectivity.</div>
-          <div class="level-text" data-level="engineer">Qubit type: Transmon (LC circuit with Josephson junction (a thin insulating barrier between two superconductors that allows quantum tunneling of Cooper pairs (pairs of electrons that move together in a superconductor without resistance, enabling quantum behavior at the circuit level)) EJ/EC &gt;&gt; 1, reduces charge noise). Hamiltonian: H = 4EC(n-ng)² - EJ cos(φ). Gate times: single-qubit ~20ns, two-qubit (CZ/CNOT (Controlled-NOT gate — flips the second qubit only if the first qubit is 1)) ~40-200ns. T1~100-500μs, T2~50-300μs on best devices. Error: ~0.1% single-qubit, ~0.5-1% two-qubit (IBM 2023). Connectivity: heavy-hex lattice (IBM), planar grid (Google). Google Sycamore: 53 qubits, claimed quantum supremacy 2019. IBM roadmap: 100,000 qubit systems by 2033 via modular architecture. Cryogenic control electronics (CryoSPEC) to reduce wiring overhead.</div>
+          <div class="level-text" data-level="scientist">
+            <p><b>How it works.</b> Superconducting qubits are tiny circuits made from two superconductors separated by a thin insulator (a Josephson junction). They behave like a non-linear inductor — like a "quantum capacitor" with two distinct energy levels we use as |0⟩ and |1⟩.</p>
+            <p><b>Operating conditions.</b> Cooled to ~15 millikelvin (mK) — that's <em>colder than outer space</em>.</p>
+            <p><b>Numbers.</b> Gate times 10–100 ns. Coherence times (T2): 10–500 μs. Error rate: ~0.1–1% per gate.</p>
+            <p><b>Scale today.</b> 100–1,000+ physical qubits (IBM Eagle, Osprey, Heron; Google Sycamore).</p>
+            <p><b>Trade-offs.</b> ✅ Fastest gates, mature semiconductor-style fabrication. ❌ Needs giant dilution refrigerators; limited qubit-to-qubit connectivity.</p>
+          </div>
+          <div class="level-text" data-level="engineer">
+            <p><b>Qubit type.</b> Transmon — an LC circuit with a Josephson junction tuned so EJ/EC ≫ 1 to reduce sensitivity to charge noise.</p>
+            <p><b>Hamiltonian.</b> H = 4EC(n − ng)² − EJ cos(φ).</p>
+            <p><b>Gate times.</b> Single-qubit ~20 ns; two-qubit (CZ / CNOT) ~40–200 ns.</p>
+            <p><b>Coherence + errors.</b> T1 ~100–500 μs, T2 ~50–300 μs (best devices). Error: ~0.1% 1q, ~0.5–1% 2q (IBM 2023 best).</p>
+            <p><b>Connectivity.</b> Heavy-hex lattice (IBM), planar grid (Google) — limits direct two-qubit pairs.</p>
+            <p><b>Roadmap.</b> Google Sycamore: 53 qubits, quantum supremacy claim 2019. IBM: 100,000-qubit systems by 2033 via modular interconnects + cryogenic control electronics (CryoSPEC).</p>
+          </div>
         </div>
       </div>
 
@@ -2957,8 +3161,21 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         </div>
         <div class="future-card-detail">
           <div class="level-text active" data-level="explorer">Trapped ion quantum computers use REAL ATOMS floating in space, held still by invisible electric fields! These atoms are the most accurate qubits in existence — like using the most careful, precise worker in the factory. IonQ and Honeywell use this technology! 🌟🔬</div>
-          <div class="level-text" data-level="scientist">Trapped ions use individual atomic ions (typically Ytterbium-171 or Barium-133) confined by electromagnetic Paul traps and cooled by laser cooling to near absolute zero. Gate times: 1-100 microseconds (slower than superconducting). T2 coherence: seconds to minutes (far superior to superconducting). Error rates: &lt;0.1% single-qubit, ~0.2-0.5% two-qubit (best in class). All-to-all connectivity (advantage over superconducting). Scale: 20-30 high-quality qubits currently. Key companies: IonQ, Quantinuum (Honeywell).</div>
-          <div class="level-text" data-level="engineer">Qubit encoding: hyperfine ground states (Yb-171: |F=0,mF=0⟩ and |F=1,mF=0⟩ at 12.6 GHz). Lasers or microwave pulses for gates. Two-qubit gate via Mølmer-Sørensen (a two-qubit gate for trapped ions that uses shared vibrations to create entanglement) interaction through shared phonon bus: XX gate. Gate fidelity: 99.9%+ single-qubit (best demonstrated), 99.5%+ two-qubit. T2: hours in best systems. All-to-all connectivity enables lower SWAP overhead. Algorithmic Qubits (AQ — a quality metric that measures how many meaningful operations a quantum computer can perform): Quantinuum H2 achieves 56 AQ (quality metric). Challenge: slow gate speed limits circuit depth before decoherence. Photonic interconnects for multi-trap scaling.</div>
+          <div class="level-text" data-level="scientist">
+            <p><b>How it works.</b> Real atomic ions (usually Ytterbium-171 or Barium-133) are held in midair by oscillating electric fields and cooled with lasers until they sit nearly motionless. Each ion's electron states encode |0⟩ and |1⟩.</p>
+            <p><b>Numbers.</b> Gate times 1–100 μs (slower than superconducting). Coherence T2: seconds to minutes — far superior. Error: &lt; 0.1% single-qubit, 0.2–0.5% two-qubit (best in class).</p>
+            <p><b>Connectivity.</b> All-to-all — any ion can entangle with any other in the trap.</p>
+            <p><b>Scale today.</b> 20–30 high-quality qubits.</p>
+            <p><b>Key players.</b> IonQ, Quantinuum (formerly Honeywell).</p>
+          </div>
+          <div class="level-text" data-level="engineer">
+            <p><b>Qubit encoding.</b> Hyperfine ground states. For Yb-171: |F=0, mF=0⟩ and |F=1, mF=0⟩ split by ~12.6 GHz.</p>
+            <p><b>Two-qubit gate.</b> Mølmer-Sørensen interaction via a shared phonon mode of the trap (XX-type entangling gate).</p>
+            <p><b>Fidelities.</b> 99.9%+ single-qubit (best demonstrated). 99.5%+ two-qubit.</p>
+            <p><b>Coherence.</b> T2 hours in best systems.</p>
+            <p><b>Quality metric.</b> Algorithmic Qubits (AQ) — captures effective qubits after error. Quantinuum H2: 56 AQ.</p>
+            <p><b>Trade-off.</b> ✅ Best fidelity + all-to-all connectivity ⇒ lower SWAP overhead. ❌ Gate speed limits achievable circuit depth before decoherence; multi-trap scaling needs photonic interconnects.</p>
+          </div>
         </div>
       </div>
 
@@ -2973,8 +3190,20 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         </div>
         <div class="future-card-detail">
           <div class="level-text active" data-level="explorer">Photonic quantum computers use PARTICLES OF LIGHT as qubits! Since light can travel through fiber optic cables, photonic quantum computers can work at ROOM TEMPERATURE (no super-cold needed!) and could become the backbone of the quantum internet! 💡🌐</div>
-          <div class="level-text" data-level="scientist">Photonic quantum computers encode information in properties of photons: polarization, time-bin, or path. Key advantage: room-temperature operation, natural compatibility with fiber networks. Challenges: photon loss, probabilistic gates (linear optics gates succeed with some probability). Approaches: linear optical quantum computing (KLM protocol), boson sampling (quantum advantage demonstration), continuous-variable (Gaussian boson sampling). Companies: PsiQuantum (building million-qubit photonic QC using silicon photonics fab), Xanadu (Borealis device).</div>
-          <div class="level-text" data-level="engineer">ENCODING: Dual-rail (|0⟩=|1,0⟩, |1⟩=|0,1⟩ in two waveguides) or polarization. LINEAR OPTICAL GATES: Beamsplitters + phase shifters are Clifford gates. Non-linear (CNOT (Controlled-NOT gate — flips the second qubit only if the first qubit is 1)) requires ancilla photons + measurement + feedforward (KLM). BOSON SAMPLING: Sampling from |ψ_out⟩ = U|1^n 0^(m-n)⟩ is #P-hard classically — quantum advantage target. Xanadu Borealis (2022): 216-mode Gaussian boson sampler, claimed quantum advantage. PsiQuantum approach: fault-tolerant via photonic fusion-based QC (FBQC — Fusion-Based Quantum Computing, a photonic architecture that builds fault-tolerant quantum computers using photon pair fusions). Requires photon number-resolving detectors (SNSPDs — Superconducting Nanowire Single-Photon Detectors, the most sensitive photon detectors available, essential for photonic quantum computing) and low-loss waveguides. Silicon photonics: CMOS-compatible fab, potential for wafer-scale integration.</div>
+          <div class="level-text" data-level="scientist">
+            <p><b>How it works.</b> Each qubit is a single photon — information lives in the photon's polarization, time-bin, or which waveguide it's in.</p>
+            <p><b>Big advantages.</b> Runs at room temperature. Photons travel through fiber, so naturally compatible with quantum networking.</p>
+            <p><b>Big challenges.</b> Photons get lost in fiber. Gates between two photons are <em>probabilistic</em> — they only succeed with a certain probability and you have to retry.</p>
+            <p><b>Approaches.</b> Linear optical QC (KLM protocol), boson sampling (quantum-advantage demos), continuous-variable (Gaussian boson sampling).</p>
+            <p><b>Key players.</b> PsiQuantum (silicon photonics, aiming at million-qubit machine); Xanadu (Borealis, photonic processor).</p>
+          </div>
+          <div class="level-text" data-level="engineer">
+            <p><b>Encoding.</b> Dual-rail (|0⟩=|1,0⟩, |1⟩=|0,1⟩ across two waveguides) or polarization (H/V).</p>
+            <p><b>Linear-optical gates.</b> Beamsplitters + phase shifters give the full Clifford group. Non-Clifford gates (e.g. CNOT) require ancilla photons + measurement + feedforward — the KLM protocol.</p>
+            <p><b>Quantum advantage demo.</b> Boson sampling — drawing from |ψ_out⟩ = U|1ⁿ 0^(m−n)⟩ is #P-hard classically. Xanadu Borealis (2022): 216-mode Gaussian boson sampler.</p>
+            <p><b>Fault-tolerant route.</b> PsiQuantum's Fusion-Based QC (FBQC) — combines photon pairs via fusion measurements into resource states.</p>
+            <p><b>Hardware needs.</b> Photon-number-resolving detectors (SNSPDs), low-loss waveguides, CMOS-compatible silicon photonics for wafer-scale integration.</p>
+          </div>
         </div>
       </div>
 
@@ -2989,8 +3218,21 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         </div>
         <div class="future-card-detail">
           <div class="level-text active" data-level="explorer">Neutral atom quantum computers use thousands of individual atoms arranged in special patterns using laser tweezers — like picking up atoms with beams of light! You can arrange them in ANY pattern you want, making them super flexible. Harvard and MIT are building these! 🔵⚛️</div>
-          <div class="level-text" data-level="scientist">Neutral atom qubits use individual neutral atoms (Rubidium-87, Cesium-133, or Ytterbium) trapped in optical tweezer arrays. Two-qubit gates via Rydberg blockade (when one atom is excited to a high energy 'Rydberg' state, it prevents nearby atoms from also exciting — used to create quantum gates): exciting atoms to high-energy Rydberg states creates strong dipole-dipole interactions. Advantages: highly scalable (demonstrated 1000+ qubit arrays), programmable connectivity, long coherence. Gate times: 0.1-1 microsecond. T2: 1-10 seconds. Error: ~0.5% two-qubit. Companies: QuEra (Harvard spin-off), Atom Computing, Pasqal, Infleqtion.</div>
-          <div class="level-text" data-level="engineer">RYDBERG BLOCKADE (when one atom is excited to a high energy 'Rydberg' state, it prevents nearby atoms from also exciting — used to create quantum gates): When atom A is in Rydberg state |r⟩, the interaction V(R)=C6/R^6 (van der Waals (the weak attractive force between atoms at close range, which becomes very strong for Rydberg atoms), ~MHz at 5μm) prevents neighboring atom B from also exciting — enables CZ gate. Gate protocol: π pulse A→|r⟩, π pulse B conditional on blockade, π pulse A→|g⟩. Fidelity: 99.5% demonstrated. TWEEZER ARRAY: Acousto-optic deflectors or spatial light modulators arrange atoms in arbitrary 2D/3D geometries. QuEra Aquila: 256 qubits, analog mode. Harvard 2023: 48-qubit error-corrected logical qubits from 280 physical. SCALING: 10,000+ atom arrays demonstrated. Mid-circuit measurement + real-time feedforward enabled. DARPA: Funded via ONISQ (Noisy Intermediate-Scale Quantum — today's quantum computers with 50-1000 imperfect qubits) program and quantum benchmark programs.</div>
+          <div class="level-text" data-level="scientist">
+            <p><b>How it works.</b> Individual neutral atoms (Rb-87, Cs-133, or Yb) are caught in microscopic laser beams ("optical tweezers") and arranged in any 2D or 3D pattern.</p>
+            <p><b>Two-qubit gates.</b> Excite an atom to a huge "Rydberg" state — its electric field is so big it blocks nearby atoms from being excited too. That blockade IS the entangling gate.</p>
+            <p><b>Numbers.</b> Gate times 0.1–1 μs. Coherence T2 = 1–10 seconds. Error ~0.5% two-qubit.</p>
+            <p><b>Why it scales.</b> 1,000+ qubit arrays already demonstrated; programmable connectivity (you can rearrange atoms between shots).</p>
+            <p><b>Key players.</b> QuEra (Harvard spin-off), Atom Computing, Pasqal, Infleqtion.</p>
+          </div>
+          <div class="level-text" data-level="engineer">
+            <p><b>Rydberg blockade.</b> When atom A is in Rydberg state |r⟩, van-der-Waals interaction V(R) = C₆/R⁶ (~MHz at R = 5 μm) blocks atom B from exciting. This realizes a CZ gate.</p>
+            <p><b>Gate protocol.</b> π-pulse A → |r⟩; π-pulse B conditional on blockade; π-pulse A → |g⟩. Demonstrated fidelity: 99.5%.</p>
+            <p><b>Tweezer array.</b> Acousto-optic deflectors (AODs) or spatial light modulators (SLMs) shape arbitrary 2D/3D atom patterns.</p>
+            <p><b>State of the art.</b> QuEra Aquila: 256-qubit analog system. Harvard 2023: 48 error-corrected logical qubits from 280 physical. 10,000+ atom arrays demonstrated.</p>
+            <p><b>Capabilities.</b> Mid-circuit measurement + real-time feedforward already working.</p>
+            <p><b>DARPA funding.</b> ONISQ + Quantum Benchmarking Initiative.</p>
+          </div>
         </div>
       </div>
 
@@ -3005,8 +3247,20 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
         </div>
         <div class="future-card-detail">
           <div class="level-text active" data-level="explorer">Topological quantum computers are the most MYSTERIOUS and FUTURISTIC type! They use special particles called Majorana fermions that might be their own antiparticle — something that might not even exist yet in nature! Microsoft is building these and if they work, they could be the most powerful quantum computers ever! 🌀✨</div>
-          <div class="level-text" data-level="scientist">Topological qubits use non-Abelian anyons (specifically Majorana zero modes (a hypothetical particle that is its own antiparticle — if two are separated, they store a qubit that is protected from errors)) to store quantum information in a way that is intrinsically protected from local noise — errors cancel themselves out topologically. This would dramatically reduce the error correction overhead. Microsoft is developing these using semiconductor nanowires (InAs) with superconducting Al layers. Status: theoretical promise is high, experimental realization is extremely challenging. 2023: Microsoft claimed first topological qubit demonstration (controversial, retracted/revised).</div>
-          <div class="level-text" data-level="engineer">MAJORANA ZERO MODES (MZM — a hypothetical particle that is its own antiparticle — if two are separated, they store a qubit that is protected from errors): Zero-energy bound states at ends of 1D topological superconductor. Created in semiconductor (InAs) nanowire + s-wave superconductor (Al) under magnetic field — proximity-induced p-wave superconductivity (Kitaev chain model). TOPOLOGICAL PROTECTION: Quantum information stored non-locally across two MZMs — local perturbations cannot flip the qubit (gap protection). BRAID OPERATIONS: Exchanging (braiding) non-Abelian anyons implements quantum gates topologically — immune to local errors. TARGET: logical error rate &lt;10^-6 without conventional error correction overhead. CHALLENGE: Demonstrating genuine non-Abelian statistics experimentally. Microsoft Azure Quantum: investing billions, claims 2025+ topological qubit systems.</div>
+          <div class="level-text" data-level="scientist">
+            <p><b>The dream.</b> Build qubits whose information lives in the <em>topology</em> of exotic particles called Majorana zero modes — so local noise can't disturb it.</p>
+            <p><b>Why it matters.</b> If it works, you'd need WAY fewer physical qubits per logical qubit (today's surface code needs ~1,000:1 — topological could be more like 10:1).</p>
+            <p><b>How it's built.</b> Semiconductor nanowires (InAs) coated with a superconductor (Al), driven into a special phase by a magnetic field.</p>
+            <p><b>Status.</b> Theory looks great. Experimentally extremely hard. Microsoft's 2023 "first topological qubit" claim was later revised; the field is still verifying the underlying physics.</p>
+          </div>
+          <div class="level-text" data-level="engineer">
+            <p><b>Majorana zero modes (MZMs).</b> Zero-energy bound states at the ends of a 1D topological superconductor — a quasi-particle that is its own antiparticle.</p>
+            <p><b>Realization.</b> InAs semiconductor nanowire + s-wave Al superconductor under magnetic field induces p-wave proximity superconductivity (Kitaev chain model).</p>
+            <p><b>Topological protection.</b> Qubit information stored non-locally across a pair of MZMs — local perturbations smaller than the energy gap can't flip the qubit.</p>
+            <p><b>Gates via braiding.</b> Exchanging (braiding) non-Abelian anyons implements quantum gates topologically — immune to local errors.</p>
+            <p><b>Target spec.</b> Logical error rate &lt; 10⁻⁶ without conventional error-correction overhead.</p>
+            <p><b>Open challenge.</b> Demonstrating genuine non-Abelian statistics experimentally. Microsoft Azure Quantum has invested billions; first plausible topological qubit systems claimed for 2025+.</p>
+          </div>
         </div>
       </div>
 
@@ -3035,8 +3289,26 @@ body.scientist .explorer-only, body.engineer .explorer-only { display: none !imp
     <div class="explanation-box" style="margin-top:24px">
       <h3>🏆 Which technology will win?</h3>
       <div class="level-text active" data-level="explorer">Probably ALL of them! Different quantum computers are good at different things — like how some cars are fast, some are safe, and some can go off-road. Superconducting is winning RIGHT NOW for speed. Trapped Ion is winning for accuracy. Neutral atoms are winning for scale. And topological might win everything someday — if scientists can figure it out! 🏎️🔬⚛️</div>
-      <div class="level-text" data-level="scientist">The "winning" technology depends on the application. Near-term (2025-2030): superconducting (IBM/Google) and trapped ion (IonQ/Quantinuum) lead for NISQ (Noisy Intermediate-Scale Quantum — today's quantum computers with 50-1000 imperfect qubits) applications. Medium-term (2030-2035): neutral atoms may dominate due to scalability and all-to-all connectivity. Photonic leads for quantum networking. Long-term: topological qubits could render other platforms obsolete IF Majorana qubits (a hypothetical particle that is its own antiparticle — if two are separated, they store a qubit that is protected from errors) achieve predicted error rates — but this remains undemonstrated. Most experts expect a hybrid future with different platforms optimized for different tasks.</div>
-      <div class="level-text" data-level="engineer">BENCHMARKS FAVOR: Superconducting for circuit depth (fast gates, mature control). Trapped ion for algorithmic qubits (best fidelity, all-to-all). Neutral atom for analog simulation and scale. Photonic for quantum networking. FAULT TOLERANCE THRESHOLD: Surface code (the most promising quantum error correction code — arranges qubits in a 2D grid where errors can be detected and fixed) ~1% error threshold — superconducting at 0.5% approaching, trapped ion already below. RESOURCE ESTIMATION: RSA-2048 Shor's (finds the prime factors of large numbers — threatening RSA encryption) needs ~4096 logical qubits × ~1000 physical/logical = ~4M physical qubits. Current best: IBM 1121-qubit Condor (2023). Timeline to cryptographically-relevant QC: optimistic 2030, consensus 2035-2040. DARPA funding all 5 platforms via ONISQ (Noisy Intermediate-Scale Quantum), Quantum Benchmarking, and US2QC programs.</div>
+      <div class="level-text" data-level="scientist">
+        <p><b>The honest answer.</b> "Winning" depends on the application — there probably won't be a single winner.</p>
+        <p><b>Near-term (2025–2030).</b> Superconducting (IBM/Google) and trapped ion (IonQ/Quantinuum) lead NISQ applications.</p>
+        <p><b>Medium-term (2030–2035).</b> Neutral atoms may dominate — they scale into the thousands and have flexible connectivity. Photonic leads quantum networking.</p>
+        <p><b>Long-term.</b> Topological qubits could leapfrog everyone IF Microsoft can prove the underlying physics. Right now, that's still an open question.</p>
+        <p><b>Most likely future.</b> A hybrid — different platforms optimised for different tasks (compute, networking, sensing).</p>
+      </div>
+      <div class="level-text" data-level="engineer">
+        <p><b>Benchmarks favour:</b></p>
+        <ul style="margin:0 0 10px 18px">
+          <li><b>Superconducting</b> — circuit depth (fast gates, mature control electronics).</li>
+          <li><b>Trapped ion</b> — algorithmic qubits (best fidelity, all-to-all connectivity).</li>
+          <li><b>Neutral atom</b> — analog simulation + scale.</li>
+          <li><b>Photonic</b> — quantum networking + room-temperature operation.</li>
+        </ul>
+        <p><b>Fault-tolerance threshold.</b> Surface code: ~1% physical error rate. Superconducting ~0.5% (approaching). Trapped ion ~0.1% (already below).</p>
+        <p><b>Resource estimation for RSA-2048.</b> ~4,096 logical qubits × ~1,000 physical/logical with surface code ⇒ ~4M physical qubits (Gidney-Ekerå 2019: ~20M with overhead). Current best: IBM Condor 1,121 qubits (2023).</p>
+        <p><b>Timeline to cryptographically-relevant QC.</b> Optimistic: 2030. Consensus: 2035–2040.</p>
+        <p><b>DARPA funding.</b> All five platforms via ONISQ, Quantum Benchmarking Initiative, and US2QC.</p>
+      </div>
     </div>
 
   </div>
@@ -4072,9 +4344,121 @@ function runQuantum() {
   requestAnimationFrame(animate);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════
+   USER-DRIVEN CLASSICAL CAR
+   ═══════════════════════════════════════════════════════════════════════
+   The "🎮 Drive Yourself" button lets the kid take control of the classical
+   side. They navigate with WASD / arrow keys from start (1,1) to exit
+   (13,13). Meanwhile the right (quantum) side starts its automatic
+   exploration so the timing comparison stays meaningful: a determined kid
+   can probably solve the maze in 6–10 seconds; the quantum side finishes
+   in ~0.6 s, so the lesson lands every time.
+   ─────────────────────────────────────────────────────────────────────── */
+let userDrive = null;   // { row, col, startTime, dot, timerInt }
+// Exposed for unit tests to introspect the player's grid position without
+// relying on layout-dependent SVG coordinates (jsdom returns 0 for offsetWidth).
+if (typeof window !== 'undefined') {
+  Object.defineProperty(window, '__userDrive', { get: () => userDrive });
+}
+
+function startUserDrive() {
+  // Cancel any auto-run already in flight
+  if (classicalRunning) { classicalRunning = false; if (classicalTimerInterval) clearInterval(classicalTimerInterval); }
+  if (userDrive)        { stopUserDrive(/* cancel */ true); }
+
+  // Reset visuals
+  document.getElementById('race-banner').style.display = 'none';
+  const svg = document.getElementById('classical-dots-svg');
+  svg.innerHTML = '';
+
+  const containerId = 'classical-maze-container';
+  const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  dot.setAttribute('r', '8');
+  dot.setAttribute('fill', '#00d4ff');
+  dot.setAttribute('stroke', '#fff');
+  dot.setAttribute('stroke-width', '2');
+  const startPt = getCellCenter(containerId, 1, 1);
+  dot.setAttribute('cx', startPt.x);
+  dot.setAttribute('cy', startPt.y);
+  svg.appendChild(dot);
+
+  userDrive = {
+    row: 1, col: 1,
+    dot,
+    startTime: performance.now(),
+    timerInt: null,
+  };
+  // Show help + auto-focus the maze for keyboard input
+  document.getElementById('drive-help').style.display = 'block';
+  const container = document.getElementById('classical-maze-container');
+  if (container && container.focus) container.focus({ preventScroll: true });
+
+  // Highlight start
+  document.getElementById('classical-timer').textContent = '0.0s 🎮';
+  userDrive.timerInt = setInterval(() => {
+    if (!userDrive) return;
+    const el = (performance.now() - userDrive.startTime) / 1000;
+    document.getElementById('classical-timer').textContent = el.toFixed(1) + 's 🎮';
+  }, 100);
+
+  // Kick off the automatic quantum run in parallel so the comparison is real
+  if (!quantumRunning) runQuantum();
+}
+
+function stopUserDrive(canceled) {
+  if (!userDrive) return;
+  if (userDrive.timerInt) clearInterval(userDrive.timerInt);
+  userDrive = null;
+  document.getElementById('drive-help').style.display = 'none';
+}
+
+// Keyboard handler — only active while the user is driving
+document.addEventListener('keydown', e => {
+  if (!userDrive) return;
+  // Only consume the key if the active element is the maze container OR the
+  // body — avoids hijacking inputs (e.g. the PIN boxes on the Code Breaker
+  // tab if the kid switches tabs without pressing Reset).
+  const active = document.activeElement;
+  const allowed = !active || active === document.body ||
+                  active.id === 'classical-maze-container';
+  if (!allowed) return;
+
+  let dr = 0, dc = 0;
+  const k = e.key.toLowerCase();
+  if (k === 'arrowup'    || k === 'w') dr = -1;
+  else if (k === 'arrowdown'  || k === 's') dr = 1;
+  else if (k === 'arrowleft'  || k === 'a') dc = -1;
+  else if (k === 'arrowright' || k === 'd') dc = 1;
+  else return;
+  e.preventDefault();
+
+  const nr = userDrive.row + dr;
+  const nc = userDrive.col + dc;
+  // Bounds + wall check
+  if (nr < 0 || nr >= 15 || nc < 0 || nc >= 15) return;
+  if (MAZE[nr][nc] === 1) return;
+  userDrive.row = nr;
+  userDrive.col = nc;
+  const pt = getCellCenter('classical-maze-container', nr, nc);
+  userDrive.dot.setAttribute('cx', pt.x);
+  userDrive.dot.setAttribute('cy', pt.y);
+
+  // Reached the goal?
+  if (nr === 13 && nc === 13) {
+    const t = ((performance.now() - userDrive.startTime) / 1000).toFixed(1);
+    if (userDrive.timerInt) clearInterval(userDrive.timerInt);
+    document.getElementById('classical-timer').textContent = t + 's ✅';
+    userDrive = null;
+    document.getElementById('drive-help').style.display = 'none';
+    classicalRunning = false;
+    checkRaceWinner();
+  }
+});
+
 function runRace() {
   classicalRunning = false;
   quantumRunning   = false;
+  if (userDrive) stopUserDrive(true);
   document.getElementById('classical-timer').textContent = 'Ready';
   document.getElementById('quantum-timer').textContent   = 'Ready';
   document.getElementById('race-banner').style.display   = 'none';
@@ -4115,23 +4499,98 @@ function checkRaceWinner() {
 let secretPin = [0, 0, 0, 0];
 let crackInProgress = false;
 
+// Read the current PIN from the four input boxes. Empty / non-digit boxes
+// default to 0 so a kid who only types two digits still gets a valid attack.
+function readUserPin() {
+  const out = [0, 0, 0, 0];
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById('pin' + i);
+    const raw = el && (el.tagName === 'INPUT' ? el.value : el.textContent);
+    const d = (raw || '').match(/[0-9]/);
+    out[i] = d ? parseInt(d[0], 10) : 0;
+  }
+  return out;
+}
+
+// Write a 4-digit PIN to the input boxes
+function writeUserPin(digits) {
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById('pin' + i);
+    if (!el) continue;
+    if (el.tagName === 'INPUT') el.value = String(digits[i]);
+    else                        el.textContent = String(digits[i]);
+  }
+}
+
+// Lock / unlock the PIN inputs (used while a crack is running)
+function setPinInputsLocked(locked) {
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById('pin' + i);
+    if (!el) continue;
+    if (el.tagName === 'INPUT') {
+      el.disabled = !!locked;
+      el.classList.toggle('locked', !!locked);
+    }
+  }
+}
+
+// Wire up auto-advance + digit-only filtering on each PIN input. Runs once
+// after DOMContentLoaded.
+function initPinInputs() {
+  for (let i = 0; i < 4; i++) {
+    const el = document.getElementById('pin' + i);
+    if (!el || el.tagName !== 'INPUT') continue;
+    el.addEventListener('input', e => {
+      // Strip everything except a single digit
+      const v = (e.target.value || '').replace(/[^0-9]/g, '').slice(-1);
+      e.target.value = v;
+      e.target.classList.remove('revealed', 'quantum-revealed');
+      if (v && i < 3) {
+        const next = document.getElementById('pin' + (i + 1));
+        if (next) next.focus();
+      }
+    });
+    el.addEventListener('keydown', e => {
+      // Backspace on empty box jumps to the previous box
+      if (e.key === 'Backspace' && !e.target.value && i > 0) {
+        const prev = document.getElementById('pin' + (i - 1));
+        if (prev) { prev.focus(); prev.value = ''; e.preventDefault(); }
+      }
+      // Left / Right arrows for explicit navigation
+      if (e.key === 'ArrowLeft' && i > 0) {
+        const prev = document.getElementById('pin' + (i - 1));
+        if (prev) { prev.focus(); e.preventDefault(); }
+      }
+      if (e.key === 'ArrowRight' && i < 3) {
+        const next = document.getElementById('pin' + (i + 1));
+        if (next) { next.focus(); e.preventDefault(); }
+      }
+      // Enter triggers a classical crack — quick path for keyboard users
+      if (e.key === 'Enter' && !crackInProgress) classicalCrack();
+    });
+    el.addEventListener('focus', () => el.select && el.select());
+  }
+}
+
 function generateNewPin() {
   secretPin = [
-    Math.floor(Math.random()*10),
-    Math.floor(Math.random()*10),
-    Math.floor(Math.random()*10),
-    Math.floor(Math.random()*10)
+    Math.floor(Math.random() * 10),
+    Math.floor(Math.random() * 10),
+    Math.floor(Math.random() * 10),
+    Math.floor(Math.random() * 10),
   ];
   resetCodeBreaker();
+  writeUserPin(secretPin);
 }
 
 function resetCodeBreaker() {
-  // Reset PIN display
+  // Reset PIN display class state but keep whatever user has typed
   for (let i = 0; i < 4; i++) {
     const box = document.getElementById('pin' + i);
-    box.textContent = '?';
-    box.className = 'pin-box';
+    if (!box) continue;
+    box.className = 'pin-box pin-input';
   }
+  setPinInputsLocked(false);
   // Reset vault
   document.getElementById('vault-door').classList.remove('open');
   // Reset classical
@@ -4162,13 +4621,15 @@ function initQBoxes() {
 
 function classicalCrack() {
   if (crackInProgress) return;
+  // The kid types the PIN — that's the secret the cracker has to find.
+  secretPin = readUserPin();
   crackInProgress = true;
+  setPinInputsLocked(true);
 
   const pinNum = secretPin[0]*1000 + secretPin[1]*100 + secretPin[2]*10 + secretPin[3];
   const totalMs = 5000;
   const totalCombos = 10000;
   const updateInterval = 30; // ms
-  const combosPerTick = Math.ceil(totalCombos / (totalMs / updateInterval));
   let current = 0;
   let startTime = performance.now();
 
@@ -4176,11 +4637,11 @@ function classicalCrack() {
   document.getElementById('classical-progress').style.width = '0%';
   document.getElementById('classical-result').textContent = '';
 
-  // Reset pin display
+  // Clear any "revealed" styling but keep the input shape — we'll write the
+  // current guess into the same boxes so the kid sees the cracker count up.
   for (let i = 0; i < 4; i++) {
     const box = document.getElementById('pin' + i);
-    box.textContent = '?';
-    box.className = 'pin-box';
+    if (box) box.className = 'pin-box pin-input locked';
   }
 
   const interval = setInterval(() => {
@@ -4192,43 +4653,46 @@ function classicalCrack() {
     document.getElementById('classical-status').textContent = `Trying combination #${current.toLocaleString()}...`;
 
     // Show current guess in PIN boxes
-    const guess = current.toString().padStart(4,'0');
-    for (let i = 0; i < 4; i++) {
-      const box = document.getElementById('pin' + i);
-      box.textContent = guess[i];
-    }
+    writeUserPin(current.toString().padStart(4,'0').split('').map(Number));
 
     if (progress >= 1) {
       clearInterval(interval);
       const finalElapsed = ((performance.now() - startTime) / 1000).toFixed(1);
-      // Reveal actual PIN
+      // Reveal the user's actual PIN as the "found" answer
+      writeUserPin(secretPin);
       for (let i = 0; i < 4; i++) {
         const box = document.getElementById('pin' + i);
-        box.textContent = secretPin[i];
-        setTimeout(() => box.className = 'pin-box revealed', i * 120);
+        if (!box) continue;
+        setTimeout(() => box.className = 'pin-box pin-input revealed', i * 120);
       }
       document.getElementById('classical-status').textContent = '';
       document.getElementById('classical-result').textContent = `✅ CRACKED! Tried ${totalCombos.toLocaleString()} combinations. Took ${finalElapsed} seconds.`;
       document.getElementById('vault-door').classList.add('open');
       setTimeout(showQuantumSafe, 1200);
       crackInProgress = false;
+      setPinInputsLocked(false);
     }
   }, updateInterval);
 }
 
 function quantumCrack() {
   if (crackInProgress) return;
+  // Lock the user's typed PIN as the secret target
+  secretPin = readUserPin();
   crackInProgress = true;
+  setPinInputsLocked(true);
 
   document.getElementById('quantum-status').textContent = 'Initializing quantum superposition...';
   document.getElementById('quantum-result').textContent = '';
   initQBoxes();
 
-  // Reset pin display
+  // Visually clear the PIN boxes (we'll repopulate during the collapse)
   for (let i = 0; i < 4; i++) {
     const box = document.getElementById('pin' + i);
-    box.textContent = '?';
-    box.className = 'pin-box';
+    if (!box) continue;
+    box.className = 'pin-box pin-input locked';
+    if (box.tagName === 'INPUT') box.value = '';
+    else                          box.textContent = '?';
   }
 
   // Flicker all q-boxes for 600ms
@@ -4245,7 +4709,7 @@ function quantumCrack() {
 
   setTimeout(() => {
     clearInterval(flickerInterval);
-    // Collapse animation: all converge to PIN
+    // Collapse animation: all converge to the user's PIN
     const pinStr = secretPin.join('');
     for (let i = 0; i < 20; i++) {
       const box = document.getElementById('qbox-' + i);
@@ -4256,17 +4720,19 @@ function quantumCrack() {
         box.style.color = '#10b981';
       }
     }
-    // Reveal PIN in pin boxes with quantum class
+    // Reveal the user's PIN with quantum styling
+    writeUserPin(secretPin);
     for (let i = 0; i < 4; i++) {
       const box = document.getElementById('pin' + i);
-      box.textContent = secretPin[i];
-      setTimeout(() => box.className = 'pin-box quantum-revealed', i * 80);
+      if (!box) continue;
+      setTimeout(() => box.className = 'pin-box pin-input quantum-revealed', i * 80);
     }
     document.getElementById('quantum-status').textContent = '';
     document.getElementById('quantum-result').textContent = '💥 QUANTUM CRACKED! Tried all 10,000 simultaneously. Took 0.6 seconds!';
     document.getElementById('vault-door').classList.add('open');
     setTimeout(showQuantumSafe, 800);
     crackInProgress = false;
+    setPinInputsLocked(false);
   }, 600);
 }
 
@@ -4279,7 +4745,10 @@ function showQuantumSafe() {
   }
 }
 
-// Initialize
+// Initialize: wire up the input-box UX once the DOM is ready, then seed
+// a random PIN so the kid sees a starting value (which they're free to
+// retype any time before clicking Classical/Quantum Crack).
+document.addEventListener('DOMContentLoaded', initPinInputs);
 generateNewPin();
 
 /* =====================================================
@@ -4297,23 +4766,45 @@ function setLevel(level) {
   document.body.classList.add(level);
   // Update level buttons
   document.querySelectorAll('.level-btn').forEach(b => b.classList.toggle('active', b.dataset.level === level));
-  // Update all level-text divs — fall back to engineer text for darpa-pm if no
-  // dedicated darpa-pm variant exists for that container.
+
+  // ── Tier-aware level-text dispatch ─────────────────────────────────────
+  // Bug fix: previously the fallback chain only matched .explanation-box
+  // and [data-level-group], which left cards like .future-card-detail
+  // BLANK when DARPA PM was selected (no darpa-pm variant → nothing
+  // active → text disappeared).
+  //
+  // New approach: GROUP level-text elements by their direct parent. For
+  // each group, activate the FIRST variant that exists in priority order
+  // for the selected tier. This guarantees every container shows SOME
+  // text regardless of which tier-variants the author chose to author.
+  const FALLBACK = {
+    'explorer':  ['explorer', 'scientist', 'engineer', 'darpa-pm'],
+    'scientist': ['scientist', 'engineer', 'darpa-pm', 'explorer'],
+    'engineer':  ['engineer', 'darpa-pm', 'scientist', 'explorer'],
+    'darpa-pm':  ['darpa-pm', 'engineer', 'scientist', 'explorer'],
+  };
+  const priority = FALLBACK[level] || FALLBACK.explorer;
+
+  // First: clear all
   document.querySelectorAll('.level-text').forEach(el => el.classList.remove('active'));
+
+  // Second: group by parent and pick the best variant per group
+  const groups = new Map(); // parent → Map(level → element)
   document.querySelectorAll('.level-text').forEach(el => {
-    if (el.dataset.level === level) el.classList.add('active');
+    const parent = el.parentElement;
+    if (!parent) return;
+    if (!groups.has(parent)) groups.set(parent, new Map());
+    groups.get(parent).set(el.dataset.level, el);
   });
-  // For darpa-pm: where no darpa-pm variant exists in a group, fall through
-  // to engineer text so nothing goes blank.
-  if (level === 'darpa-pm') {
-    document.querySelectorAll('.explanation-box, [data-level-group]').forEach(group => {
-      const hasPm = group.querySelector('.level-text[data-level="darpa-pm"]');
-      if (!hasPm) {
-        const eng = group.querySelector('.level-text[data-level="engineer"]');
-        if (eng) eng.classList.add('active');
+  groups.forEach(byLevel => {
+    for (const lvl of priority) {
+      if (byLevel.has(lvl)) {
+        byLevel.get(lvl).classList.add('active');
+        break;
       }
-    });
-  }
+    }
+  });
+
   // Show/hide sci-eng-only elements (DARPA PM also gets the advanced UI)
   const isAdvanced = (level === 'scientist' || level === 'engineer' || level === 'darpa-pm');
   document.querySelectorAll('.sci-eng-only').forEach(el => {
@@ -4780,7 +5271,7 @@ const TP_NARRATIVES = [
   { // step 0 — initial
     explorer: "Alice has a SECRET quantum state — a special color that only she knows! Can we get it to Bob without moving the particle? YES — with quantum teleportation! Press Step 1 to begin!",
     scientist: "Alice has a special qubit she wants to send to Bob. The trick: she doesn't know exactly what's on her qubit, but quantum teleportation lets her send it perfectly anyway — using a pair of 'linked' particles and two regular bits of information.",
-    engineer:  "Alice's qubit holds an unknown quantum state. To send it to Bob, the protocol uses an entangled pair of qubits (a 'Bell pair') shared in advance, plus 2 ordinary bits sent through any normal channel. The original state is consumed in Alice's measurement — quantum information is moved, not copied.",
+    engineer:  "Alice's qubit holds an unknown quantum state. To send it to Bob, the protocol uses an entangled pair of qubits (a 'Bell pair') shared in advance, plus exactly 2 classical bits (each a 0 or 1) sent through any normal channel. Resource cost: 1 ebit + 2 cbits per qubit teleported. The original state is consumed in Alice's measurement — quantum information is moved, not copied.",
     darpaPm:   "Initial state: Alice holds qubit |ψ⟩ = α|0⟩ + β|1⟩. Protocol requires a pre-shared Bell pair |Φ⁺⟩ = (|00⟩+|11⟩)/√2. Total system: |ψ⟩ ⊗ |Φ⁺⟩ = (α|0⟩+β|1⟩) ⊗ (|00⟩+|11⟩)/√2. Resource cost: 1 ebit + 2 cbits per qubit teleported. Fidelity = 1 for ideal channels."
   },
   { // step 1 — after Entangle
@@ -4893,20 +5384,20 @@ teleportReset();
    ===================================================== */
 const SPEED_DATA = [
   { label:'Factor Number',      classical:'Millions of years',        quantum:'~8 hours',             factor:'1 trillion×',
-    sci:'Shor\'s algorithm uses quantum Fourier transform to factor large integers in polynomial time — breaking RSA encryption that would take classical computers millions of years.',
-    eng:'Shor\'s: O(log³N) quantum vs O(exp(N^1/3)) classical. For 2048-bit RSA: ~10¹³ years classically vs ~8 hours on a fault-tolerant QC.' },
+    sci:'<p><b>Application.</b> Break RSA encryption (the math behind banks, websites, email).</p><p><b>Why it works.</b> Shor\'s algorithm uses the Quantum Fourier Transform to find the period of a^x mod N — once you have it, factoring N is easy.</p><p><b>Numbers.</b> RSA-2048 takes a classical supercomputer ~10¹³ years. A future quantum computer: ~8 hours.</p>',
+    eng:'<p><b>Complexity.</b> Shor\'s O((log N)³) quantum vs GNFS sub-exponential ≈ exp((log N)^(1/3)) classical.</p><p><b>Resource cost.</b> RSA-2048 ⇒ ~4,096 logical qubits, ~20M physical with surface-code error correction.</p><p><b>Worked example.</b> Classical: ~10¹³ years. Quantum (fault-tolerant, 1 MHz logical clock): ~8 hours.</p>' },
   { label:'Search Database',    classical:'1,000,000 steps',          quantum:'~1,000 steps (Grover)', factor:'1,000×',
-    sci:'Grover\'s algorithm searches an unsorted database of N items in O(√N) steps — a quadratic speedup. It\'s provably optimal for unstructured search.',
-    eng:'Grover\'s: O(√N) quantum vs O(N) classical. For N=10⁶: 1000 vs 1,000,000 queries. Amplitude amplification doubles the probability amplitude each iteration.' },
+    sci:'<p><b>Application.</b> Find one specific item in an unsorted list (the canonical "needle in a haystack").</p><p><b>Why it works.</b> Grover\'s algorithm uses superposition + amplification — wrong answers cancel out, the right answer adds up.</p><p><b>Numbers.</b> Haystack of 1,000,000 items: classical needs up to 1,000,000 checks; Grover needs about √1,000,000 ≈ 1,000.</p>',
+    eng:'<p><b>Complexity.</b> Grover O(√N) vs classical O(N). Provably tight (BBBV 1997).</p><p><b>Procedure.</b> Apply oracle U_f (phase-flip the marked state) + diffusion D = 2|s⟩⟨s|−I, repeat (π/4)·√N times.</p><p><b>Worked example.</b> N = 10⁶ ⇒ ~785 oracle calls vs up to 10⁶ classical lookups (≈ 1,273× speedup).</p>' },
   { label:'Simulate Molecule',  classical:'Impossible classically',   quantum:'Minutes on QC',         factor:'∞',
-    sci:'Variational Quantum Eigensolver (VQE) simulates molecular electron structure natively in quantum superposition — classically exponential in the number of electrons.',
-    eng:'VQE: parameterized quantum circuit minimizes ⟨ψ|H|ψ⟩. For N electrons: 2^N classical states vs N qubits quantum. FeMoco nitrogenase: ~100 logical qubits needed.' },
+    sci:'<p><b>Application.</b> Drug design and new materials — work out exactly how electrons in a molecule arrange themselves.</p><p><b>Why classical fails.</b> A molecule with N electrons has 2^N possible arrangements. Doubling N doubles the work — so big molecules are hopeless classically.</p><p><b>Why quantum wins.</b> Qubits are themselves quantum, so they can represent the molecule directly. Cost grows with N, not 2^N.</p>',
+    eng:'<p><b>Algorithm.</b> Variational Quantum Eigensolver (VQE): a parameterized circuit minimizes ⟨ψ(θ)|H|ψ(θ)⟩ over θ via a hybrid classical optimizer.</p><p><b>Complexity.</b> Classical exact diagonalization: O(2ⁿ). VQE: O(n⁴) measurements per iteration on n qubits.</p><p><b>Worked target.</b> FeMoco (nitrogenase active site): ~54 qubits, ~10⁹ T-gates with phase estimation — the canonical quantum-chemistry benchmark.</p>' },
   { label:'Optimize Route',     classical:'Years for 50 cities',      quantum:'Hours (QAOA)',          factor:'10,000×',
-    sci:'QAOA (Quantum Approximate Optimization Algorithm) solves combinatorial optimization problems like the Traveling Salesman Problem using quantum interference to find near-optimal solutions.',
-    eng:'QAOA: p-layer alternating Ising+mixer unitaries. For 50-city TSP: classical BF O(N!) ≈ 3×10⁶⁴ paths. QAOA approximation ratio improves with circuit depth p.' },
+    sci:'<p><b>Application.</b> Find the shortest route through 50 cities (the Traveling Salesman Problem). Same math powers shipping logistics, airline routing, and delivery scheduling.</p><p><b>Why classical struggles.</b> 50 cities = 50! ≈ 3×10⁶⁴ possible routes — more than atoms in the universe.</p><p><b>Why quantum helps.</b> QAOA uses quantum interference to favour better routes; it finds near-optimal answers in polynomial circuit depth.</p>',
+    eng:'<p><b>Algorithm.</b> QAOA = p alternating layers of cost unitary e^(−iγC) and mixer unitary e^(−iβB).</p><p><b>Complexity.</b> Classical Held-Karp: O(n²·2ⁿ). QAOA depth p: polynomial in n with approximation ratio &gt; 0.6929 for Max-Cut (Goemans-Williamson SDP bound).</p><p><b>Worked example.</b> 50-city TSP: classical brute force ≈ 3×10⁶⁴ paths; QAOA delivers a near-optimal route in ~hours on a fault-tolerant QC.</p>' },
   { label:'Predict Weather',    classical:'Days of compute',          quantum:'Hours',                 factor:'100×',
-    sci:'Weather prediction involves solving massive systems of differential equations. Quantum linear systems algorithms (HHL) offer exponential speedup for certain classes of these equations.',
-    eng:'HHL algorithm: O(log N · κ²) quantum vs O(N · κ) classical for Ax=b with condition number κ. 10-day global forecast: quantum reduces classical supercomputer-days to hours.' }
+    sci:'<p><b>Application.</b> Better hurricane tracks, longer-range forecasts, climate modeling.</p><p><b>Why classical struggles.</b> The atmosphere is broken into BILLIONS of grid cells; solving the equations between them takes days even on supercomputers.</p><p><b>Why quantum helps.</b> The HHL quantum algorithm solves giant linear systems Ax = b exponentially faster — a core step inside fluid-dynamics models.</p>',
+    eng:'<p><b>Algorithm.</b> HHL solves Ax = b for sparse, well-conditioned A.</p><p><b>Complexity.</b> Classical: O(N · κ). Quantum: O(log N · κ² · 1/ε) where κ = condition number, ε = solution accuracy.</p><p><b>Worked example.</b> 10-day global forecast: ~3 days of supercomputer time classical → ~hours on a fault-tolerant QC. Caveat: state-prep + read-out can erode the speedup; useful with QRAM.</p>' }
 ];
 
 const SPEED_NARRATIVES = [
@@ -5212,8 +5703,10 @@ function runSpeedChallenge(idx) {
   const d = SPEED_DATA[idx];
   document.getElementById('speed-classical-label').textContent = d.classical;
   document.getElementById('speed-quantum-label').textContent = d.quantum;
-  document.getElementById('speed-sci-text').textContent = d.sci;
-  document.getElementById('speed-eng-text').textContent = d.eng;
+  // Use innerHTML so the structured content (bold labels, lists) renders.
+  // The data strings are author-controlled, not user input — no XSS surface.
+  document.getElementById('speed-sci-text').innerHTML = d.sci;
+  document.getElementById('speed-eng-text').innerHTML = d.eng;
   document.getElementById('speed-winner').style.display = 'none';
   document.getElementById('speed-factor').textContent = d.factor;
 
@@ -5402,11 +5895,14 @@ function resetTab(n) {
     case 4:
       classicalRunning = false;
       quantumRunning = false;
+      if (typeof userDrive !== 'undefined' && userDrive) stopUserDrive(true);
       document.getElementById('classical-timer').textContent = 'Ready';
       document.getElementById('quantum-timer').textContent = 'Ready';
       document.getElementById('race-banner').style.display = 'none';
       document.getElementById('classical-dots-svg').innerHTML = '';
       document.getElementById('quantum-dots-svg').innerHTML = '';
+      const driveHelp = document.getElementById('drive-help');
+      if (driveHelp) driveHelp.style.display = 'none';
       break;
     case 5:
       resetCodeBreaker();
